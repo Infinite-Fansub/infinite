@@ -1,0 +1,23 @@
+{
+    "name": "@infinite/fetch",
+    "version": "1.0.0",
+    "description": "Main fetch for all wrappers",
+    "author": "Infinite",
+    "license": "AGPL-3.0",
+    "main": "dist/index.js",
+    "types": "dist",
+    "scripts": {
+        "test": "ts-node tests/index.ts",
+        "eslint":"eslint",
+        "eslint:fix":"eslint --fix",
+        "build": "tsc",
+        "build:test": "tsc --noEmit",
+        "run:node": "node .",
+        "run:ts": "ts-node src/index.ts"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Infinite-Fansub/infinite.git"
+    },
+    "homepage": "https://github.com/Infinite-Fansub/infinite/tree/main/packages/fetch"
+}
