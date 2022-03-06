@@ -2,6 +2,13 @@
   "name": "infinite",
   "private": true,
   "version": "1.0.0",
+  "contributors": [
+    "DidaS <didasoficial@gmail.com>",
+    "ChasJC23 <chas.coxell@gmail.com>",
+    "Niek <Frankenstein795@gmail.com>",
+    "Nightmaretopia",
+    "Aguiar <devaguiar14@gmail.com>"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Infinite-Fansub/infinite.git"
