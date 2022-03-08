@@ -42,8 +42,8 @@ New-Item -Path '.\package.json' -ItemType File -Value "{
         `"eslint:fix`":`"eslint --fix`",
         `"build`": `"tsc`",
         `"build:test`": `"tsc --noEmit`",
-        `"run:node`": `"node .`",
-        `"run:ts`": `"ts-node src/index.ts`"
+        `"node`": `"node .`",
+        `"tsn`": `"ts-node src/index.ts`"
     },
     `"repository`": {
         `"type`": `"git`",
