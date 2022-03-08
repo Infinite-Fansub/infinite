@@ -1,0 +1,23 @@
+{
+    "name": "@infinite/nekos-dot-life",
+    "version": "1.0.0",
+    "description": "Nekos.life wrapper",
+    "author": "Infinite",
+    "license": "AGPL-3.0",
+    "main": "dist/index.js",
+    "types": "dist",
+    "scripts": {
+        "test": "ts-node tests/index.ts",
+        "eslint":"eslint",
+        "eslint:fix":"eslint --fix",
+        "build": "tsc",
+        "build:test": "tsc --noEmit",
+        "node": "node .",
+        "tsn": "ts-node src/index.ts"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Infinite-Fansub/infinite.git"
+    },
+    "homepage": "https://github.com/Infinite-Fansub/infinite/tree/main/packages/nekos-dot-life"
+}

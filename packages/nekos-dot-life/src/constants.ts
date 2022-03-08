@@ -1,0 +1,5 @@
+// eslint-disable-next-line max-len
+export const SFW_TYPES = ["smug", "8ball", "neko_avatars_avatar", "gecg", "holo", "lizard", "neko", "no_tag_avatar", "holo_avatar", "kitsune", "wallpaper", "waifu", "keta_avatar", "cat", "kiminonawa", "shinobu"];
+
+// eslint-disable-next-line max-len
+export const NSFW_TYPES = ["peeing_lewd", "keta_lewd", "anal_lewd", "yiff_lewd", "kemonomimi_lewd", "yuri_ero", "pantyhose_ero", "piersing_lewd", "all_tags_ero", "all_tags_lewd", "ahegao_avatar", "solo_lewd", "bdsm_lewd", "shinobu_ero", "kitsune_lewd", "holo_lewd", "wallpaper_lewd", "kemonomimi_ero", "hplay_ero", "piersing_ero", "yuri_lewd", "ero_wallpaper_ero", "holo_avatar", "neko_lewd", "feet_lewd", "kitsune_ero", "feet_ero", "cum_lewd", "holo_ero", "tits_lewd", "classic_lewd", "shinobu_lewd", "smallboobs_lewd", "blowjob_lewd", "keta_avatar", "pussy_lewd", "cosplay_lewd", "futanari_lewd", "trap_lewd", "pantyhose_lewd", "femdom_lewd", "anus_lewd", "neko_ero"];
