@@ -11,13 +11,13 @@
 import { Parser } from "node-expat";
 
 export type JSONOptions<O extends boolean> = {
-    object?: O;
-    reversible?: boolean;
-    coerce?: boolean | Record<string, (v: string) => any>;
-    sanitize?: boolean;
-    trim?: boolean;
-    arrayNotation?: boolean | Array<string>;
-    alternateTextNode?: string; // change "$t"
+    object?: O,
+    reversible?: boolean,
+    coerce?: boolean | Record<string, (v: string) => any>,
+    sanitize?: boolean,
+    trim?: boolean,
+    arrayNotation?: boolean | Array<string>,
+    alternateTextNode?: string // change "$t"
 };
 
 export class ObjectBuilder<O extends boolean> {

@@ -20,8 +20,8 @@
   },
   "homepage": "https://github.com/Infinite-Fansub/infinite#readme",
   "scripts": {
-    "eslint": "eslint packages/**",
-    "eslint:fix": "eslint packages/** --fix"
+    "eslint": "eslint \"packages/**\"",
+    "eslint:fix": "eslint \"packages/**\" --fix"
   },
   "devDependencies": {
     "@types/node": "^17.0.21",
