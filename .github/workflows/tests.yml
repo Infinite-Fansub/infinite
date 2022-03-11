@@ -3,7 +3,7 @@ name: Tests & Build
 on: [push, pull_request, workflow_dispatch]
 
 jobs:
-  build:
+  lint:
     name: Build application on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
@@ -14,7 +14,36 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: "17"
-      - run: npm i
-      - run: npm i -ws
-      - run: npm run test -ws
-      - run: npm run build -ws
+      - name: Install Dependencies
+        run: npm i
+        run: npm i -ws
+      - name: Lint
+        run: npm run eslint:fix
+  test:
+    needs: lint
+    name: Build application on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "17"
+      - name: Test the Packages
+        run: npm run test -ws
+  build:
+    needs: test
+    name: Build application on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "17"
+      - name: Build the Packages
+        run: npm run build -ws
