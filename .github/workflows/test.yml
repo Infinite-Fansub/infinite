@@ -4,11 +4,9 @@ on: [push, pull_request, workflow_dispatch]
 
 jobs:
   lint:
-    name: Build application on ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
+    name: Code linted successfully
+    runs-on: ubuntu-latest
     strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest, macOS-latest]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
@@ -22,7 +20,7 @@ jobs:
         run: npm run eslint:fix
   test:
     needs: lint
-    name: Build application on ${{ matrix.os }}
+    name: Successfully passed all tests on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
