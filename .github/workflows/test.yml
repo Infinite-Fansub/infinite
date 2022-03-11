@@ -6,7 +6,6 @@ jobs:
   lint:
     name: Code linted successfully
     runs-on: ubuntu-latest
-    strategy:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
