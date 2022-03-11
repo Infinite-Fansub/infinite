@@ -4,11 +4,12 @@ on: [push, pull_request, workflow_dispatch]
 
 jobs:
   lint:
-    name: Code linted successfully
+    name: Code lint
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
+      - uses: c-hive/gha-npm-cache@v1
         with:
           node-version: "17"
       - name: Install Dependencies
@@ -19,7 +20,7 @@ jobs:
         run: npm run eslint:fix
   test:
     needs: lint
-    name: Successfully passed all tests on ${{ matrix.os }}
+    name: Tests on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -27,8 +28,13 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
+      - uses: c-hive/gha-npm-cache@v1
         with:
           node-version: "17"
+      - name: Install Dependencies
+        run: |
+          npm i
+          npm i -ws
       - name: Test the Packages
         run: npm run test -ws
   build:
@@ -41,7 +47,12 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
+      - uses: c-hive/gha-npm-cache@v1
         with:
           node-version: "17"
+      - name: Install Dependencies
+        run: |
+          npm i
+          npm i -ws
       - name: Build the Packages
         run: npm run build -ws
