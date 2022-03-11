@@ -15,8 +15,9 @@ jobs:
         with:
           node-version: "17"
       - name: Install Dependencies
-        run: npm i
-        run: npm i -ws
+        run: |
+          npm i
+          npm i -ws
       - name: Lint
         run: npm run eslint:fix
   test:
