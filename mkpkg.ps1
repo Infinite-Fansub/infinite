@@ -24,7 +24,7 @@ New-Item -Path '.\tests' -ItemType Directory
 New-Item -Path '.\tests\index.ts' -ItemType File -Value '// Main tests here`n'
 
 # ignore files
-New-Item -Path '.\.gitignore' -ItemType File -Value "node_modules/`n.DS_Store`ndist/`n.npmignore`n"
+New-Item -Path '.\.gitignore' -ItemType File -Value "node_modules/`n.DS_Store`ndist/`n"
 New-Item -Path '.\.npmignore' -ItemType File -Value "tests/`nsrc/`n.gitignore`n"
 
 # npm files

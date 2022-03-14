@@ -18,7 +18,7 @@ mkdir src/typings
 mkdir tests && echo '// Main tests here' > tests/index.ts
 
 # ignore files
-echo $'node_modules/\n.DS_Store\ndist/\n.npmignore' > .gitignore
+echo $'node_modules/\n.DS_Store\ndist/' > .gitignore
 echo $'tests/\nsrc/\n.gitignore' > .npmignore
 
 # npm files
