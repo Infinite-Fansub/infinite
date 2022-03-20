@@ -32,8 +32,8 @@ echo "{
     \"types\": \"dist\",
     \"scripts\": {
         \"test\": \"ts-node tests/index.ts\",
-        \"eslint\":\"eslint\",
-        \"eslint:fix\":\"eslint --fix\",
+        \"eslint\": \"eslint\",
+        \"eslint:fix\": \"eslint --fix\",
         \"build\": \"tsc\",
         \"build:test\": \"tsc --noEmit\",
         \"node\": \"node .\",
