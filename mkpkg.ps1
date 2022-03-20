@@ -16,12 +16,12 @@ Set-Location ('.\' + $packageName)
 
 # set up source
 New-Item -Path '.\src' -ItemType Directory
-New-Item -Path '.\src\index.ts' -ItemType File -Value '// Entry point of the project`n'
+New-Item -Path '.\src\index.ts' -ItemType File -Value "// Entry point of the project`n"
 New-Item -Path '.\src\typings' -ItemType Directory
 
 # set up tests
 New-Item -Path '.\tests' -ItemType Directory
-New-Item -Path '.\tests\index.ts' -ItemType File -Value '// Main tests here`n'
+New-Item -Path '.\tests\index.ts' -ItemType File -Value "// Main tests here`n"
 
 # ignore files
 New-Item -Path '.\.gitignore' -ItemType File -Value "node_modules/`n.DS_Store`ndist/`n"
