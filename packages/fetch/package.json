@@ -4,8 +4,8 @@
     "description": "Main fetch for all wrappers",
     "author": "Infinite",
     "license": "AGPL-3.0",
-    "main": "index.js",
-    "types": "",
+    "main": " dist/index.js",
+    "types": "dist",
     "scripts": {
         "test": "ts-node tests/index.ts",
         "eslint": "eslint",
