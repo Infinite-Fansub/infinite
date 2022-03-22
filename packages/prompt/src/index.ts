@@ -1,25 +1,39 @@
 import { createInterface } from "node:readline";
-import { RequireAtLeastOneType } from "./utils";
+import { RequireAtLeastOneType, ReadLineOptions } from "./utils";
 
-export type readLineOptions = {
-    defaultText?: string,
-    prompt?: string
-};
+export class Prompt {
+    private _options: ReadLineOptions;
 
-export async function readLine(txt: string, options: string): Promise<string>;
-// eslint-disable-next-line @typescript-eslint/unified-signatures
-export async function readLine(txt: string, options: RequireAtLeastOneType<readLineOptions, "defaultText">): Promise<string>;
-export async function readLine(txt: string, options?: readLineOptions): Promise<string | null>;
-export async function readLine(txt: string, options?: string | readLineOptions): Promise<string | null> {
-    const rl = createInterface({
-        input: process.stdin,
-        output: process.stdout
-    });
+    public constructor(options?: ReadLineOptions) {
+        this._options = options ?? {};
+    }
 
-    return new Promise((resolve) => {
-        rl.question(`${txt}\n${options instanceof Object ? options.prompt ?? ">" : ">"} `, (answer) => {
-            resolve(answer.length ? answer : options instanceof Object ? options.defaultText ?? null : options ?? null);
-            rl.close();
+    public async create(txt: string, options: string | RequireAtLeastOneType<ReadLineOptions, "defaultText">): Promise<string>;
+    public async create(txt: string, options?: string | ReadLineOptions): Promise<string | null>;
+    public async create(txt: string, options?: string | ReadLineOptions): Promise<string | null> {
+
+        if (options instanceof Object) this._options = options;
+
+        const rl = createInterface({
+            input: process.stdin,
+            output: process.stdout
         });
-    });
+
+        return new Promise((resolve) => {
+            rl.question(`${txt}\n${typeof options === "string" ? ">" : this._options.prompt ?? ">"} `, (answer) => {
+                resolve(answer.length ? answer : typeof options === "string" ? options : this._options.defaultText ?? null);
+                rl.close();
+            });
+        });
+    }
+
+    public set options(options: ReadLineOptions) {
+        this._options = options;
+    }
+}
+
+export async function readLine(txt: string, options: string | RequireAtLeastOneType<ReadLineOptions, "defaultText">): Promise<string>;
+export async function readLine(txt: string, options?: string | ReadLineOptions): Promise<string | null>;
+export async function readLine(txt: string, options?: string | ReadLineOptions): Promise<string | null> {
+    return await new Prompt().create(txt, options);
 }
