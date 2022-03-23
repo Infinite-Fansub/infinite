@@ -35,6 +35,7 @@ echo "{
         \"eslint\": \"eslint\",
         \"eslint:fix\": \"eslint --fix\",
         \"build\": \"tsc\",
+        \"build:watch\": \"tsc --watch\",
         \"build:test\": \"tsc --noEmit\",
         \"node\": \"node .\",
         \"tsn\": \"ts-node src/index.ts\"
