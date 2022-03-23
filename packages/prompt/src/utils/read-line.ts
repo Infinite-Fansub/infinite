@@ -1,16 +1,8 @@
 import { Color } from "colours.js/dst";
 
-export type ReadLineOptions = {
+export type ReadLineOptions<T extends boolean> = {
     defaultText?: string,
     prompt?: string,
-
-    /**
-     * @alpha Not Implemented yet
-     */
-    solid?: boolean,
-
-    /**
-     * @alpha Not Implemented yet
-     */
-    color?: string | Color
+    solid?: T extends true ? { color: string | Color } : T,
+    gradient?: T extends true ? { primaryColor: string | Color, secondaryColor: string | Color } : T
 };

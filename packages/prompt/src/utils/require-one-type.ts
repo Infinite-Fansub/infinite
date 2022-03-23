@@ -1,1 +1,1 @@
-export type RequireAtLeastOneType<T, K extends keyof T> = Partial<T> & Required<Pick<T, K>>;
+export type RequireAtLeastOne<T, K extends keyof T> = Partial<T> & Required<Pick<T, K>>;

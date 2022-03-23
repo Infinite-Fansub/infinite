@@ -1,16 +1,16 @@
 import { createInterface } from "node:readline";
-import { RequireAtLeastOneType, ReadLineOptions } from "./utils";
+import { RequireAtLeastOne, ReadLineOptions } from "./utils";
 
 export class Prompt {
-    private _options: ReadLineOptions;
+    private _options: ReadLineOptions<boolean>;
 
-    public constructor(options?: ReadLineOptions) {
+    public constructor(options?: ReadLineOptions<boolean>) {
         this._options = options ?? {};
     }
 
-    public async create(txt: string, options: string | RequireAtLeastOneType<ReadLineOptions, "defaultText">): Promise<string>;
-    public async create(txt: string, options?: string | ReadLineOptions): Promise<string | null>;
-    public async create(txt: string, options?: string | ReadLineOptions): Promise<string | null> {
+    public async create(txt: string, options: string | RequireAtLeastOne<ReadLineOptions<boolean>, "defaultText">): Promise<string>;
+    public async create(txt: string, options?: string | ReadLineOptions<boolean>): Promise<string | null>;
+    public async create(txt: string, options?: string | ReadLineOptions<boolean>): Promise<string | null> {
 
         if (options instanceof Object) this._options = options;
 
@@ -27,13 +27,13 @@ export class Prompt {
         });
     }
 
-    public set options(options: ReadLineOptions) {
+    public set options(options: ReadLineOptions<boolean>) {
         this._options = options;
     }
 }
 
-export async function readLine(txt: string, options: string | RequireAtLeastOneType<ReadLineOptions, "defaultText">): Promise<string>;
-export async function readLine(txt: string, options?: string | ReadLineOptions): Promise<string | null>;
-export async function readLine(txt: string, options?: string | ReadLineOptions): Promise<string | null> {
+export async function readLine(txt: string, options: string | RequireAtLeastOne<ReadLineOptions<boolean>, "defaultText">): Promise<string>;
+export async function readLine(txt: string, options?: string | ReadLineOptions<boolean>): Promise<string | null>;
+export async function readLine(txt: string, options?: string | ReadLineOptions<boolean>): Promise<string | null> {
     return await new Prompt().create(txt, options);
 }
