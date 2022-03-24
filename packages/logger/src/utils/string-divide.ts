@@ -1,6 +1,6 @@
 export interface GradientHalfs {
-    firstHalf: string,
-    secondHalf: string
+    firstHalf: string;
+    secondHalf: string;
 }
 
 export type strTypes = string | Array<string>;
