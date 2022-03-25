@@ -30,6 +30,14 @@ export class Prompt {
     public set options(options: ReadLineOptions<boolean>) {
         this._options = options;
     }
+
+    public set colors(options: Pick<ReadLineOptions<boolean>, "solid" | "gradient">) {
+        this._options = options;
+    }
+
+    public set changeSolidColor(options: ) {
+        this._options.solid = options;
+    }
 }
 
 export async function readLine(txt: string, options: string | RequireAtLeastOne<ReadLineOptions<boolean>, "defaultText">): Promise<string>;
@@ -37,3 +45,5 @@ export async function readLine(txt: string, options?: string | ReadLineOptions<b
 export async function readLine(txt: string, options?: string | ReadLineOptions<boolean>): Promise<string | null> {
     return await new Prompt().create(txt, options);
 }
+
+new Prompt().colors
