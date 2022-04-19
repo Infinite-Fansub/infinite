@@ -1,6 +1,6 @@
 import { Color } from "colours.js/dst";
-import { createInterface } from "node:readline";
-import { RequireAtLeastOne, PromptOptions, PromptGradient } from "./utils";
+import { createInterface, ReadLineOptions } from "node:readline";
+import { RequireAtLeastOne, PromptOptions, PromptGradient } from "./typings";
 
 export class Prompt {
     private _options: PromptOptions<boolean>;
@@ -8,17 +8,7 @@ export class Prompt {
 
     public constructor(options?: PromptOptions<boolean>) {
         this._options = options ?? {};
-        // this.construct(options);
     }
-
-    // private construct(options?: PromptOptions<boolean>): void {
-    //     this._options = {
-    //         defaultText: options?.defaultText,
-    //         prompt: options?.prompt,
-    //         solid: options?.solid,
-    //         gradient: options?.gradient
-    //     };
-    // }
 
     public async create(txt: string, options: string | RequireAtLeastOne<PromptOptions<boolean>, "defaultText">): Promise<string>;
     public async create(txt: string, options?: string | PromptOptions<boolean>): Promise<string | null>;
@@ -27,9 +17,12 @@ export class Prompt {
         if (options instanceof Object) {
             this.prevOptions = this._options;
             this._options = options;
+        } else if (typeof options === "string") {
+            this.prevOptions.defaultText = options;
+            this._options.defaultText = options;
         }
 
-        const rl = createInterface({
+        const rl = createInterface(this._options.interface ?? {
             input: process.stdin,
             output: process.stdout
         });
@@ -94,6 +87,15 @@ export class Prompt {
     public set gradientColors(colors: PromptGradient) {
         this.prevOptions.gradient = this._options.gradient;
         this._options.gradient = colors;
+    }
+
+    public get interfaceOptions(): ReadLineOptions {
+        return this._options.interface ?? { input: process.stdin, output: process.stdout };
+    }
+
+    public set interfaceOptions(options: ReadLineOptions) {
+        this.prevOptions.interface = this._options.interface ?? { input: process.stdin, output: process.stdout };
+        this._options.interface = options;
     }
 
     public get previousOptions(): PromptOptions<boolean> {
