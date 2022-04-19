@@ -7,7 +7,7 @@ export type strTypes = string | Array<string>;
 
 export function divideString(str: string): GradientHalfs {
 
-    const half = (x: strTypes): number => x.length / 2;
+    const half = (x: strTypes): number => x.length >> 1;
     let firstHalf: strTypes = "";
     let secondHalf: strTypes = "";
 
