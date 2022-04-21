@@ -1,6 +1,7 @@
 import { Color } from "colours.js/dst";
 import { createInterface, ReadLineOptions } from "node:readline";
-import { RequireAtLeastOne, PromptOptions, PromptGradient } from "./typings";
+import { PromptOptions, PromptGradient } from "./typings";
+import { RequireAtLeastOne } from "@infinite/types";
 
 export class Prompt {
     private _options: PromptOptions<boolean>;
@@ -10,6 +11,7 @@ export class Prompt {
         this._options = options ?? {};
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
     public async create(txt: string, options: string | RequireAtLeastOne<PromptOptions<boolean>, "defaultText">): Promise<string>;
     public async create(txt: string, options?: string | PromptOptions<boolean>): Promise<string | null>;
     public async create(txt: string, options?: string | PromptOptions<boolean>): Promise<string | null> {
@@ -103,6 +105,7 @@ export class Prompt {
     }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
 export async function readLine(txt: string, options: string | RequireAtLeastOne<PromptOptions<boolean>, "defaultText">): Promise<string>;
 export async function readLine(txt: string, options?: string | PromptOptions<boolean>): Promise<string | null>;
 export async function readLine(txt: string, options?: string | PromptOptions<boolean>): Promise<string | null> {
