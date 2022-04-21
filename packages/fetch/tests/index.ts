@@ -1,7 +1,7 @@
 import fetch from "../src";
+import assert from "node:assert";
 
 (async () => {
-    const res = await fetch("https://nekos.life/api/v2/img/neko");
-    if (res.rawData.length) console.log("Test Completed: fetch");
-    else console.log("Test Failed");
+    const res = await fetch("https://www.google.com/");
+    assert.notDeepStrictEqual(res.rawData().length, 0);
 })();

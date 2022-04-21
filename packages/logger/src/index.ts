@@ -4,8 +4,8 @@ import { InfiniteGradient, getCurrentMemoryHeap } from "./utils";
 const { uniform, gradient } = colorConsole;
 
 export type LoggerOptions = {
-    colors: Partial<Colors>,
-    emojis: Partial<Emojis>,
+    colors?: Partial<Colors>,
+    emojis?: Partial<Emojis>,
     showMemory?: boolean
 };
 
