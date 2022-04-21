@@ -101,6 +101,10 @@ export class Logger {
         this._showMemory = value;
     }
 
+    public get emojis(): Emojis {
+        return { emoji: this.emoji, errorEmoji: this.errorEmoji };
+    }
+
     public set emojis(emojis: Partial<Emojis>) {
         this.emoji = emojis.emoji ?? this.emoji;
         this.errorEmoji = emojis.errorEmoji ?? this.errorEmoji;
