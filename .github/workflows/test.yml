@@ -19,7 +19,7 @@ jobs:
       - name: Lint
         run: npm run eslint:fix
   build:
-    needs: test
+    needs: lint
     name: Build application on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
@@ -38,7 +38,7 @@ jobs:
       - name: Build the Packages
         run: npm run build -ws
   test:
-    needs: lint
+    needs: build
     name: Tests on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
