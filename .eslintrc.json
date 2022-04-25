@@ -121,14 +121,8 @@
         "@typescript-eslint/no-unused-expressions": [
             "error",
             {
-                "allowTaggedTemplates": true
-            }
-        ],
-        "@typescript-eslint/no-confusing-void-expression": [
-            "warn",
-            {
-                "ignoreVoidOperator": true,
-                "ignoreArrowShorthand": true
+                "allowTaggedTemplates": true,
+                "allowShortCircuit": true
             }
         ],
         "@typescript-eslint/unbound-method": [
@@ -226,7 +220,7 @@
             {
                 "overrides": {
                     "await": {
-                        "before": false
+                        "before": true
                     }
                 }
             }
@@ -508,16 +502,6 @@
                 "ignoreProperties": true
             }
         ],
-        "@typescript-eslint/no-parameter-properties": [
-            "error",
-            {
-                "allows": [
-                    "private",
-                    "protected",
-                    "public"
-                ]
-            }
-        ],
         "@typescript-eslint/prefer-readonly": [
             "warn",
             {
@@ -548,7 +532,8 @@
         "@typescript-eslint/strict-boolean-expressions": [
             "warn",
             {
-                "allowAny": true
+                "allowAny": true,
+                "allowNullableString": true
             }
         ]
     }
