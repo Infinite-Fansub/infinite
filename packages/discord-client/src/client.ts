@@ -1,22 +1,43 @@
-import { Interaction, Message, ChannelType } from "discord.js";
+import { Interaction, Message, ChannelType, Awaitable, InteractionCollector, MessageComponentInteraction } from "discord.js";
 import { Routes } from "discord-api-types/v10";
 import { REST } from "@discordjs/rest";
 import { Client } from "redis-om";
-import { IClientOptions } from "./typings";
+import { IClientOptions, IClientEvents } from "./typings";
 import BaseClient from "./base-client";
 
-export type If<T extends boolean, A, B = null> = T extends true ? A : T extends false ? B : A | B;
+// Stolen from discord.js
+export interface InfiniteClient {
+    on: (<K extends keyof IClientEvents>(event: K, listener: (...args: IClientEvents[K]) => Awaitable<void>) => this) & (<S extends string | symbol>(
+        event: Exclude<S, keyof IClientEvents>,
+        listener: (...args: Array<unknown>) => Awaitable<void>,
+    ) => this);
 
-export default class InfiniteClient extends BaseClient {
+    once: (<K extends keyof IClientEvents>(event: K, listener: (...args: IClientEvents[K]) => Awaitable<void>) => this) & (<S extends string | symbol>(
+        event: Exclude<S, keyof IClientEvents>,
+        listener: (...args: Array<unknown>) => Awaitable<void>,
+    ) => this);
+
+    emit: (<K extends keyof IClientEvents>(event: K, ...args: IClientEvents[K]) => boolean) & (<S extends string | symbol>(event: Exclude<S, keyof IClientEvents>, ...args: Array<unknown>) => boolean);
+
+    off: (<K extends keyof IClientEvents>(event: K, listener: (...args: IClientEvents[K]) => Awaitable<void>) => this) & (<S extends string | symbol>(
+        event: Exclude<S, keyof IClientEvents>,
+        listener: (...args: Array<unknown>) => Awaitable<void>,
+    ) => this);
+}
+
+export class InfiniteClient extends BaseClient {
 
     declare public static options: IClientOptions;
     private static djsRest: REST;
-    declare private _redis: Client;
-    public _prefix: string;
+    private static _redis?: Client;
+    public prefix: string;
 
     public constructor(options: IClientOptions) {
         super(options);
-        this._prefix = options.prefix ?? "!";
+
+        if (!this.options.token) throw new Error("No token was specified");
+
+        this.prefix = options.prefix ?? "!";
 
         this.login(this.options.token).then(async () => {
             this.addDirs({
@@ -35,26 +56,42 @@ export default class InfiniteClient extends BaseClient {
 
         InfiniteClient.djsRest = new REST({ version: "9" }).setToken(this.options.token);
 
-        this.on("interactionCreate", async (interaction) => this.onInteraction(interaction));
-        this.on("messageCreate", async (message) => this.onMessage(message));
+        this.on("interactionCreate", async (interaction) => await this.onInteraction(interaction));
+        this.on("messageCreate", async (message) => await this.onMessage(message));
     }
 
     private async onInteraction(interaction: Interaction): Promise<void> {
         if (!interaction.isChatInputCommand()) return;
+
         const command = this.slashCommands.get(interaction.commandName);
+        let collector: InteractionCollector<MessageComponentInteraction> = <InteractionCollector<MessageComponentInteraction>>{};
+
+        if (command?.buttons) {
+            if (!interaction.channel) return;
+            // Time defaults to 30sec
+            collector = interaction.channel.createMessageComponentCollector(command.buttons.collectorOptions ?? { time: 18000 });
+            collector.on("collect", command.buttons.callback);
+        }
+
+        //! Actuall disable instead of delete
+        if (command?.buttons?.disable ?? true) collector.on("end", () => {
+            interaction.editReply({ components: [] });
+        });
+
         if (!command) return;
         try {
-            if (command.enabled ?? true) await command.execute(interaction, this);
+            if (command.enabled ?? true) await command.execute(interaction, this, collector);
             else interaction.reply("Command Disabled");
         } catch (err) {
             console.error(err);
         }
+
     }
 
     private async onMessage(message: Message): Promise<void> {
         if (message.author.bot || message.channel.type === ChannelType.DM) return;
-        if (message.content.startsWith(this._prefix)) {
-            const args = message.content.slice(this._prefix.length).trim().split(/\s+/g);
+        if (message.content.startsWith(this.prefix)) {
+            const args = message.content.slice(this.prefix.length).trim().split(/\s+/g);
             const cmd = args.shift()?.toLowerCase();
             if (!cmd) return console.log(`CMD is not a string\nCMD:\n${cmd}`);
 
@@ -120,36 +157,15 @@ export default class InfiniteClient extends BaseClient {
             const { username, password, entrypoint, port } = this.options.databaseType.path;
             url = `${username}:${password}@${(/:\d$/).exec(entrypoint) ? entrypoint : `${entrypoint}:${port}`}`;
         } else {
-            url = this.options.databaseType.path;
+            url = this.options.databaseType.path ?? "redis://localhost:6379";
         }
-
-        this._redis = await new Client().open(url);
-    }
-
-    public get prefix(): string {
-        return this._prefix;
-    }
-
-    public set prefix(prefix: string) {
-        this.prefix = prefix;
+        const client = new Client();
+        InfiniteClient._redis = client;
+        await client.open(url).then(() => this.emit("databaseOpen", this, client));
     }
 
     public get redis(): Client {
-        return this._redis;
-    }
-
-    public addCommands(path: string): void {
-        this.addDirs({ commands: path });
-        this.loadCommands();
-    }
-
-    public addSlashCommands(path: string): void {
-        this.addDirs({ slashCommands: path });
-        this.loadSlashCommands();
-    }
-
-    public addEvents(path: string): void {
-        this.addDirs({ events: path });
-        this.loadEvents();
+        if (!InfiniteClient._redis) throw new Error("You are not using redis as your database or something went wrong");
+        return InfiniteClient._redis;
     }
 }

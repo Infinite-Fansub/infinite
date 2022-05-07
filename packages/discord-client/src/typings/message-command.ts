@@ -1,5 +1,5 @@
 import { Message, Awaitable } from "discord.js";
-import InfiniteClient from "../client";
+import { InfiniteClient } from "../client";
 
 export type CommandExecute = (options: CommandArgs) => Awaitable<void>;
 

@@ -19,7 +19,7 @@ export interface MongoType {
 
 export interface RedisType {
     type: "redis";
-    path: RedisObject | string;
+    path?: RedisObject | string;
 }
 
 export interface RedisObject {

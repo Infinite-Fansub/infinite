@@ -50,4 +50,19 @@ export default class BaseClient extends Client {
                 });
             });
     }
+
+    public addCommands(path: string): void {
+        this.addDirs({ commands: path });
+        this.loadCommands();
+    }
+
+    public addSlashCommands(path: string): void {
+        this.addDirs({ slashCommands: path });
+        this.loadSlashCommands();
+    }
+
+    public addEvents(path: string): void {
+        this.addDirs({ events: path });
+        this.loadEvents();
+    }
 }
