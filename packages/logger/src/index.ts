@@ -10,8 +10,8 @@ export type LoggerOptions = {
 };
 
 export class Logger {
-    private emoji: string = "💫";
-    private errorEmoji: string = "❌";
+    private emoji: string;
+    private errorEmoji: string;
     private _showMemory: boolean;
     private _colors: Colors;
     private defaultColors: Colors = {
@@ -25,6 +25,8 @@ export class Logger {
 
     public constructor(options?: LoggerOptions) {
         this._colors = { ...this.defaultColors, ...options?.colors };
+        this.emoji = options?.emojis?.emoji ?? "💫";
+        this.errorEmoji = options?.emojis?.errorEmoji ?? "❌";
         this._showMemory = options?.showMemory ?? true;
     }
 
