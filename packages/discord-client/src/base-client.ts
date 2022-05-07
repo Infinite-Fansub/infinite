@@ -1,9 +1,9 @@
-/* eslint-disable @typescript-eslint/strict-boolean-expressions, @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Client } from "discord.js";
 import { DirectoryTypes, Event, ICommand, ISlashCommand, IClientEvents, IClientOptions } from "./typings/index";
 import recursiveRead from "./utils/recursive-read";
 
-export default class Handler extends Client {
+export default class BaseClient extends Client {
 
     protected commands: Map<string, ICommand> = new Map();
     protected slashCommands: Map<string, ISlashCommand> = new Map();

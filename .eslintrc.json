@@ -533,7 +533,8 @@
             "warn",
             {
                 "allowAny": true,
-                "allowNullableString": true
+                "allowNullableString": true,
+                "allowNullableBoolean": true
             }
         ]
     }

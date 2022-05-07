@@ -3,15 +3,15 @@ import { Routes } from "discord-api-types/v10";
 import { REST } from "@discordjs/rest";
 import { Client } from "redis-om";
 import { IClientOptions } from "./typings";
-import Handler from "./handler";
+import BaseClient from "./base-client";
 
 export type If<T extends boolean, A, B = null> = T extends true ? A : T extends false ? B : A | B;
 
-export default class InfiniteClient extends Handler {
+export default class InfiniteClient extends BaseClient {
 
     declare public static options: IClientOptions;
     private static djsRest: REST;
-    private _redis?: Client;
+    declare private _redis: Client;
     public _prefix: string;
 
     public constructor(options: IClientOptions) {
@@ -90,7 +90,10 @@ export default class InfiniteClient extends Handler {
     }
 
     private async buildDb(): Promise<void> {
-        if (!this.options.useDatabase) return console.error("Some options might not work without a database");
+        if (!this.options.useDatabase) {
+            if (this.options.noDatabaseWarning) return;
+            return console.error("Some options might not work without a database");
+        }
 
         const type = typeof this.options.databaseType === "object" ? this.options.databaseType.type : this.options.databaseType;
 
@@ -120,9 +123,7 @@ export default class InfiniteClient extends Handler {
             url = this.options.databaseType.path;
         }
 
-        const client = new Client();
-        this._redis = client;
-        await client.open(url);
+        this._redis = await new Client().open(url);
     }
 
     public get prefix(): string {
@@ -133,10 +134,9 @@ export default class InfiniteClient extends Handler {
         this.prefix = prefix;
     }
 
-    //! Make dynamic type
-    // public get redis() {
-    //     return this._redis;
-    // }
+    public get redis(): Client {
+        return this._redis;
+    }
 
     public addCommands(path: string): void {
         this.addDirs({ commands: path });
