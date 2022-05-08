@@ -23,7 +23,7 @@ echo $'tests/\nsrc/\n.gitignore\ntsconfig.json' > .npmignore
 
 # npm files
 echo "{
-    \"name\": \"@infinite/$packageName\",
+    \"name\": \"@infinite-fansub/$packageName\",
     \"version\": \"1.0.0\",
     \"description\": \"$description\",
     \"author\": \"Infinite\",

@@ -1,5 +1,5 @@
 {
-    "name": "@infinite/prompt",
+    "name": "@infinite-fansub/prompt",
     "version": "1.0.0",
     "description": "Console prompt inspired on the Window.prompt for browsers",
     "author": "Infinite",

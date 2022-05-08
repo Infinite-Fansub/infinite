@@ -3,7 +3,7 @@ use std::path::Path;
 #[allow(dead_code)]
 pub fn npm_content(pkg_name: String, description: String) -> String {
     return String::from(format!("{{
-        \"name\": \"@infinite/{}\",
+        \"name\": \"@infinite-fansub/{}\",
         \"version\": \"1.0.0\",
         \"description\": \"{}\",
         \"author\": \"Infinite\",

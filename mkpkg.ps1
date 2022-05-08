@@ -29,7 +29,7 @@ New-Item -Path '.\.npmignore' -ItemType File -Value "tests/`nsrc/`n.gitignore`nt
 
 # npm files
 New-Item -Path '.\package.json' -ItemType File -Value "{
-    `"name`": `"@infinite/$packageName`",
+    `"name`": `"@infinite-fansub/$packageName`",
     `"version`": `"1.0.0`",
     `"description`": `"$description`",
     `"author`": `"Infinite`",
