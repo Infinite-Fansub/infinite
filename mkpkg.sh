@@ -19,7 +19,7 @@ mkdir tests && echo '// Main tests here' > tests/index.ts
 
 # ignore files
 echo $'node_modules/\n.DS_Store\ndist/' > .gitignore
-echo $'tests/\nsrc/\n.gitignore' > .npmignore
+echo $'tests/\nsrc/\n.gitignore\ntsconfig.json' > .npmignore
 
 # npm files
 echo "{

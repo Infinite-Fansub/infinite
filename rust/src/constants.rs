@@ -17,4 +17,5 @@ dist/";
 
 pub const NPMIGNORE: &str = "tests/
 src/
-.gitignore";
+.gitignore
+tsconfig.json";
