@@ -3,7 +3,7 @@ import { Client } from "discord.js";
 import { DirectoryTypes, Event, ICommand, ISlashCommand, IClientEvents, IClientOptions } from "./typings/index";
 import recursiveRead from "./utils/recursive-read";
 
-export default class BaseClient extends Client {
+export class BaseClient extends Client {
 
     protected commands: Map<string, ICommand> = new Map();
     protected slashCommands: Map<string, ISlashCommand> = new Map();

@@ -4,9 +4,12 @@ import { DirectoryTypes } from "./directory-types";
 export interface IClientOptions extends ClientOptions {
     token: string;
     prefix?: string;
-    useDatabase?: boolean;
-    noDatabaseWarning?: boolean;
-    databaseType?: DatabaseTypes;
+    database?: DatabaseTypes;
+    disable?: {
+        warnings?: boolean,
+        interactions?: boolean,
+        messageCommands?: boolean
+    };
     dirs?: DirectoryTypes;
 }
 

@@ -3,7 +3,7 @@ import { Routes } from "discord-api-types/v10";
 import { REST } from "@discordjs/rest";
 import { Client } from "redis-om";
 import { IClientOptions, IClientEvents } from "./typings";
-import BaseClient from "./base-client";
+import { BaseClient } from "./base-client";
 
 // Stolen from discord.js
 export interface InfiniteClient {
@@ -46,18 +46,26 @@ export class InfiniteClient extends BaseClient {
                 events: this.options.dirs?.events
             });
 
-            this.options.dirs?.slashCommands && this.loadSlashCommands();
-            this.options.dirs?.commands && this.loadCommands();
             this.options.dirs?.events && this.loadEvents();
 
-            await this.registerSlashCommands();
+            if (!this.options.disable?.messageCommands)
+                this.options.dirs?.commands && this.loadCommands();
+
+            if (!this.options.disable?.interactions) {
+                this.options.dirs?.slashCommands && this.loadSlashCommands();
+                await this.registerSlashCommands();
+            }
+
             await this.buildDb();
         });
 
         InfiniteClient.djsRest = new REST({ version: "9" }).setToken(this.options.token);
 
-        this.on("interactionCreate", async (interaction) => await this.onInteraction(interaction));
-        this.on("messageCreate", async (message) => await this.onMessage(message));
+        if (!this.options.disable?.interactions)
+            this.on("interactionCreate", async (interaction) => await this.onInteraction(interaction));
+
+        if (!this.options.disable?.messageCommands)
+            this.on("messageCreate", async (message) => await this.onMessage(message));
     }
 
     private async onInteraction(interaction: Interaction): Promise<void> {
@@ -107,6 +115,8 @@ export class InfiniteClient extends BaseClient {
     }
 
     private async registerSlashCommands(): Promise<void> {
+        if (!this.slashCommands.size) return;
+
         const allSlashCommands = [...this.slashCommands.values()];
 
         const globalCommands = allSlashCommands.filter((command) => command.post === "GLOBAL");
@@ -121,18 +131,20 @@ export class InfiniteClient extends BaseClient {
             const guildCommands = allSlashCommands.filter((command) => command.post === "ALL" || command.post === guildId || Array.isArray(command.post) && command.post.includes(guildId));
             const guildJson = guildCommands.map((command) => command.data.toJSON());
 
-            await InfiniteClient.djsRest.put(Routes.applicationGuildCommands(this.user?.id ?? "", guildId), { body: guildJson })
-                .then(() => this.emit("loadedSlash", guildJson, guildId, this));
+            if (guildCommands.length) {
+                await InfiniteClient.djsRest.put(Routes.applicationGuildCommands(this.user?.id ?? "", guildId), { body: guildJson })
+                    .then(() => this.emit("loadedSlash", guildJson, guildId, this));
+            }
         });
     }
 
     private async buildDb(): Promise<void> {
-        if (!this.options.useDatabase) {
-            if (this.options.noDatabaseWarning) return;
+        if (this.options.database === undefined) {
+            if (this.options.disable?.warnings) return;
             return console.error("Some options might not work without a database");
         }
 
-        const type = typeof this.options.databaseType === "object" ? this.options.databaseType.type : this.options.databaseType;
+        const type = typeof this.options.database === "object" ? this.options.database.type : this.options.database;
 
         switch (type) {
             case "mongo":
@@ -151,13 +163,13 @@ export class InfiniteClient extends BaseClient {
     }
 
     private async createRedisClient(): Promise<void> {
-        if (!(typeof this.options.databaseType === "object" && this.options.databaseType.type === "redis")) return;
+        if (!(typeof this.options.database === "object" && this.options.database.type === "redis")) return;
         let url = "redis://localhost:6379";
-        if (typeof this.options.databaseType.path === "object") {
-            const { username, password, entrypoint, port } = this.options.databaseType.path;
+        if (typeof this.options.database.path === "object") {
+            const { username, password, entrypoint, port } = this.options.database.path;
             url = `${username}:${password}@${(/:\d$/).exec(entrypoint) ? entrypoint : `${entrypoint}:${port}`}`;
         } else {
-            url = this.options.databaseType.path ?? "redis://localhost:6379";
+            url = this.options.database.path ?? "redis://localhost:6379";
         }
         const client = new Client();
         InfiniteClient._redis = client;
