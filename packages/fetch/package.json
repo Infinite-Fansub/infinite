@@ -1,7 +1,7 @@
 {
     "name": "@infinite/fetch",
     "version": "1.0.0",
-    "description": "Main fetch for all wrappers",
+    "description": "Node Fetch by infinite",
     "author": "Infinite",
     "license": "AGPL-3.0",
     "main": " dist/index.js",
