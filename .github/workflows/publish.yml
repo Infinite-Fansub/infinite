@@ -34,4 +34,4 @@ jobs:
       - name: Test the Packages
         run: npm publish -ws --access public
         env:
-          NODE_AUTH_TOKEN: ${{secrets.npm_token}}
+          NODE_AUTH_TOKEN: ${{secrets.NPM}}
