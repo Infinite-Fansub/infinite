@@ -1,7 +1,7 @@
 import { Color } from "colours.js/dst";
 import { createInterface, ReadLineOptions } from "node:readline";
 import { PromptOptions, PromptGradient } from "./typings";
-import { RequireAtLeastOne } from "@infinite/types";
+import { RequireAtLeastOne } from "@infinite-fansub/types";
 
 export class Prompt {
     private _options: PromptOptions<boolean>;
