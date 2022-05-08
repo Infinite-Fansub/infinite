@@ -1,6 +1,6 @@
 {
     "name": "@infinite-fansub/prompt",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "Console prompt inspired on the Window.prompt for browsers",
     "author": "Infinite",
     "license": "AGPL-3.0",
@@ -22,7 +22,7 @@
     },
     "homepage": "https://github.com/Infinite-Fansub/infinite/tree/main/packages/prompt",
     "dependencies": {
-        "@infinite/types": "^1.0.0",
+        "@infinite-fansub/types": "^1.0.0",
         "colours.js": "^3.1.2"
     }
 }
