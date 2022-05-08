@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/no-redundant-type-constituents */
-import { ChatInputCommandInteraction, Awaitable, InteractionCollector, MessageComponentInteraction, ComponentType, MessageChannelComponentCollectorOptions } from "discord.js";
-import { SlashCommandBuilder } from "@discordjs/builders";
+import { SlashCommandBuilder, ChatInputCommandInteraction, Awaitable, MessageComponentInteraction, ComponentType, MessageChannelComponentCollectorOptions } from "discord.js";
 import { InfiniteClient } from "../client";
 
-export type SlashCommandExecute = (interaction: ChatInputCommandInteraction, client: InfiniteClient, collector: InteractionCollector<MessageComponentInteraction>) => Awaitable<void>;
+export type SlashCommandExecute = (interaction: ChatInputCommandInteraction, client: InfiniteClient) => Awaitable<void>;
 
 export interface ISlashCommand {
     data: Omit<SlashCommandBuilder, "addSubcommand" | "addSubcommandGroup">;

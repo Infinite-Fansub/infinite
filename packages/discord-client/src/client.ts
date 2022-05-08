@@ -1,4 +1,4 @@
-import { Interaction, Message, ChannelType, Awaitable, InteractionCollector, MessageComponentInteraction } from "discord.js";
+import { Interaction, Message, ChannelType, Awaitable } from "discord.js";
 import { Routes } from "discord-api-types/v10";
 import { REST } from "@discordjs/rest";
 import { Client } from "redis-om";
@@ -38,23 +38,22 @@ export class InfiniteClient extends BaseClient {
         if (!this.options.token) throw new Error("No token was specified");
 
         this.prefix = options.prefix ?? "!";
+        this.addDirs({
+            commands: this.options.dirs?.commands,
+            slashCommands: this.options.dirs?.slashCommands,
+            events: this.options.dirs?.events
+        });
+
+        this.options.dirs?.events && this.loadEvents();
+        if (!this.options.disable?.messageCommands)
+            this.options.dirs?.commands && this.loadCommands();
+        if (!this.options.disable?.interactions)
+            this.options.dirs?.slashCommands && this.loadSlashCommands();
 
         this.login(this.options.token).then(async () => {
-            this.addDirs({
-                commands: this.options.dirs?.commands,
-                slashCommands: this.options.dirs?.slashCommands,
-                events: this.options.dirs?.events
-            });
 
-            this.options.dirs?.events && this.loadEvents();
-
-            if (!this.options.disable?.messageCommands)
-                this.options.dirs?.commands && this.loadCommands();
-
-            if (!this.options.disable?.interactions) {
-                this.options.dirs?.slashCommands && this.loadSlashCommands();
+            if (!this.options.disable?.interactions)
                 await this.registerSlashCommands();
-            }
 
             await this.buildDb();
         });
@@ -72,23 +71,23 @@ export class InfiniteClient extends BaseClient {
         if (!interaction.isChatInputCommand()) return;
 
         const command = this.slashCommands.get(interaction.commandName);
-        let collector: InteractionCollector<MessageComponentInteraction> = <InteractionCollector<MessageComponentInteraction>>{};
+        // let collector: InteractionCollector<MessageComponentInteraction> = <InteractionCollector<MessageComponentInteraction>>{};
 
-        if (command?.buttons) {
-            if (!interaction.channel) return;
-            // Time defaults to 30sec
-            collector = interaction.channel.createMessageComponentCollector(command.buttons.collectorOptions ?? { time: 18000 });
-            collector.on("collect", command.buttons.callback);
-        }
+        // if (command?.buttons) {
+        //     if (!interaction.channel) return;
+        //     // Time defaults to 30sec
+        //     collector = interaction.channel.createMessageComponentCollector(command.buttons.collectorOptions ?? { time: 18000 });
+        //     collector.on("collect", command.buttons.callback);
+        // }
 
-        //! Actuall disable instead of delete
-        if (command?.buttons?.disable ?? true) collector.on("end", () => {
-            interaction.editReply({ components: [] });
-        });
+        // //! Actuall disable instead of delete
+        // if (command?.buttons?.disable ?? true) collector.on("end", () => {
+        //     interaction.editReply({ components: [] });
+        // });
 
         if (!command) return;
         try {
-            if (command.enabled ?? true) await command.execute(interaction, this, collector);
+            if (command.enabled ?? true) await command.execute(interaction, this);
             else interaction.reply("Command Disabled");
         } catch (err) {
             console.error(err);
