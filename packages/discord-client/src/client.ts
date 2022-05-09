@@ -1,9 +1,10 @@
-import { Interaction, Message, ChannelType, Awaitable } from "discord.js";
-import { Routes } from "discord-api-types/v10";
+import { Interaction, Message, ChannelType, Awaitable, InteractionCollector, MessageComponentInteraction, MessageChannelComponentCollectorOptions, ChatInputCommandInteraction } from "discord.js";
+import { ComponentType, Routes } from "discord-api-types/v10";
 import { REST } from "@discordjs/rest";
-import { Client } from "redis-om";
+import { Client, Entity, Repository, Schema } from "redis-om";
 import { IClientOptions, IClientEvents } from "./typings";
 import { BaseClient } from "./base-client";
+import { Model } from "./utils/model";
 
 // Stolen from discord.js
 export interface InfiniteClient {
@@ -30,6 +31,7 @@ export class InfiniteClient extends BaseClient {
     declare public static options: IClientOptions;
     private static djsRest: REST;
     private static _redis?: Client;
+    public models: Map<string, Repository<Entity>> = new Map();
     public prefix: string;
 
     public constructor(options: IClientOptions) {
@@ -58,7 +60,7 @@ export class InfiniteClient extends BaseClient {
             await this.buildDb();
         });
 
-        InfiniteClient.djsRest = new REST({ version: "9" }).setToken(this.options.token);
+        InfiniteClient.djsRest = new REST().setToken(this.options.token);
 
         if (!this.options.disable?.interactions)
             this.on("interactionCreate", async (interaction) => await this.onInteraction(interaction));
@@ -71,19 +73,6 @@ export class InfiniteClient extends BaseClient {
         if (!interaction.isChatInputCommand()) return;
 
         const command = this.slashCommands.get(interaction.commandName);
-        // let collector: InteractionCollector<MessageComponentInteraction> = <InteractionCollector<MessageComponentInteraction>>{};
-
-        // if (command?.buttons) {
-        //     if (!interaction.channel) return;
-        //     // Time defaults to 30sec
-        //     collector = interaction.channel.createMessageComponentCollector(command.buttons.collectorOptions ?? { time: 18000 });
-        //     collector.on("collect", command.buttons.callback);
-        // }
-
-        // //! Actuall disable instead of delete
-        // if (command?.buttons?.disable ?? true) collector.on("end", () => {
-        //     interaction.editReply({ components: [] });
-        // });
 
         if (!command) return;
         try {
@@ -173,6 +162,35 @@ export class InfiniteClient extends BaseClient {
         const client = new Client();
         InfiniteClient._redis = client;
         await client.open(url).then(() => this.emit("databaseOpen", this, client));
+    }
+
+    public createCollector(
+        interaction: ChatInputCommandInteraction,
+        callback: (interaction: MessageComponentInteraction) => Awaitable<void>,
+        options?: { componentType?: ComponentType.ActionRow | undefined } & MessageChannelComponentCollectorOptions<MessageComponentInteraction<"cached">>,
+        disable: boolean = true
+    ): InteractionCollector<MessageComponentInteraction> | undefined {
+        //? Time defaults to 30sec
+        if (options && options.time === undefined) options.time = 18000;
+        const collector = interaction.channel?.createMessageComponentCollector(options ?? { time: 18000 });
+        collector?.on("collect", callback);
+
+        //! Actually disable instead of delete
+        if (disable) collector?.on("end", () => {
+            interaction.editReply({ components: [] });
+        });
+
+        return collector;
+    }
+
+    public async model<TEntity extends Entity>(name: string, schema?: Schema<TEntity>): Promise<Repository<TEntity>> {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        if (this.models.has(name)) return this.models.get(name)! as Repository<TEntity>;
+
+        if (!schema) throw new Error("You have to pass a schema if it doesnt exist");
+        const model = await new Model(schema, this.redis).buildModel();
+        this.models.set(name, model);
+        return model;
     }
 
     public get redis(): Client {

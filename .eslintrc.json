@@ -179,7 +179,9 @@
         ],
         "array-bracket-newline": [
             "warn",
-            "never"
+            {
+                "multiline": true
+            }
         ],
         "array-bracket-spacing": [
             "warn",
