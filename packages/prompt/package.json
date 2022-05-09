@@ -22,7 +22,7 @@
     },
     "homepage": "https://github.com/Infinite-Fansub/infinite/tree/main/packages/prompt",
     "dependencies": {
-        "@infinite-fansub/types": "^1.0.0",
+        "@infinite-fansub/types": "^1.0.2",
         "colours.js": "^3.1.2"
     }
 }
