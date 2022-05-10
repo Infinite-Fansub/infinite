@@ -168,7 +168,7 @@ export class InfiniteClient extends BaseClient {
         interaction: ChatInputCommandInteraction,
         callback: (interaction: MessageComponentInteraction) => Awaitable<void>,
         options?: { componentType?: ComponentType.ActionRow | undefined } & MessageChannelComponentCollectorOptions<MessageComponentInteraction<"cached">>,
-        disable: boolean = true
+        disable: boolean = false
     ): InteractionCollector<MessageComponentInteraction> | undefined {
         //? Time defaults to 30sec
         if (options && options.time === undefined) options.time = 18000;
