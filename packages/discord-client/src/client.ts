@@ -1,10 +1,9 @@
 import { Interaction, Message, ChannelType, Awaitable, InteractionCollector, MessageComponentInteraction, MessageChannelComponentCollectorOptions, ChatInputCommandInteraction } from "discord.js";
 import { ComponentType, Routes } from "discord-api-types/v10";
 import { REST } from "@discordjs/rest";
-import { Client, Entity, Repository, Schema } from "redis-om";
 import { IClientOptions, IClientEvents } from "./typings";
 import { BaseClient } from "./base-client";
-import { Model } from "./utils/model";
+import { RedisClient } from "./utils/redis";
 
 // Stolen from discord.js
 export interface InfiniteClient {
@@ -30,8 +29,7 @@ export class InfiniteClient extends BaseClient {
 
     declare public static options: IClientOptions;
     private static djsRest: REST;
-    private static _redis?: Client;
-    public models: Map<string, Repository<Entity>> = new Map();
+    private static _redis?: RedisClient;
     public prefix: string;
 
     public constructor(options: IClientOptions) {
@@ -159,7 +157,7 @@ export class InfiniteClient extends BaseClient {
         } else {
             url = this.options.database.path ?? "redis://localhost:6379";
         }
-        const client = new Client();
+        const client = new RedisClient();
         InfiniteClient._redis = client;
         await client.open(url).then(() => this.emit("databaseOpen", this, client));
     }
@@ -183,17 +181,7 @@ export class InfiniteClient extends BaseClient {
         return collector;
     }
 
-    public async model<TEntity extends Entity>(name: string, schema?: Schema<TEntity>): Promise<Repository<TEntity>> {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        if (this.models.has(name)) return this.models.get(name)! as Repository<TEntity>;
-
-        if (!schema) throw new Error("You have to pass a schema if it doesnt exist");
-        const model = await new Model(schema, this.redis).buildModel();
-        this.models.set(name, model);
-        return model;
-    }
-
-    public get redis(): Client {
+    public get redis(): RedisClient {
         if (!InfiniteClient._redis) throw new Error("You are not using redis as your database or something went wrong");
         return InfiniteClient._redis;
     }
