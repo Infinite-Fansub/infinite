@@ -1,6 +1,6 @@
 {
     "name": "@infinite-fansub/discord-client",
-    "version": "0.6.5",
+    "version": "0.7.0",
     "description": "An open and easy to use discord client",
     "author": "Infinite",
     "license": "AGPL-3.0",
