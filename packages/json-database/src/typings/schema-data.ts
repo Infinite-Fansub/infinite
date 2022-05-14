@@ -1,0 +1,1 @@
+export type SchemaData = Record<string, { type: "string" | "number", default: null }>;
