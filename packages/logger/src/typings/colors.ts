@@ -1,4 +1,4 @@
-import { Color } from "colours.js/dst";
+import { Color } from "@infinite-fansub/colours.js";
 
 export type Colors = {
     color: Color,

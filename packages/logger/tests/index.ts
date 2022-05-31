@@ -5,4 +5,4 @@ const logger = new Logger({ emojis: { emoji: "E" } });
 
 deepStrictEqual(logger.emojis.emoji, "E");
 
-throws(() => { throw new ErrorLogger("T"); }, { name: "ErrorLogger" });
+throws(() => { throw new ErrorLogger("T"); });

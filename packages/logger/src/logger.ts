@@ -1,7 +1,6 @@
-import { Color, colorConsole } from "colours.js/dst";
+import { c, Color, AnsiCode } from "@infinite-fansub/colours.js";
 import { Colors, Emojis, LoggerOptions } from "./typings";
 import { InfiniteGradient, getCurrentMemoryHeap } from "./utils";
-const { uniform, gradient } = colorConsole;
 
 export class Logger {
     private emoji: string;
@@ -25,19 +24,19 @@ export class Logger {
     }
 
     private addMemoryToString(log: string): string {
-        return `${uniform(getCurrentMemoryHeap(), this._colors.errorColor)} ${log}`;
+        return c`${this._colors.errorColor}${getCurrentMemoryHeap()}${AnsiCode.COLOR_RESET} ${log}`;
     }
 
-    private date(): string {
-        return uniform(uniform(`[${new Date().toLocaleTimeString()}]`, Color.WHITE, true), Color.BLACK);
+    private static date(): string {
+        return c`${Color.WHITE.asBackground}${Color.BLACK.asForeground}[${new Date().toLocaleTimeString()}]`;
     }
 
     public infinitePrint(log: string | TemplateStringsArray /*, ...values: Array<string>*/): void {
         if (typeof log === "string") {
 
             if (this._showMemory)
-                console.log(this.addMemoryToString(`${this.date()} ${this.emoji} ${gradient(log, InfiniteGradient(true))}`));
-            else console.log(`${this.date()} ${this.emoji} ${gradient(log, InfiniteGradient())}`);
+                console.log(this.addMemoryToString(`${Logger.date()} ${this.emoji} ${gradient(log, InfiniteGradient(true))}`));
+            else console.log(`${Logger.date()} ${this.emoji} ${gradient(log, InfiniteGradient())}`);
 
             return;
         }
@@ -48,7 +47,7 @@ export class Logger {
     public defaultPrint(log: string | TemplateStringsArray, ...values: Array<string>): void {
         if (typeof log === "string") {
 
-            log = `${this.date()} ${this.emoji} ${uniform(log, this._colors.color)}`;
+            log = `${Logger.date()} ${this.emoji} ${uniform(log, this._colors.color)}`;
 
             if (this._showMemory)
                 console.log(this.addMemoryToString(log));
@@ -58,7 +57,7 @@ export class Logger {
         }
 
         // eslint-disable-next-line max-len
-        log = <string>values.reduce((final, value, index) => `${this.date()} ${this.emoji} ${uniform(<string>final, this._colors.color)}${uniform(value, this._colors.templateColor)}${uniform(<string>log[index + 1], this._colors.color)}`, log[0]);
+        log = <string>values.reduce((final, value, index) => `${Logger.date()} ${this.emoji} ${uniform(<string>final, this._colors.color)}${uniform(value, this._colors.templateColor)}${uniform(<string>log[index + 1], this._colors.color)}`, log[0]);
 
         if (this._showMemory)
             console.log(this.addMemoryToString(log));
@@ -70,7 +69,7 @@ export class Logger {
     public error(log: string | TemplateStringsArray, ...values: Array<string>): void {
         if (typeof log === "string") {
 
-            log = `${this.date()} ${this.errorEmoji} ${uniform(log, this._colors.errorColor)}`;
+            log = `${Logger.date()} ${this.errorEmoji} ${uniform(log, this._colors.errorColor)}`;
 
             if (this._showMemory)
                 console.error(this.addMemoryToString(log));
@@ -80,7 +79,7 @@ export class Logger {
         }
 
         // eslint-disable-next-line max-len
-        log = <string>values.reduce((final, value, index) => `${this.date()} ${this.errorEmoji} ${uniform(<string>final, this._colors.errorColor)}${uniform(value, this._colors.templateErrorColor)}${uniform(<string>log[index + 1], this._colors.errorColor)}`, log[0]);
+        log = <string>values.reduce((final, value, index) => `${Logger.date()} ${this.errorEmoji} ${uniform(<string>final, this._colors.errorColor)}${uniform(value, this._colors.templateErrorColor)}${uniform(<string>log[index + 1], this._colors.errorColor)}`, log[0]);
 
         if (this._showMemory)
             console.error(this.addMemoryToString(log));

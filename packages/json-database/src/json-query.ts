@@ -1,3 +1,5 @@
+/*eslint-disable*/
+//@ts-nocheck
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 import { SchemaData } from "src/typings/schema-data";
 import { access, stat, mkdir } from "node:fs/promises";
