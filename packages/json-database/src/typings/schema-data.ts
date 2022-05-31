@@ -1,1 +1,1 @@
-export type SchemaData = Record<string, { type: "string" | "number", default: null }>;
+export type SchemaData = Record<string, { type: "string" | "number", default?: any }>;
