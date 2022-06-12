@@ -32,7 +32,7 @@ export class ErrorLogger extends Error {
 
     private static colorLocation(file: string): string {
         const [filename, lineNum, colNum] = file.split(":");
-        return `${uniform(filename ?? "", Color.fromHex("#00B9FF"))}:${uniform(lineNum ?? "", Color.fromHex("#FFE000"))}:${uniform(colNum ?? "", Color.fromHex("#FFE000"))}`;
+        return `${uniform(filename, Color.fromHex("#00B9FF"))}:${uniform(lineNum, Color.fromHex("#FFE000"))}:${uniform(colNum, Color.fromHex("#FFE000"))}`;
     }
 
     private static line(errorLocation: string): string {
