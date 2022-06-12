@@ -1,6 +1,7 @@
 import { sep } from "node:path";
 import { Color, colorConsole } from "colours.js/dst";
 import { readFileSync } from "fs";
+import { platform } from "node:os";
 const { uniform } = colorConsole;
 
 export class ErrorLogger extends Error {
@@ -10,14 +11,26 @@ export class ErrorLogger extends Error {
         const stackArray = this.stack?.split("\n");
         let index = options?.ref ? 2 : 1;
         //@ts-expect-error IK What I'm Doing
-        while (stackArray[index].includes("logger/dist") || stackArray[index].includes("logger/src") || !stackArray[index].includes(`at ${sep}`)) index++;
+        while (stackArray[index].includes("logger/dist") || stackArray[index].includes("logger/src")) index++;
         //@ts-expect-error IK What I'm Doing
         const error = stackArray[index].slice(stackArray[index].indexOf("at ") + 3, stackArray[index].length);
         const fullPath = error.includes("(") ? error.substring(error.indexOf("(") + 1, error.indexOf(")")) : error;
         let errorFile = fullPath.split(sep).pop() ?? "";
         let errCode = options?.errCode ? ` ${uniform(options.errCode, Color.fromHex("#767676"))}:` : ":";
 
-        const [filename, lineNum, col] = fullPath.split(":");
+        const splittedPath = fullPath.split(":");
+        let filename, lineNum, col;
+
+        if (platform() === "win32") {
+            filename = `${splittedPath[0]}:${splittedPath[1]}`;
+            lineNum = splittedPath[2];
+            col = splittedPath[3];
+        } else {
+            filename = splittedPath[0];
+            lineNum = splittedPath[1];
+            col = splittedPath[2];
+        }
+
         if (!filename || !lineNum || !col) throw new Error();
         let line = options?.lineErr?.err ?? ErrorLogger.getLine(filename, Number.parseInt(lineNum));
         let spaceCount = 0;
