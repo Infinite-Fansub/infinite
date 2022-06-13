@@ -273,7 +273,8 @@
             {
                 "overrides": {
                     "while": "any",
-                    "if": "any"
+                    "if": "any",
+                    "else": "any"
                 }
             }
         ],

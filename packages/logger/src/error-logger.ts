@@ -2,7 +2,7 @@ import { sep } from "node:path";
 import { Color, colorConsole } from "colours.js/dst";
 import { readFileSync } from "fs";
 import { platform } from "node:os";
-import { ErrorLoggerOptions } from "./typings";
+import { ErrorLoggerOptions, MarkerOptions } from "./typings";
 const { uniform } = colorConsole;
 
 export class ErrorLogger extends Error {
@@ -11,8 +11,12 @@ export class ErrorLogger extends Error {
         super();
         const stackArray = this.stack?.split("\n");
         let index = options?.ref ? 2 : 1;
-        //@ts-expect-error IK What I'm Doing
-        while (stackArray[index].includes("logger/dist") || stackArray[index].includes("logger/src") || !stackArray[index].includes(`at ${sep}`) || !stackArray[index].includes(`at ${/[A-Z]/}:${sep}`)) index++;
+        if (platform() === "win32")
+            //@ts-expect-error IK What I'm Doing
+            while (stackArray[index].includes("logger/dist") || stackArray[index].includes("logger/src") || !stackArray[index].includes(`at ${/[A-Z]/}:${sep}`)) index++;
+        else
+            //@ts-expect-error IK What I'm Doing
+            while (stackArray[index].includes("logger/dist") || stackArray[index].includes("logger/src") || !stackArray[index].includes(`at ${sep}`)) index++;
         //@ts-expect-error IK What I'm Doing
         const error = stackArray[index].slice(stackArray[index].indexOf("at ") + 3, stackArray[index].length);
         const fullPath = error.includes("(") ? error.substring(error.indexOf("(") + 1, error.indexOf(")")) : error;
@@ -57,11 +61,11 @@ export class ErrorLogger extends Error {
         return uniform(uniform(marker ?? "??", Color.BLACK), color ?? Color.WHITESMOKE, true);
     }
 
-    private static generateLines(t: Array<{ err: string, marker: { text: string, color?: Color } }>): string {
+    private static generateLines(t: Array<{ err: string, marker: MarkerOptions }>): string {
         let lines = "";
 
         t.forEach(({ err, marker }) => {
-            lines += `${ErrorLogger.marker(marker.text, marker.color)} ${err}\n`;
+            lines += `${marker.spaced ? "\n" : ""}${ErrorLogger.marker(marker.text, marker.color)}${marker.nl ? "\n" : ""}${err}\n`;
         });
 
         return lines;
