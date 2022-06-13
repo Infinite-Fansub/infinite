@@ -17,7 +17,7 @@ jobs:
           npm i
           npm i -ws
       - name: Lint
-        run: npm run eslint:fix
+        run: npm run eslint
   build:
     needs: lint
     name: Build application on ${{ matrix.os }}

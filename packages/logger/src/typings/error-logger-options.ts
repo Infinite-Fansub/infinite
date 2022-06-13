@@ -1,6 +1,7 @@
+import { Color } from "colours.js/dst";
+
 export type ErrorLoggerOptions = {
     errCode?: string,
     ref?: boolean,
-    lineErr?: { err: string, marker: string },
-    add?: string
+    lines?: Array<{ err: string, marker: { text: string, color?: Color } }>
 };

@@ -521,12 +521,12 @@
                 "ignoreStringArrays": true
             }
         ],
-
         "@typescript-eslint/strict-boolean-expressions": [
             "warn",
             {
                 "allowAny": true,
                 "allowNullableString": true,
+                "allowNullableNumber": true,
                 "allowNullableBoolean": true
             }
         ]

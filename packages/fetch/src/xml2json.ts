@@ -68,7 +68,7 @@ export class ObjectBuilder<O extends boolean> {
 
         // this.obj is a plain object without this new attribute
         if (!(name in this.obj)) {
-            if (this.options.arrayNotation as boolean || this.forceArrays[name] as boolean) {
+            if (this.options.arrayNotation as boolean || this.forceArrays[name]) {
                 this.obj[name] = [attrs];
             } else {
                 this.obj[name] = attrs;

@@ -2,16 +2,17 @@ import { sep } from "node:path";
 import { Color, colorConsole } from "colours.js/dst";
 import { readFileSync } from "fs";
 import { platform } from "node:os";
+import { ErrorLoggerOptions } from "./typings";
 const { uniform } = colorConsole;
 
 export class ErrorLogger extends Error {
 
-    public constructor(message?: string, options?: { errCode?: string, ref?: boolean, lineErr?: { err: string, marker: string }, add?: string }) {
+    public constructor(message?: string, options?: ErrorLoggerOptions) {
         super();
         const stackArray = this.stack?.split("\n");
         let index = options?.ref ? 2 : 1;
         //@ts-expect-error IK What I'm Doing
-        while (stackArray[index].includes("logger/dist") || stackArray[index].includes("logger/src")) index++;
+        while (stackArray[index].includes("logger/dist") || stackArray[index].includes("logger/src") || !stackArray[index].includes(`at ${sep}`) || !stackArray[index].includes(`at ${/[A-Z]/}:${sep}`)) index++;
         //@ts-expect-error IK What I'm Doing
         const error = stackArray[index].slice(stackArray[index].indexOf("at ") + 3, stackArray[index].length);
         const fullPath = error.includes("(") ? error.substring(error.indexOf("(") + 1, error.indexOf(")")) : error;
@@ -32,7 +33,7 @@ export class ErrorLogger extends Error {
         }
 
         if (!filename || !lineNum || !col) throw new Error();
-        let line = options?.lineErr?.err ?? ErrorLogger.getLine(filename, Number.parseInt(lineNum));
+        let line = options?.lines?.length ? "" : ErrorLogger.getLine(filename, Number.parseInt(lineNum));
         let spaceCount = 0;
         while (line.startsWith(" ")) {
             line = line.slice(1);
@@ -40,7 +41,7 @@ export class ErrorLogger extends Error {
         }
 
         // eslint-disable-next-line max-len,max-statements-per-line
-        this.stack = `\x08${ErrorLogger.colorLocation(errorFile)} - ${uniform("error", Color.RED)}${errCode} ${message ?? ""}\n${options?.lineErr?.err ? ErrorLogger.unknownLine(options.lineErr.marker) : ErrorLogger.line(errorFile)} ${line}${options?.lineErr?.err ? "" : `\n${(() => { let result = ""; for (let i = 0; i < Number.parseInt(col) + lineNum.length - spaceCount; i++)result += " "; return result; })()}^`}${options?.add ? `\n${options.add}` : ""}\x1B[`;
+        this.stack = `\x08${ErrorLogger.colorLocation(errorFile)} - ${uniform("error", Color.RED)}${errCode} ${message ?? ""}\n${options?.lines?.length ? ErrorLogger.generateLines(options.lines) : ErrorLogger.line(errorFile)} ${line}${options?.lines?.length ? "" : `\n${(() => { let result = ""; for (let i = 0; i < Number.parseInt(col) + lineNum.length - spaceCount; i++)result += " "; return result; })()}^`}\x1B[`;
     }
 
     private static colorLocation(file: string): string {
@@ -52,8 +53,18 @@ export class ErrorLogger extends Error {
         return uniform(uniform(errorLocation.split(":")[1] ?? "", Color.BLACK), Color.WHITESMOKE, true);
     }
 
-    private static unknownLine(marker?: string): string {
-        return uniform(uniform(marker ?? "??", Color.BLACK), Color.WHITESMOKE, true);
+    private static marker(marker?: string, color?: Color): string {
+        return uniform(uniform(marker ?? "??", Color.BLACK), color ?? Color.WHITESMOKE, true);
+    }
+
+    private static generateLines(t: Array<{ err: string, marker: { text: string, color?: Color } }>): string {
+        let lines = "";
+
+        t.forEach(({ err, marker }) => {
+            lines += `${ErrorLogger.marker(marker.text, marker.color)} ${err}\n`;
+        });
+
+        return lines;
     }
 
     private static getLine(filename: string, lineNum: number): string {
