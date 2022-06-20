@@ -31,9 +31,7 @@ export class ErrorLogger extends Error {
             lineNum = splittedPath[2];
             col = splittedPath[3];
         } else {
-            filename = splittedPath[0];
-            lineNum = splittedPath[1];
-            col = splittedPath[2];
+            [filename, lineNum, col] = splittedPath;
         }
 
         if (!filename || !lineNum || !col) throw new Error();
