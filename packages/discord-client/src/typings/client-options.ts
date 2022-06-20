@@ -11,6 +11,11 @@ export interface IClientOptions extends ClientOptions {
         messageCommands?: boolean
     };
     dirs?: DirectoryTypes;
+    watch?: boolean | {
+        commands?: boolean,
+        slashCommands?: boolean,
+        events?: boolean
+    };
 }
 
 export type DatabaseTypes = MongoType | RedisType | "json";
