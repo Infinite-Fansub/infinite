@@ -1,6 +1,6 @@
 {
     "name": "@infinite-fansub/discord-client",
-    "version": "0.7.1",
+    "version": "0.8.1",
     "description": "An open and easy to use discord client",
     "author": "Infinite",
     "license": "AGPL-3.0",
@@ -22,10 +22,10 @@
     },
     "homepage": "https://github.com/Infinite-Fansub/infinite/tree/main/packages/discord-client",
     "dependencies": {
-        "@discordjs/rest": "^0.5.0",
+        "@discordjs/rest": "^1.0.0",
         "@infinite-fansub/logger": "^1.0.0",
         "discord-api-types": "^0.36.2",
-        "discord.js": "^14.0.0-dev.1657757514-fe34f48",
+        "discord.js": "^14.0.1",
         "mongoose": "^6.3.1",
         "redis": "^4.0.6",
         "redis-om": "^0.3.3"
