@@ -1,4 +1,4 @@
-import { Interaction, Message, ChannelType, Awaitable, ChatInputCommandInteraction } from "discord.js";
+import { Interaction, Message, ChannelType, Awaitable } from "discord.js";
 import { ComponentType, Routes } from "discord-api-types/v10";
 import { REST } from "@discordjs/rest";
 import { IClientOptions, IClientEvents } from "./typings";
@@ -165,7 +165,7 @@ export class InfiniteClient extends BaseClient {
         await client.open(url).then(() => this.emit("databaseOpen", this, client));
     }
 
-    public collector<T extends Exclude<ComponentType, "ActionRow">>(type: T, interaction: ChatInputCommandInteraction): CollectorHelper<T> {
+    public collector<T extends Exclude<ComponentType, "ActionRow">>(type: T, interaction: Interaction): CollectorHelper<T> {
         return new CollectorHelper(type, interaction);
     }
 
