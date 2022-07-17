@@ -6,3 +6,4 @@ export * from "./application-command";
 export * from "./client-options";
 export * from "./handler-base";
 export * from "./file-cache";
+export * from "./collector-helper";

@@ -9,7 +9,8 @@ export interface ISlashCommand {
     description?: string;
     post?: Post;
     enabled?: boolean;
-    execute: SlashCommandExecute;
+    run?: SlashCommandExecute;
+    execute?: SlashCommandExecute;
 }
 
 export type Guild = "ALL" | string | Array<string>;

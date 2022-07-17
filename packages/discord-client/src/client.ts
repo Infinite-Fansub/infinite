@@ -1,9 +1,10 @@
-import { Interaction, Message, ChannelType, Awaitable, InteractionCollector, MessageComponentInteraction, MessageChannelComponentCollectorOptions, ChatInputCommandInteraction } from "discord.js";
+import { Interaction, Message, ChannelType, Awaitable, ChatInputCommandInteraction } from "discord.js";
 import { ComponentType, Routes } from "discord-api-types/v10";
 import { REST } from "@discordjs/rest";
 import { IClientOptions, IClientEvents } from "./typings";
 import { BaseClient } from "./base-client";
 import { RedisClient } from "./utils/redis";
+import { CollectorHelper } from "./utils/collector-helper";
 
 // Stolen from discord.js
 export interface InfiniteClient {
@@ -74,8 +75,10 @@ export class InfiniteClient extends BaseClient {
 
         if (!command) return;
         try {
-            if (command.enabled ?? true) await command.execute(interaction, this);
-            else interaction.reply("Command Disabled");
+            if (command.enabled ?? true) {
+                if (command.execute && command.run) throw new Error("`<command>.run` and <command>.execute can not be used together in the same command");
+                await (command.execute?.(interaction, this) ?? command.run?.(interaction, this));
+            } else interaction.reply("Command Disabled");
         } catch (err) {
             console.error(err);
         }
@@ -162,23 +165,8 @@ export class InfiniteClient extends BaseClient {
         await client.open(url).then(() => this.emit("databaseOpen", this, client));
     }
 
-    public createCollector(
-        interaction: ChatInputCommandInteraction,
-        callback: (interaction: MessageComponentInteraction) => Awaitable<void>,
-        options?: { componentType?: ComponentType.ActionRow | undefined } & MessageChannelComponentCollectorOptions<MessageComponentInteraction<"cached">>,
-        disable: boolean = false
-    ): InteractionCollector<MessageComponentInteraction> | undefined {
-        //? Time defaults to 30sec
-        if (options && options.time === undefined) options.time = 18000;
-        const collector = interaction.channel?.createMessageComponentCollector(options ?? { time: 18000 });
-        collector?.on("collect", callback);
-
-        //! Actually disable instead of delete
-        if (disable) collector?.on("end", () => {
-            interaction.editReply({ components: [] });
-        });
-
-        return collector;
+    public collector<T extends Exclude<ComponentType, "ActionRow">>(type: T, interaction: ChatInputCommandInteraction): CollectorHelper<T> {
+        return new CollectorHelper(type, interaction);
     }
 
     public get redis(): RedisClient {
