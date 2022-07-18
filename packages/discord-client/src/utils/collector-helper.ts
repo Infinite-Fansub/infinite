@@ -1,7 +1,10 @@
-import { Awaitable, Interaction, ComponentType, InteractionType } from "discord.js";
+import { Awaitable, Interaction, ComponentType, InteractionType, InteractionCollector, MappedInteractionTypes, MessageComponentType, ButtonInteraction } from "discord.js";
 import { CollectorOptions, ParseComponentType } from "src/typings";
+import { ButtonLogic } from "./button-logic";
 
 export class CollectorHelper<T extends Exclude<ComponentType, "ActionRow">> {
+
+    private collector: InteractionCollector<MappedInteractionTypes[MessageComponentType]> | undefined;
 
     public constructor(type: T, private readonly interaction: Interaction) {
         if (type === 1) throw new Error("Type should be the expected component and not the action row");
@@ -13,8 +16,21 @@ export class CollectorHelper<T extends Exclude<ComponentType, "ActionRow">> {
     public create(callback: (interaction: ParseComponentType<T>) => Awaitable<void>, options?: CollectorOptions): void {
         if (options && options.time === undefined) options.time = 18000;
         // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-        const collector = this.interaction.channel?.createMessageComponentCollector(options ?? { time: 18000 });
+        this.collector = this.interaction.channel?.createMessageComponentCollector(options ?? { time: 18000 });
 
-        collector?.on("collect", callback);
+        this.collector?.on("collect", callback);
+    }
+
+    public onEnd(...buttonsIds: Array<string>) {
+        this.collector?.on("end", (collected) => {
+            const vals = Array.from(collected.values())
+            for (let i = 0; i < collected.size; i++) {
+                if (buttonsIds.includes(vals[i].customId)) {
+                    if (vals[i].isButton()) {
+                        (vals[i] as ButtonInteraction).component.disabled = true
+                    }
+                } else continue;
+            }
+        })
     }
 }
