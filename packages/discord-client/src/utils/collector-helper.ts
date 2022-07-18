@@ -1,5 +1,5 @@
 import { Awaitable, Interaction, ComponentType, InteractionType } from "discord.js";
-import { CollectorOptions, ParseComponentType } from "src/typings";
+import { CollectorOptions, ParseComponentType } from "../typings";
 
 export class CollectorHelper<T extends Exclude<ComponentType, "ActionRow">> {
 
