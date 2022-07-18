@@ -1,4 +1,4 @@
-name: NPM Package
+name: Discord Client
 
 on:
   workflow_dispatch:
