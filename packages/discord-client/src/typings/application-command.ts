@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-redundant-type-constituents */
-import { SlashCommandBuilder, ChatInputCommandInteraction, Awaitable } from "discord.js";
+import { SlashCommandBuilder, ChatInputCommandInteraction, Awaitable, RESTPostAPIApplicationCommandsJSONBody } from "discord.js";
 import { InfiniteClient } from "../client";
 
 export type SlashCommandExecute = (interaction: ChatInputCommandInteraction, client: InfiniteClient) => Awaitable<void>;
 
 export interface ISlashCommand {
-    data: Omit<SlashCommandBuilder, "addSubcommand" | "addSubcommandGroup">;
+    data: Omit<SlashCommandBuilder, "addSubcommand" | "addSubcommandGroup"> | RESTPostAPIApplicationCommandsJSONBody;
     description?: string;
     post?: Post;
     enabled?: boolean;

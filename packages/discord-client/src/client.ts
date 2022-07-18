@@ -1,5 +1,5 @@
-import { Interaction, Message, ChannelType, Awaitable } from "discord.js";
-import { ComponentType, Routes } from "discord-api-types/v10";
+import { Interaction, Message, ChannelType, Awaitable, SlashCommandBuilder } from "discord.js";
+import { ComponentType, RESTPostAPIApplicationCommandsJSONBody, Routes } from "discord-api-types/v10";
 import { REST } from "@discordjs/rest";
 import { IClientOptions, IClientEvents } from "./typings";
 import { BaseClient } from "./base-client";
@@ -109,7 +109,7 @@ export class InfiniteClient extends BaseClient {
         const allSlashCommands = [...this.slashCommands.values()];
 
         const globalCommands = allSlashCommands.filter((command) => command.post === "GLOBAL");
-        const globalJson = globalCommands.map((command) => command.data.toJSON());
+        const globalJson = globalCommands.map((command) => command.data instanceof SlashCommandBuilder ? command.data.toJSON() : <RESTPostAPIApplicationCommandsJSONBody>command.data);
 
         if (globalCommands.length) {
             await InfiniteClient.djsRest.put(Routes.applicationCommands(this.user?.id ?? ""), { body: globalJson })
@@ -118,7 +118,7 @@ export class InfiniteClient extends BaseClient {
 
         (await this.guilds.fetch()).forEach(async (_, guildId) => {
             const guildCommands = allSlashCommands.filter((command) => command.post === "ALL" || command.post === guildId || Array.isArray(command.post) && command.post.includes(guildId));
-            const guildJson = guildCommands.map((command) => command.data.toJSON());
+            const guildJson = guildCommands.map((command) => command.data instanceof SlashCommandBuilder ? command.data.toJSON() : <RESTPostAPIApplicationCommandsJSONBody>command.data);
 
             if (guildCommands.length) {
                 await InfiniteClient.djsRest.put(Routes.applicationGuildCommands(this.user?.id ?? "", guildId), { body: guildJson })
