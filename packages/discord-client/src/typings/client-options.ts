@@ -31,8 +31,8 @@ export interface RedisType {
 }
 
 export interface RedisObject {
-    username: string;
-    password: string;
+    username?: string;
+    password?: string;
     entrypoint: string;
     port?: string;
 }
