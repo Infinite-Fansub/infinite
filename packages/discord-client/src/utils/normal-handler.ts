@@ -1,36 +1,39 @@
 /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument */
-import { BaseClient } from "src/base-client";
-import { Handler, Event, ICommand, ISlashCommand, IClientEvents } from "src/typings";
+import { Handler, Event, ICommand, ISlashCommand, IClientEvents, DirectoryTypes } from "../typings";
 import recursiveRead from "./recursive-read";
 
 export class NormalHandler implements Handler {
-    public constructor(private readonly client: BaseClient) { }
+    private readonly dirs!: DirectoryTypes;
+    private commands: Map<string, ICommand> = new Map();
+    private slashCommands: Map<string, ISlashCommand> = new Map();
+    private events: Map<string, Event<any>> = new Map();
 
     public loadCommands(): void {
-        if (!this.client.dirs.commands) return;
-        recursiveRead(this.client.dirs.commands)
+        if (!this.dirs.commands) return;
+        recursiveRead(this.dirs.commands)
             .forEach(async (path) => {
                 const command: ICommand = (await import(path)).default;
-                this.client.commands.set(command.name, command);
+                this.commands.set(command.name, command);
             });
     }
 
     public loadSlashCommands(): void {
-        if (!this.client.dirs.slashCommands) return;
-        recursiveRead(this.client.dirs.slashCommands)
+        if (!this.dirs.slashCommands) return;
+        recursiveRead(this.dirs.slashCommands)
             .forEach(async (path) => {
                 const command: ISlashCommand = (await import(path)).default;
-                this.client.slashCommands.set(command.data.name, command);
+                this.slashCommands.set(command.data.name, command);
             });
     }
 
     public loadEvents(): void {
-        if (!this.client.dirs.events) return;
-        recursiveRead(this.client.dirs.events)
+        if (!this.dirs.events) return;
+        recursiveRead(this.dirs.events)
             .forEach(async (path) => {
                 const event: Event<any> = (await import(path)).default;
-                this.client.events.set(event.event, event);
-                this.client[event.type](event.event, (...args: Array<IClientEvents>) => {
+                this.events.set(event.event, event);
+                //@ts-expect-error I can't be bothered to hard type this
+                this[event.type](event.event, (...args: Array<IClientEvents>) => {
                     if (event.enabled ?? true) event.run(...args);
                 });
             });
