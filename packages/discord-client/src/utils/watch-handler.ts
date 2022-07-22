@@ -45,7 +45,6 @@ export function loadEvents(this: BaseClient & { cache: FileCache }): void {
                 delete require.cache[path];
                 const event: Event<any> = require(path).default;
                 this.events.set(event.event, event);
-                //@ts-expect-error I can't be bothered to hard type this
                 this[event.type](event.event, (...args: Array<IClientEvents>) => {
                     if (event.enabled ?? true) event.run(...args);
                 });

@@ -27,10 +27,8 @@ export function loadEvents(this: BaseClient): void {
         .forEach(async (path) => {
             const event: Event<any> = (await import(path)).default;
             this.events.set(event.event, event);
-            //@ts-expect-error I can't be bothered to hard type this
             this[event.type](event.event, (...args: Array<IClientEvents>) => {
                 if (event.enabled ?? true) event.run(...args);
             });
         });
-}
 }
