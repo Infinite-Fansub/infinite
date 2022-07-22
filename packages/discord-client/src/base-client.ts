@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/unbound-method */
 import { Client } from "discord.js";
 import { DirectoryTypes, Event, ICommand, ISlashCommand, IClientOptions } from "./typings/index";
-import { NormalHandler } from "./utils/normal-handler";
-import { WatchHandler } from "./utils/watch-handler";
+import * as normalHandler from "./utils/normal-handler";
+import * as watchHandler from "./utils/watch-handler";
 
 export class BaseClient extends Client {
 
@@ -17,8 +17,6 @@ export class BaseClient extends Client {
     protected constructor(public override options: IClientOptions) {
         super(options);
         this.dirs = options.dirs ?? {};
-        const normalHandler = new NormalHandler();
-        const watchHandler = new WatchHandler();
 
         if (typeof options.watch === "object") {
             this.loadCommands = options.watch.commands ? watchHandler.loadCommands : normalHandler.loadCommands;
