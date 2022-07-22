@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires*/
-import { Event, ICommand, ISlashCommand, IClientEvents, FileCache } from "src/typings";
+import { Event, ICommand, ISlashCommand, IClientEvents, FileCache } from "../typings";
 import recursiveRead from "./recursive-read";
 import { watchFile } from "fs";
 import { BaseClient } from "../base-client";
