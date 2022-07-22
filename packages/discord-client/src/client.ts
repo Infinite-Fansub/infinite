@@ -156,7 +156,7 @@ export class InfiniteClient extends BaseClient {
         let url = "redis://localhost:6379";
         if (typeof this.options.database.path === "object") {
             const { username, password, entrypoint, port } = this.options.database.path;
-            url = `${username}:${password}@${(/:\d$/).exec(entrypoint) ? entrypoint : `${entrypoint}:${port}`}`;
+            url = `redis://${username}:${password}@${(/:\d$/).exec(entrypoint) ? entrypoint : `${entrypoint}:${port}`}`;
         } else {
             url = this.options.database.path ?? "redis://localhost:6379";
         }
