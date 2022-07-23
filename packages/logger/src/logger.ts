@@ -90,7 +90,7 @@ export class Logger {
     }
 
     public print(log: string, customColor: Color | Colour | DirectGradient | JoinedGradient): void {
-        log = `${this.date()} ${this.errorEmoji} ${(customColor instanceof Color || customColor instanceof Colour) ? uniform(log, customColor) : gradient(log, customColor)}`;
+        log = `${this.date()} ${this.emoji} ${(customColor instanceof Color || customColor instanceof Colour) ? uniform(log, customColor) : gradient(log, customColor)}`;
 
         if (this._showMemory)
             console.error(this.addMemoryToString(log));
