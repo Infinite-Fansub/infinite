@@ -1,4 +1,4 @@
-import { Color, colorConsole } from "colours.js";
+import { Color, colorConsole, DirectGradient, JoinedGradient } from "colours.js";
 import { Colors, Emojis, LoggerOptions } from "./typings";
 import { InfiniteGradient, getCurrentMemoryHeap } from "./utils";
 const { uniform, gradient } = colorConsole;
@@ -13,8 +13,8 @@ export class Logger {
         templateColor: Color.fromHex("#00DDFF"),
         errorColor: Color.RED,
         templateErrorColor: Color.fromHex("#8C00FF"),
-        gradientPrimary: Color.fromHex("#0048ff"),
-        gradientSecondary: Color.fromHex("#c603fc")
+        gradientPrimary: Color.fromHex("#0048FF"),
+        gradientSecondary: Color.fromHex("#C603FC")
     };
 
     public constructor(options?: LoggerOptions) {
@@ -87,6 +87,14 @@ export class Logger {
         else console.error(log);
 
         return;
+    }
+
+    public print(log: string, customColor: Color | DirectGradient | JoinedGradient): void {
+        log = `${this.date()} ${this.errorEmoji} ${customColor instanceof Color ? uniform(log, customColor) : gradient(log, customColor)}`;
+
+        if (this._showMemory)
+            console.error(this.addMemoryToString(log));
+        else console.error(log);
     }
 
     public resetColors(): void {
