@@ -10,6 +10,7 @@
 import { ErrorLogger } from "../src";
 
 throw new ErrorLogger("Error Message", {
+    showNormalMessage: false,
     lines: [
         {
             err: "Another error message",

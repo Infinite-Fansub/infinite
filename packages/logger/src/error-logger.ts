@@ -7,11 +7,11 @@ const { uniform } = colorConsole;
 
 export class ErrorLogger extends Error {
 
-    public constructor(message?: string, options?: ErrorLoggerOptions) {
+    public constructor(message?: string, options: ErrorLoggerOptions = {}) {
         super();
         const stackArray = this.stack?.split("\n");
-        console.log(stackArray)
-        let index = options?.ref ? 2 : 1;
+        if (options.showNormalMessage === undefined) options.showNormalMessage = true;
+        let index = options.ref ? 2 : 1;
         if (platform() === "win32")
             //@ts-expect-error IK What I'm Doing
             while (stackArray[index].includes(`logger${sep}dist`) || stackArray[index].includes(`logger${sep}src`) || stackArray[index].includes(`at ${/[A-Z]/}:${sep}`)) index++;
@@ -22,7 +22,7 @@ export class ErrorLogger extends Error {
         const error = stackArray[index].slice(stackArray[index].indexOf("at ") + 3, stackArray[index].length);
         const fullPath = error.includes("(") ? error.substring(error.indexOf("(") + 1, error.indexOf(")")) : error;
         let errorFile = fullPath.split(sep).pop() ?? "";
-        let errCode = options?.errCode?.toString() ? ` ${uniform(options.errCode.toString(), Color.fromHex("#767676"))}:` : ":";
+        let errCode = options.errCode?.toString() ? ` ${uniform(options.errCode.toString(), Color.fromHex("#767676"))}:` : ":";
 
         const splittedPath = fullPath.split(":");
         let filename, lineNum, col;
@@ -36,15 +36,16 @@ export class ErrorLogger extends Error {
         }
 
         if (!filename || !lineNum || !col) throw new Error();
-        let line = options?.lines?.length ? "" : ErrorLogger.getLine(filename, Number.parseInt(lineNum));
         let spaceCount = 0;
+        // eslint-disable-next-line max-len,max-statements-per-line
+        let line = !options.showNormalMessage ? "" : `\n${ErrorLogger.line(errorFile)} ${ErrorLogger.getLine(filename, Number.parseInt(lineNum))}\n${(() => { let result = ""; for (let i = 0; i < Number.parseInt(col) + lineNum.length - spaceCount; i++)result += " "; return result; })()}^`;
         while (line.startsWith(" ")) {
             line = line.slice(1);
             spaceCount++;
         }
 
         // eslint-disable-next-line max-len,max-statements-per-line
-        this.stack = `\x08${ErrorLogger.colorLocation(errorFile)} - ${uniform("error", Color.RED)}${errCode} ${message ?? ""}\n${options?.lines?.length ? ErrorLogger.generateLines(options.lines) : ErrorLogger.line(errorFile)} ${line}${options?.lines?.length ? "" : `\n${(() => { let result = ""; for (let i = 0; i < Number.parseInt(col) + lineNum.length - spaceCount; i++)result += " "; return result; })()}^`}\x1B[`;
+        this.stack = `\x08${ErrorLogger.colorLocation(errorFile)} - ${uniform("error", Color.RED)}${errCode} ${message ?? ""}${line} ${options.lines?.length ? `\n${ErrorLogger.generateLines(options.lines)}` : ""}\x1B[`;
     }
 
     private static colorLocation(file: string): string {
