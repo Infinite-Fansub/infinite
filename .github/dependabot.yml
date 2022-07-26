@@ -10,17 +10,17 @@ updates:
     schedule:
       interval: "daily"
   
-    - package-ecosystem: "npm"
+  - package-ecosystem: "npm"
     directory: "/packages/prompt"
     schedule:
       interval: "daily"
   
-    - package-ecosystem: "npm"
+  - package-ecosystem: "npm"
     directory: "/packages/logger"
     schedule:
       interval: "daily"
   
-    - package-ecosystem: "npm"
+  - package-ecosystem: "npm"
     directory: "/packages/discord-client"
     schedule:
       interval: "daily"
