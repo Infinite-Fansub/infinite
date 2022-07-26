@@ -18,9 +18,7 @@ new Logger().defaultPrint("Message to log");
 
 **Output:**
 
-<pre>
-<span style=color:#FF0000>117.81/140.67MB</span> <span style=background-color:#F5F5F5;color:#000000>[19:36:43]</span> 💫 <span style=color:#FF00EF>Message to log</span>
-</pre>
+![](./imgs/default-log.png)
 
 #### Error
 
@@ -32,9 +30,7 @@ new Logger().error("Error Message");
 
 **Output:**
 
-<pre>
-<span style=color:#FF0000>117.81/140.67MB</span> <span style=background-color:#F5F5F5;color:#000000>[19:36:43]</span> ❌ <span style=color:#FF0000>Error Message</span>
-</pre>
+![](./imgs/error-log.png)
 
 #### Infinite Print
 
@@ -46,9 +42,7 @@ new Logger().infinitePrint("Message to log");
 
 **Output:**
 
-<pre>
-<span style=color:#FF0000>117.81/140.67MB</span> <span style=background-color:#F5F5F5;color:#000000>[19:36:43]</span> 💫 <span style=background:linear-gradient(90deg,#C603FC,#0048FF);background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent;>Message to log</span>
-</pre>
+![](./imgs/infinite-log.png)
 
 #### Print
 
@@ -61,9 +55,7 @@ new Logger().print("Message to log", Color.fromHex("#FF7300"));
 
 **Output:**
 
-<pre>
-<span style=color:#FF0000>117.81/140.67MB</span> <span style=background-color:#F5F5F5;color:#000000>[19:36:43]</span> 💫 <span style=color:#FF7300>Message to log</span>
-</pre>
+![](./imgs/colored-log.png)
 
 ### More in Depth
 
@@ -87,11 +79,7 @@ throw new ErrorLogger("Error Message");
 
 **Output:**
 
-<pre>
-<span style=color:#00B9FF>index.ts</span>:<span style=color:#FFE000>3</span>:<span style=color:#FFE000>7</span> - <span style=color:#FF0000>error</span>: Error Message
-<span style=background-color:#F5F5F5;color:#000000>3</span> throw new ErrorLogger("Error Message");
-        ^
-</pre>
+![](./imgs/simple-error.png)
 
 ### More in Depth
 
@@ -134,11 +122,7 @@ test()
 
 **Output:**
 
-<pre>
-<span style=color:#00B9FF>index.ts</span>:<span style=color:#FFE000>16</span>:<span style=color:#FFE000>1</span> - <span style=color:#FF0000>error</span> <span style=color:#767676>403</span>: Error Message
-<span style=background-color:#F5F5F5;color:#000000>16</span> test()
-   ^
-</pre>
+![](./imgs/ref-error.png)
 
 #### Adding Lines
 
@@ -157,12 +141,7 @@ throw new ErrorLogger("Error Message", {
 
 **Output:**
 
-<pre>
-<span style=color:#00B9FF>index.ts</span>:<span style=color:#FFE000>3</span>:<span style=color:#FFE000>7</span> - <span style=color:#FF0000>error</span>: Error Message
-<span style=background-color:#F5F5F5;color:#000000>3</span> throw new ErrorLogger("Error Message", {
-        ^
-<span style=background-color:#F5F5F5;color:#000000>Custom mark</span> Another error message
-</pre>
+![](./imgs/lines-error.png)
 
 #### Using `showNormalMessage`
 
@@ -180,8 +159,4 @@ throw new ErrorLogger("Error Message", {
 
 **Output:**
 
-<pre>
-<span style=color:#00B9FF>index.ts</span>:<span style=color:#FFE000>3</span>:<span style=color:#FFE000>7</span> - <span style=color:#FF0000>error</span>: Error Message
-
-<span style=background-color:#F5F5F5;color:#000000>Custom mark</span> Another error message
-</pre>
+![](./imgs/show-default-error.png)

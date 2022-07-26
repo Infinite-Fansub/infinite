@@ -7,7 +7,14 @@
 
 // throws(() => { throw new ErrorLogger("T"); });
 
-import { Logger } from "../src";
-import { Color } from "colours.js";
+import { ErrorLogger } from "@infinite-fansub/logger";
 
-new Logger().print("Message to log", Color.fromHex("#FF7300"));
+throw new ErrorLogger("Error Message", {
+    showNormalMessage: false,
+    lines: [
+        {
+            err: "Another error message",
+            marker: { text: "Custom mark", spaced: true }
+        }
+    ]
+});
