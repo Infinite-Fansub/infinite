@@ -10,6 +10,7 @@ export class ErrorLogger extends Error {
     public constructor(message?: string, options: ErrorLoggerOptions = {}) {
         super();
         const stackArray = this.stack?.split("\n");
+        console.log(stackArray)
         if (options.showNormalMessage === undefined) options.showNormalMessage = true;
         let index = options.ref ? 2 : 1;
         if (platform() === "win32")
@@ -17,7 +18,7 @@ export class ErrorLogger extends Error {
             while (stackArray[index].includes(`logger${sep}dist`) || stackArray[index].includes(`logger${sep}src`) || stackArray[index].includes(`at ${/[A-Z]/}:${sep}`)) index++;
         else
             //@ts-expect-error IK What I'm Doing
-            while (stackArray[index].includes(`logger${sep}dist`) || stackArray[index].includes(`logger${sep}src`) || !stackArray[index].includes(`at ${sep}`)) index++;
+            while (stackArray[index].includes(`logger${sep}dist`) || stackArray[index].includes(`logger${sep}src`) || stackArray[index].includes(`at ${sep}`)) index++;
         //@ts-expect-error IK What I'm Doing
         const error = stackArray[index].slice(stackArray[index].indexOf("at ") + 3, stackArray[index].length);
         const fullPath = error.includes("(") ? error.substring(error.indexOf("(") + 1, error.indexOf(")")) : error;
