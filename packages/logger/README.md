@@ -18,7 +18,7 @@ new Logger().defaultPrint("Message to log");
 
 **Output:**
 
-![](./imgs/default-log.png)
+![](imgs/default-log.png)
 
 #### Error
 
@@ -30,7 +30,7 @@ new Logger().error("Error Message");
 
 **Output:**
 
-![](./imgs/error-log.png)
+![](imgs/error-log.png)
 
 #### Infinite Print
 
@@ -42,7 +42,7 @@ new Logger().infinitePrint("Message to log");
 
 **Output:**
 
-![](./imgs/infinite-log.png)
+![](imgs/infinite-log.png)
 
 #### Print
 
@@ -55,7 +55,7 @@ new Logger().print("Message to log", Color.fromHex("#FF7300"));
 
 **Output:**
 
-![](./imgs/colored-log.png)
+![](imgs/colored-log.png)
 
 ### More in Depth
 
@@ -79,7 +79,7 @@ throw new ErrorLogger("Error Message");
 
 **Output:**
 
-![](./imgs/simple-error.png)
+![](imgs/simple-error.png)
 
 ### More in Depth
 
@@ -122,7 +122,7 @@ test()
 
 **Output:**
 
-![](./imgs/ref-error.png)
+![](imgs/ref-error.png)
 
 #### Adding Lines
 
@@ -141,7 +141,7 @@ throw new ErrorLogger("Error Message", {
 
 **Output:**
 
-![](./imgs/lines-error.png)
+![](imgs/lines-error.png)
 
 #### Using `showNormalMessage`
 
@@ -159,4 +159,4 @@ throw new ErrorLogger("Error Message", {
 
 **Output:**
 
-![](./imgs/show-default-error.png)
+![](imgs/show-default-error.png)
