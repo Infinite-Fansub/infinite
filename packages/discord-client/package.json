@@ -22,7 +22,7 @@
     },
     "homepage": "https://github.com/Infinite-Fansub/infinite/tree/main/packages/discord-client",
     "dependencies": {
-        "@discordjs/rest": "^1.0.0",
+        "@discordjs/rest": "^1.0.1",
         "@infinite-fansub/logger": "^1.0.0",
         "discord-api-types": "^0.36.3",
         "discord.js": "^14.0.3",
