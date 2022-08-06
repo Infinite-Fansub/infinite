@@ -114,12 +114,12 @@ export class InfiniteClient extends BaseClient {
                 .then(() => this.emit("loadedSlash", globalJson, "Global", this));
         }
 
-        (await this.guilds.fetch()).forEach(async (_, guildId) => {
+        (await this.guilds.fetch()).forEach((_, guildId) => {
             const guildCommands = allSlashCommands.filter((command) => command.post === "ALL" || command.post === guildId || Array.isArray(command.post) && command.post.includes(guildId));
             const guildJson = guildCommands.map((command) => command.data instanceof SlashCommandBuilder ? command.data.toJSON() : <RESTPostAPIApplicationCommandsJSONBody>command.data);
 
             if (guildCommands.length) {
-                await InfiniteClient.djsRest.put(Routes.applicationGuildCommands(this.user?.id ?? "", guildId), { body: guildJson })
+                InfiniteClient.djsRest.put(Routes.applicationGuildCommands(this.user?.id ?? "", guildId), { body: guildJson })
                     .then(() => this.emit("loadedSlash", guildJson, guildId, this));
             }
         });

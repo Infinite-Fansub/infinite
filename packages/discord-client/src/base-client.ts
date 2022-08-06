@@ -10,9 +10,9 @@ export class BaseClient extends Client {
     public slashCommands: Map<string, ISlashCommand> = new Map();
     public events: Map<string, Event<any>> = new Map();
     public dirs: DirectoryTypes;
-    protected loadCommands: () => Promise<void>;
-    protected loadSlashCommands: () => Promise<void>;
-    protected loadEvents: () => Promise<void>;
+    protected loadCommands: () => void;
+    protected loadSlashCommands: () => void;
+    protected loadEvents: () => void;
 
     protected constructor(public override options: IClientOptions) {
         super(options);
