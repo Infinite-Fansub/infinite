@@ -1,5 +1,4 @@
-import { ClientEvents } from "discord.js";
-import { RESTPostAPIApplicationCommandsJSONBody } from "discord-api-types/v10";
+import { ClientEvents, RESTPostAPIApplicationCommandsJSONBody } from "discord.js";
 import { InfiniteClient } from "../client";
 import { RedisClient } from "../utils/redis";
 

@@ -1,6 +1,4 @@
-import { Interaction, Message, ChannelType, Awaitable, SlashCommandBuilder } from "discord.js";
-import { ComponentType, RESTPostAPIApplicationCommandsJSONBody, Routes } from "discord-api-types/v10";
-import { REST } from "@discordjs/rest";
+import { Interaction, Message, ChannelType, Awaitable, SlashCommandBuilder, ComponentType, RESTPostAPIApplicationCommandsJSONBody, Routes, REST } from "discord.js";
 import { IClientOptions, IClientEvents, CollectorOptions } from "./typings";
 import { BaseClient } from "./base-client";
 import { RedisClient } from "./utils/redis";
