@@ -115,7 +115,11 @@ export class InfiniteClient extends BaseClient {
         }
 
         (await this.guilds.fetch()).forEach((_, guildId) => {
-            const guildCommands = allSlashCommands.filter((command) => command.post === "ALL" || command.post === guildId || Array.isArray(command.post) && command.post.includes(guildId));
+            const guildCommands = allSlashCommands.filter((command) => command.post === undefined
+                || command.post === "ALL"
+                || command.post === guildId
+                || Array.isArray(command.post) && command.post.includes(guildId));
+
             const guildJson = guildCommands.map((command) => command.data instanceof SlashCommandBuilder ? command.data.toJSON() : <RESTPostAPIApplicationCommandsJSONBody>command.data);
 
             if (guildCommands.length) {
