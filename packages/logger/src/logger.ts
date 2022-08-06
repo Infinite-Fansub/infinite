@@ -1,4 +1,4 @@
-import { Color, colorConsole } from "colours.js";
+import { Color, colorConsole, Colour, DirectGradient, JoinedGradient } from "colours.js";
 import { Colors, Emojis, LoggerOptions } from "./typings";
 import { InfiniteGradient, getCurrentMemoryHeap } from "./utils";
 const { uniform, gradient } = colorConsole;
