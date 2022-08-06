@@ -1,10 +1,19 @@
-/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires*/
+/* eslint-disable
+@typescript-eslint/no-explicit-any,
+@typescript-eslint/no-unsafe-argument,
+@typescript-eslint/no-require-imports,
+@typescript-eslint/no-var-requires,
+@typescript-eslint/require-await,
+@typescript-eslint/no-unnecessary-condition,
+@typescript-eslint/strict-boolean-expressions
+*/
+
 import { Event, ICommand, ISlashCommand, IClientEvents, FileCache } from "../typings";
 import recursiveRead from "./recursive-read";
 import { watchFile } from "fs";
 import { BaseClient } from "../base-client";
 
-export function loadCommands(this: BaseClient & { cache: FileCache }): void {
+export async function loadCommands(this: BaseClient & { cache: FileCache }): Promise<void> {
     if (!this.dirs.commands) return;
     if (!this.cache) this.cache = {};
     recursiveRead(this.dirs.commands)
@@ -19,7 +28,7 @@ export function loadCommands(this: BaseClient & { cache: FileCache }): void {
         });
 }
 
-export function loadSlashCommands(this: BaseClient & { cache: FileCache }): void {
+export async function loadSlashCommands(this: BaseClient & { cache: FileCache }): Promise<void> {
     if (!this.dirs.slashCommands) return;
     if (!this.cache) this.cache = {};
     recursiveRead(this.dirs.slashCommands)
@@ -34,7 +43,7 @@ export function loadSlashCommands(this: BaseClient & { cache: FileCache }): void
         });
 }
 
-export function loadEvents(this: BaseClient & { cache: FileCache }): void {
+export async function loadEvents(this: BaseClient & { cache: FileCache }): Promise<void> {
     if (!this.dirs.events) return;
     if (!this.cache) this.cache = {};
     recursiveRead(this.dirs.events)
