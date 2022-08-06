@@ -66,6 +66,8 @@ New-Item -Path '.\tsconfig.json' -ItemType File -Value '{
     ]
 }'
 
+npm.cmd i tslib
+
 # go back home
 Set-Location $root
 

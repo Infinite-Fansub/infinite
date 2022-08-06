@@ -1,6 +1,6 @@
 {
     "name": "@infinite-fansub/logger",
-    "version": "1.6.1",
+    "version": "1.6.2",
     "description": "Infinite logger",
     "author": "Infinite",
     "license": "AGPL-3.0",
@@ -22,6 +22,7 @@
     },
     "homepage": "https://github.com/Infinite-Fansub/infinite/tree/main/packages/logger",
     "dependencies": {
-        "colours.js": "^3.1.2"
+        "colours.js": "^3.1.2",
+        "tslib": "^2.4.0"
     }
 }

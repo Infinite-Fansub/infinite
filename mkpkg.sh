@@ -60,6 +60,8 @@ echo '{
     ]
 }' > tsconfig.json
 
+npm i tslib
+
 cd ../..
 
 npm i

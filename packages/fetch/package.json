@@ -1,6 +1,6 @@
 {
     "name": "@infinite-fansub/fetch",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "description": "Node Fetch by infinite",
     "author": "Infinite",
     "license": "AGPL-3.0",
@@ -22,7 +22,8 @@
     },
     "homepage": "https://github.com/Infinite-Fansub/infinite/tree/main/packages/fetch",
     "dependencies": {
-        "node-expat": "^2.4.0"
+        "node-expat": "^2.4.0",
+        "tslib": "^2.4.0"
     },
     "devDependencies": {
         "@types/node-expat": "^2.3.2"

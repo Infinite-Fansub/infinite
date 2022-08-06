@@ -1,6 +1,6 @@
 {
     "name": "@infinite-fansub/types",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "description": "Custom types",
     "author": "Infinite",
     "license": "AGPL-3.0",
@@ -20,5 +20,8 @@
         "type": "git",
         "url": "https://github.com/Infinite-Fansub/infinite.git"
     },
-    "homepage": "https://github.com/Infinite-Fansub/infinite/tree/main/packages/types"
+    "homepage": "https://github.com/Infinite-Fansub/infinite/tree/main/packages/types",
+    "dependencies": {
+        "tslib": "^2.4.0"
+    }
 }
