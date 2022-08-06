@@ -5,4 +5,12 @@ const logger = new Logger({ emojis: { emoji: "E" } });
 
 deepStrictEqual(logger.emojis.emoji, "E");
 
-throws(() => { throw new ErrorLogger("T"); });
+// throws(() => { throw new ErrorLogger("T"); });
+
+import { Logger } from "@infinite-fansub/logger";
+
+const logger = new Logger({
+    showDay: false
+});
+
+logger.defaultPrint("T")

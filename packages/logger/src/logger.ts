@@ -4,11 +4,12 @@ import { InfiniteGradient, getCurrentMemoryHeap } from "./utils";
 const { uniform, gradient } = colorConsole;
 
 export class Logger {
-    private emoji: string;
-    private errorEmoji: string;
-    private _showMemory: boolean;
-    private _colors: Colors;
-    private defaultColors: Colors = {
+    #emoji: string;
+    #errorEmoji: string;
+    #showMemory: boolean;
+    #showDay: boolean;
+    #colors: Colors;
+    #defaultColors: Colors = {
         color: Color.fromHex("#FF00EF"), //Color.fromHex("#fc036b"),
         templateColor: Color.fromHex("#00DDFF"),
         errorColor: Color.RED,
@@ -18,26 +19,27 @@ export class Logger {
     };
 
     public constructor(options?: LoggerOptions) {
-        this._colors = { ...this.defaultColors, ...options?.colors };
-        this.emoji = options?.emojis?.emoji ?? "💫";
-        this.errorEmoji = options?.emojis?.errorEmoji ?? "❌";
-        this._showMemory = options?.showMemory ?? true;
+        this.#colors = { ...this.#defaultColors, ...options?.colors };
+        this.#emoji = options?.emojis?.emoji ?? "💫";
+        this.#errorEmoji = options?.emojis?.errorEmoji ?? "❌";
+        this.#showMemory = options?.showMemory ?? true;
+        this.#showDay = options?.showDay ?? false;
     }
 
     private addMemoryToString(log: string): string {
-        return `${uniform(getCurrentMemoryHeap(), this._colors.errorColor)} ${log}`;
+        return `${uniform(getCurrentMemoryHeap(), this.#colors.errorColor)} ${log}`;
     }
 
     private date(): string {
-        return uniform(uniform(`[${new Date().toLocaleTimeString()}]`, Color.WHITE, true), Color.BLACK);
+        return uniform(uniform(`[${new Date()[this.#showDay ? "toLocaleString" : "toLocaleTimeString"]()}]`, Color.WHITE, true), Color.BLACK);
     }
 
     public infinitePrint(log: string | TemplateStringsArray /*, ...values: Array<string>*/): void {
         if (typeof log === "string") {
 
-            if (this._showMemory)
-                console.log(this.addMemoryToString(`${this.date()} ${this.emoji} ${gradient(log, InfiniteGradient(true))}`));
-            else console.log(`${this.date()} ${this.emoji} ${gradient(log, InfiniteGradient())}`);
+            if (this.#showMemory)
+                console.log(this.addMemoryToString(`${this.date()} ${this.#emoji} ${gradient(log, InfiniteGradient(true))}`));
+            else console.log(`${this.date()} ${this.#emoji} ${gradient(log, InfiniteGradient())}`);
 
             return;
         }
@@ -48,9 +50,9 @@ export class Logger {
     public defaultPrint(log: string | TemplateStringsArray, ...values: Array<string>): void {
         if (typeof log === "string") {
 
-            log = `${this.date()} ${this.emoji} ${uniform(log, this._colors.color)}`;
+            log = `${this.date()} ${this.#emoji} ${uniform(log, this.#colors.color)}`;
 
-            if (this._showMemory)
+            if (this.#showMemory)
                 console.log(this.addMemoryToString(log));
             else console.log(log);
 
@@ -58,9 +60,9 @@ export class Logger {
         }
 
         // eslint-disable-next-line max-len
-        log = values.reduce((final, value, index) => `${this.date()} ${this.emoji} ${uniform(final, this._colors.color)}${uniform(value, this._colors.templateColor)}${uniform(log[index + 1], this._colors.color)}`, log[0]);
+        log = values.reduce((final, value, index) => `${this.date()} ${this.#emoji} ${uniform(final, this.#colors.color)}${uniform(value, this.#colors.templateColor)}${uniform(log[index + 1], this.#colors.color)}`, log[0]);
 
-        if (this._showMemory)
+        if (this.#showMemory)
             console.log(this.addMemoryToString(log));
         else console.log(log);
 
@@ -70,9 +72,9 @@ export class Logger {
     public error(log: string | TemplateStringsArray, ...values: Array<string>): void {
         if (typeof log === "string") {
 
-            log = `${this.date()} ${this.errorEmoji} ${uniform(log, this._colors.errorColor)}`;
+            log = `${this.date()} ${this.#errorEmoji} ${uniform(log, this.#colors.errorColor)}`;
 
-            if (this._showMemory)
+            if (this.#showMemory)
                 console.error(this.addMemoryToString(log));
             else console.error(log);
 
@@ -80,34 +82,58 @@ export class Logger {
         }
 
         // eslint-disable-next-line max-len
-        log = values.reduce((final, value, index) => `${this.date()} ${this.errorEmoji} ${uniform(final, this._colors.errorColor)}${uniform(value, this._colors.templateErrorColor)}${uniform(log[index + 1], this._colors.errorColor)}`, log[0]);
+        log = values.reduce((final, value, index) => `${this.date()} ${this.#errorEmoji} ${uniform(final, this.#colors.errorColor)}${uniform(value, this.#colors.templateErrorColor)}${uniform(log[index + 1], this.#colors.errorColor)}`, log[0]);
 
-        if (this._showMemory)
+        if (this.#showMemory)
             console.error(this.addMemoryToString(log));
         else console.error(log);
 
         return;
     }
 
+    public print(log: string, customColor: Color | Colour | DirectGradient | JoinedGradient): void {
+        log = `${this.date()} ${this.#emoji} ${customColor instanceof Color || customColor instanceof Colour ? uniform(log, customColor) : gradient(log, customColor)}`;
+
+        if (this.#showMemory)
+            console.error(this.addMemoryToString(log));
+        else console.error(log);
+    }
+
     public resetColors(): void {
-        this._colors = { ...this.defaultColors };
+        this.#colors = { ...this.#defaultColors };
+    }
+
+    public get showDay(): boolean {
+        return this.#showDay;
+    }
+
+    public set showDay(value: boolean) {
+        this.#showDay = value;
+    }
+
+    public get showMemory(): boolean {
+        return this.#showMemory;
     }
 
     public set showMemory(value: boolean) {
-        this._showMemory = value;
+        this.#showMemory = value;
     }
 
     public get emojis(): Emojis {
-        return { emoji: this.emoji, errorEmoji: this.errorEmoji };
+        return { emoji: this.#emoji, errorEmoji: this.#errorEmoji };
     }
 
     public set emojis(emojis: Partial<Emojis>) {
-        this.emoji = emojis.emoji ?? this.emoji;
-        this.errorEmoji = emojis.errorEmoji ?? this.errorEmoji;
+        this.#emoji = emojis.emoji ?? this.#emoji;
+        this.#errorEmoji = emojis.errorEmoji ?? this.#errorEmoji;
+    }
+
+    public get colors(): Colors {
+        return this.#colors;
     }
 
     public set colors(colors: Partial<Colors>/* & Record<string, string>*/) {
-        this._colors = { ...this._colors, ...colors };
+        this.#colors = { ...this.#colors, ...colors };
     }
 
 }
