@@ -43,23 +43,19 @@ export class InfiniteClient extends BaseClient {
             events: this.options.dirs?.events
         });
 
-        try {
-            (async () => {
-                this.options.dirs?.events && await this.loadEvents();
-                if (!this.options.disable?.messageCommands)
-                    this.options.dirs?.commands && await this.loadCommands();
-                if (!this.options.disable?.interactions)
-                    this.options.dirs?.slashCommands && await this.loadSlashCommands();
-            })();
-        } finally {
-            this.login(this.options.token).then(async () => {
+        this.options.dirs?.events && this.loadEvents();
+        if (!this.options.disable?.messageCommands)
+            this.options.dirs?.commands && this.loadCommands();
+        if (!this.options.disable?.interactions)
+            this.options.dirs?.slashCommands && this.loadSlashCommands();
 
-                if (!this.options.disable?.interactions)
-                    await this.registerSlashCommands();
+        this.login(this.options.token).then(async () => {
 
-                await this.buildDb();
-            });
-        }
+            if (!this.options.disable?.interactions)
+                await this.registerSlashCommands();
+
+            await this.buildDb();
+        });
 
         InfiniteClient.djsRest = new REST().setToken(this.options.token);
 

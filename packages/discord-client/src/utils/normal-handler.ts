@@ -1,9 +1,9 @@
-/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument, @typescript-eslint/require-await */
+/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument */
 import { Event, ICommand, ISlashCommand, IClientEvents } from "../typings";
 import recursiveRead from "./recursive-read";
 import { BaseClient } from "../base-client";
 
-export async function loadCommands(this: BaseClient): Promise<void> {
+export function loadCommands(this: BaseClient): void {
     if (!this.dirs.commands) return;
     recursiveRead(this.dirs.commands)
         .forEach(async (path) => {
@@ -12,7 +12,7 @@ export async function loadCommands(this: BaseClient): Promise<void> {
         });
 }
 
-export async function loadSlashCommands(this: BaseClient): Promise<void> {
+export function loadSlashCommands(this: BaseClient): void {
     if (!this.dirs.slashCommands) return;
     recursiveRead(this.dirs.slashCommands)
         .forEach(async (path) => {
@@ -21,7 +21,7 @@ export async function loadSlashCommands(this: BaseClient): Promise<void> {
         });
 }
 
-export async function loadEvents(this: BaseClient): Promise<void> {
+export function loadEvents(this: BaseClient): void {
     if (!this.dirs.events) return;
     recursiveRead(this.dirs.events)
         .forEach(async (path) => {

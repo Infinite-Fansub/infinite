@@ -3,7 +3,6 @@
 @typescript-eslint/no-unsafe-argument,
 @typescript-eslint/no-require-imports,
 @typescript-eslint/no-var-requires,
-@typescript-eslint/require-await,
 @typescript-eslint/no-unnecessary-condition,
 @typescript-eslint/strict-boolean-expressions
 */
@@ -13,7 +12,7 @@ import recursiveRead from "./recursive-read";
 import { watchFile } from "fs";
 import { BaseClient } from "../base-client";
 
-export async function loadCommands(this: BaseClient & { cache: FileCache }): Promise<void> {
+export function loadCommands(this: BaseClient & { cache: FileCache }): void {
     if (!this.dirs.commands) return;
     if (!this.cache) this.cache = {};
     recursiveRead(this.dirs.commands)
@@ -28,7 +27,7 @@ export async function loadCommands(this: BaseClient & { cache: FileCache }): Pro
         });
 }
 
-export async function loadSlashCommands(this: BaseClient & { cache: FileCache }): Promise<void> {
+export function loadSlashCommands(this: BaseClient & { cache: FileCache }): void {
     if (!this.dirs.slashCommands) return;
     if (!this.cache) this.cache = {};
     recursiveRead(this.dirs.slashCommands)
@@ -43,7 +42,7 @@ export async function loadSlashCommands(this: BaseClient & { cache: FileCache })
         });
 }
 
-export async function loadEvents(this: BaseClient & { cache: FileCache }): Promise<void> {
+export function loadEvents(this: BaseClient & { cache: FileCache }): void {
     if (!this.dirs.events) return;
     if (!this.cache) this.cache = {};
     recursiveRead(this.dirs.events)
