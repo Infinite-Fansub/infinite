@@ -33,6 +33,7 @@
   "workspaces": [
     "packages/types",
     "packages/fetch",
+    "packages/logger",
     "packages/*"
   ]
 }
