@@ -1,6 +1,7 @@
 {
     "ignorePatterns": [
         "*.json",
+        "*.d.ts",
         "*.graphql",
         "dist/",
         "*.js"

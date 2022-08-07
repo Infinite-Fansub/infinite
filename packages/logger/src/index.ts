@@ -1,2 +1,3 @@
 export * from "./logger";
-export * from "./error-logger";
+export * from "./pretty-error";
+export * from "./typings";

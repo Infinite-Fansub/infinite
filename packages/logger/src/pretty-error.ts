@@ -2,12 +2,12 @@ import { sep } from "node:path";
 import { Color, colorConsole } from "colours.js/dst";
 import { readFileSync } from "fs";
 import { platform } from "node:os";
-import { ErrorLoggerOptions, MarkerOptions } from "./typings";
+import { PrettyErrorOptions, MarkerOptions } from "./typings";
 const { uniform } = colorConsole;
 
-export class ErrorLogger extends Error {
+export class PrettyError extends Error {
 
-    public constructor(message?: string, options?: ErrorLoggerOptions) {
+    public constructor(message?: string, options?: PrettyErrorOptions) {
         super();
         const stackArray = this.stack?.split("\n");
         let index = options?.ref ? 2 : 1;
@@ -35,7 +35,7 @@ export class ErrorLogger extends Error {
         }
 
         if (!filename || !lineNum || !col) throw new Error();
-        let line = options?.lines?.length ? "" : ErrorLogger.getLine(filename, Number.parseInt(lineNum));
+        let line = options?.lines?.length ? "" : PrettyError.getLine(filename, Number.parseInt(lineNum));
         let spaceCount = 0;
         while (line.startsWith(" ")) {
             line = line.slice(1);
@@ -43,7 +43,7 @@ export class ErrorLogger extends Error {
         }
 
         // eslint-disable-next-line max-len,max-statements-per-line
-        this.stack = `\x08${ErrorLogger.colorLocation(errorFile)} - ${uniform("error", Color.RED)}${errCode} ${message ?? ""}\n${options?.lines?.length ? ErrorLogger.generateLines(options.lines) : ErrorLogger.line(errorFile)} ${line}${options?.lines?.length ? "" : `\n${(() => { let result = ""; for (let i = 0; i < Number.parseInt(col) + lineNum.length - spaceCount; i++)result += " "; return result; })()}^`}\x1B[`;
+        this.stack = `\x08${PrettyError.colorLocation(errorFile)} - ${uniform("error", Color.RED)}${errCode} ${message ?? ""}\n${options?.lines?.length ? PrettyError.generateLines(options.lines) : PrettyError.line(errorFile)} ${line}${options?.lines?.length ? "" : `\n${(() => { let result = ""; for (let i = 0; i < Number.parseInt(col) + lineNum.length - spaceCount; i++)result += " "; return result; })()}^`}\x1B[`;
     }
 
     private static colorLocation(file: string): string {
@@ -63,7 +63,7 @@ export class ErrorLogger extends Error {
         let lines = "";
 
         t.forEach(({ err, marker }) => {
-            lines += `${marker.spaced ? "\n" : ""}${ErrorLogger.marker(marker.text, marker.color)}${marker.nl ? "\n" : ""}${err}\n`;
+            lines += `${marker.spaced ? "\n" : ""}${PrettyError.marker(marker.text, marker.color)}${marker.nl ? "\n" : ""}${err}\n`;
         });
 
         return lines;
@@ -75,3 +75,6 @@ export class ErrorLogger extends Error {
         return lines[lineNum - 1] ?? "";
     }
 }
+
+//@ts-expect-error Global
+global.PrettyError = PrettyError;

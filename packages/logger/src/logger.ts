@@ -138,4 +138,8 @@ export class Logger {
 
 }
 
-export const globalLogger = new Logger();
+//@ts-expect-error Global
+global.Logger = Logger;
+
+//@ts-expect-error Global
+global.logger = new Logger();
