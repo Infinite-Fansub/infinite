@@ -12,7 +12,7 @@ declare global {
         private addMemoryToString;
         private date;
         infinitePrint(log: string | TemplateStringsArray): void;
-        defaultPrint(log: string | TemplateStringsArray, ...values: Array<string>): void;
+        log(log: string | TemplateStringsArray, ...values: Array<string>): void;
         error(log: string | TemplateStringsArray, ...values: Array<string>): void;
         printf(log: string, customColor: Color | Colour | DirectGradient | JoinedGradient): void;
         print(log: string, options?: {

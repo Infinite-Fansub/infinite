@@ -47,7 +47,7 @@ export class Logger {
         throw new Error("Template Literall call not implemented yet");
     }
 
-    public defaultPrint(log: string | TemplateStringsArray, ...values: Array<string>): void {
+    public log(log: string | TemplateStringsArray, ...values: Array<string>): void {
         if (typeof log === "string") {
 
             log = `${this.date()} ${this.#emoji} ${uniform(log, this.#colors.color)}`;
