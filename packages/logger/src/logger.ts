@@ -91,12 +91,24 @@ export class Logger {
         return;
     }
 
-    public print(log: string, customColor: Color | Colour | DirectGradient | JoinedGradient): void {
+    public printf(log: string, customColor: Color | Colour | DirectGradient | JoinedGradient): void {
         log = `${this.date()} ${this.#emoji} ${customColor instanceof Color || customColor instanceof Colour ? uniform(log, customColor) : gradient(log, customColor)}`;
 
         if (this.#showMemory)
-            console.error(this.addMemoryToString(log));
-        else console.error(log);
+            console.log(this.addMemoryToString(log));
+        else console.log(log);
+    }
+
+    public print(log: string, options?: { memory?: boolean, date?: boolean, emoji?: boolean } | boolean): void {
+        if (typeof options === "boolean")
+            log = this.addMemoryToString(`${this.date()} ${this.#emoji} ${log}`);
+        else {
+            if (options?.emoji) log = `${this.#emoji} ${log}`;
+            if (options?.date) log = `${this.date()} ${log}`;
+            if (options?.memory) log = this.addMemoryToString(log);
+        }
+
+        console.log(log);
     }
 
     public resetColors(): void {
