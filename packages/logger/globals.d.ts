@@ -4,6 +4,8 @@ import { LoggerOptions, Emojis, Colors, PrettyErrorOptions } from "./src"
 export { };
 
 declare global {
+    export const logger: Logger;
+
     export class Logger {
         #private;
         constructor(options?: LoggerOptions);
@@ -12,7 +14,12 @@ declare global {
         infinitePrint(log: string | TemplateStringsArray): void;
         defaultPrint(log: string | TemplateStringsArray, ...values: Array<string>): void;
         error(log: string | TemplateStringsArray, ...values: Array<string>): void;
-        print(log: string, customColor: Color | Colour | DirectGradient | JoinedGradient): void;
+        printf(log: string, customColor: Color | Colour | DirectGradient | JoinedGradient): void;
+        print(log: string, options?: {
+            memory?: boolean;
+            date?: boolean;
+            emoji?: boolean;
+        } | boolean): void;
         resetColors(): void;
         get showDay(): boolean;
         set showDay(value: boolean);
@@ -23,7 +30,6 @@ declare global {
         get colors(): Colors;
         set colors(colors: Partial<Colors>);
     }
-    export const logger: Logger;
 
     export class PrettyError extends Error {
         constructor(message?: string, options?: PrettyErrorOptions);
