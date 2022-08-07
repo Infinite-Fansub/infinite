@@ -3,4 +3,4 @@ import { ButtonInteraction, ComponentType, MessageChannelCollectorOptionsParams,
 // eslint-disable-next-line max-len
 export type ParseComponentType<T extends Exclude<ComponentType, "ActionRow">> = T extends ComponentType.Button ? ButtonInteraction : T extends ComponentType.SelectMenu ? SelectMenuInteraction : T extends ComponentType.TextInput ? ModalSubmitInteraction : never;
 
-export type CollectorOptions = MessageChannelCollectorOptionsParams<MessageComponentType, true> & { disable?: boolean };
+export type CollectorOptions = MessageChannelCollectorOptionsParams<MessageComponentType, true> & { disable?: boolean, kill?: boolean };

@@ -1,20 +1,25 @@
-import { Awaitable, Interaction, ComponentType, InteractionType } from "discord.js";
+import { Awaitable, ComponentType, ChatInputCommandInteraction, TextChannel } from "discord.js";
 import { CollectorOptions, ParseComponentType } from "../typings";
 
 export class CollectorHelper<T extends Exclude<ComponentType, "ActionRow">> {
 
-    public constructor(type: T, private readonly interaction: Interaction, private readonly options?: CollectorOptions) {
-        if (type === 1) throw new Error("Type should be the expected component and not the action row");
-        if (type === 2 && !interaction.isButton()) throw new Error(`Expected interaction of type \`Button\` got type \`${interaction.type}\``);
-        if (type === 3 && !interaction.isSelectMenu()) throw new Error(`Expected interaction of type \`SelectMenu\` got type \`${interaction.type}\``);
-        if (type === 4 && !(interaction.type === InteractionType.ModalSubmit)) throw new Error(`Expected interaction of type \`Modal\` got type \`${interaction.type}\``);
+    public constructor(type: T, private readonly interaction: ChatInputCommandInteraction, private readonly options?: CollectorOptions) {
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        if (!type) throw new Error();
+        // TODO: Implement type logic
     }
 
-    public create(callback: (interaction: ParseComponentType<T>) => Awaitable<void>, options?: CollectorOptions): void {
+    public async create(callback: (interaction: ParseComponentType<T>) => Awaitable<void>, options?: CollectorOptions): Promise<void> {
         if (options && options.time === undefined) options.time = 18000;
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-        const collector = this.interaction.channel?.createMessageComponentCollector(options ?? this.options);
 
-        collector?.on("collect", callback);
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const chn = this.interaction.channel ?? await this.interaction.client.channels.fetch(this.interaction.channelId) as TextChannel;
+
+        const collector = chn.createMessageComponentCollector(options ?? this.options);
+        collector.on("collect", callback);
+        if (this.options?.kill || options?.kill)
+            collector.on("end", () => {
+                this.interaction.editReply({ components: [] });
+            });
     }
 }

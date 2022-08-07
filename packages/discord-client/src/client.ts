@@ -1,4 +1,4 @@
-import { Interaction, Message, ChannelType, Awaitable, SlashCommandBuilder, ComponentType, RESTPostAPIApplicationCommandsJSONBody, Routes, REST } from "discord.js";
+import { Interaction, Message, ChannelType, Awaitable, SlashCommandBuilder, ComponentType, RESTPostAPIApplicationCommandsJSONBody, Routes, REST, ChatInputCommandInteraction } from "discord.js";
 import { IClientOptions, IClientEvents, CollectorOptions } from "./typings";
 import { BaseClient } from "./base-client";
 import { RedisClient } from "./utils/redis";
@@ -168,7 +168,7 @@ export class InfiniteClient extends BaseClient {
         await client.open(url).then(() => this.emit("databaseOpen", this, client));
     }
 
-    public collector<T extends Exclude<ComponentType, "ActionRow">>(type: T, interaction: Interaction, options: CollectorOptions = { time: 18000 }): CollectorHelper<T> {
+    public collector<T extends Exclude<ComponentType, "ActionRow">>(type: T, interaction: ChatInputCommandInteraction, options: CollectorOptions = { time: 18000 }): CollectorHelper<T> {
         return new CollectorHelper(type, interaction, options);
     }
 
