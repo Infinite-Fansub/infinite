@@ -1,4 +1,4 @@
-import { ErrorLogger } from "@infinite-fansub/logger/dist";
+import { PrettyError } from "@infinite-fansub/logger";
 import { ActionRowBuilder, APIEmbed, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, ComponentType, EmbedBuilder, InteractionReplyOptions } from "discord.js";
 import { PaginatorOptions } from "../typings";
 import { CollectorHelper } from "./collector-helper";
@@ -23,7 +23,7 @@ export class Paginator {
     };
 
     public constructor(embeds: Array<APIEmbed>, options: PaginatorOptions = { max_len: Infinity }) {
-        if (!embeds.length) throw new ErrorLogger("No embeds passed in to the paginator");
+        if (!embeds.length) throw new PrettyError("No embeds passed in to the paginator");
         this.#embeds = embeds;
         // casting because typescript is dumb
         if (!options.max_len) this.#options.max_len = <number>options.max_len;

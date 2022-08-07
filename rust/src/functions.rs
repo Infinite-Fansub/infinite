@@ -14,8 +14,8 @@ pub fn npm_content(pkg_name: String, description: String) -> String {
             \"test\": \"ts-node tests/index.ts\",
             \"eslint\": \"eslint\",
             \"eslint:fix\": \"eslint --fix\",
-            \"build\": \"tsc\",
-            \"build:watch\": \"tsc --watch\",
+            \"buildrm -rf dist && tsc\",
+            \"build:watch\": \"rm -rf dist && tsc --watch\",
             \"build:test\": \"tsc --noEmit\",
             \"node\": \"node .\",
             \"tsn\": \"ts-node src/index.ts\"
