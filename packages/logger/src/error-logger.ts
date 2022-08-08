@@ -2,6 +2,7 @@ import { inspect } from "node:util";
 import { ErrorLoggerOptions } from "./typings";
 import { Logger } from "./logger";
 import { Color, colorConsole } from "colours.js/dst";
+import { PrettyError } from "./pretty-error";
 
 export class ErrorLogger {
 
@@ -117,7 +118,7 @@ export class ErrorLogger {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public attachUncaughtException(callback: NodeJS.UncaughtExceptionListener = (error, _origin) => {
         this.#logger.error("New error caught:");
-        this.#logger.error(error.stack ?? "");
+        this.#logger.print(new PrettyError(error).stack ?? "");
     }): void {
 
         /**
@@ -135,7 +136,7 @@ export class ErrorLogger {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public attachUncaughtExceptionMonitor(callback: NodeJS.UncaughtExceptionListener = (error, _origin) => {
         this.#logger.error("EXCEPTION MONITOR:");
-        this.#logger.error(error.stack ?? "");
+        this.#logger.print(new PrettyError(error).stack ?? "");
     }): void {
 
         /**
@@ -152,7 +153,7 @@ export class ErrorLogger {
      */
     public attachWarning(callback: NodeJS.WarningListener = (warning) => {
         this.#logger.printf(`WARNING: ${warning.message}`, Color.BLUE);
-        this.#logger.printf(`${warning.stack}`, Color.BLUEVIOLET);
+        this.#logger.print(new PrettyError(warning, { type: "warning" }).stack ?? "");
     }): void {
         process.on("warning", callback);
     }

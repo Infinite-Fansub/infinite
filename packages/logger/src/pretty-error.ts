@@ -7,16 +7,18 @@ const { uniform } = colorConsole;
 
 export class PrettyError extends Error {
 
-    public constructor(message?: string, options?: PrettyErrorOptions) {
+    public constructor(err?: Error, options?: PrettyErrorOptions);
+    public constructor(err?: string | Error, options?: PrettyErrorOptions) {
         super();
-        const stackArray = this.stack?.split("\n");
+        const message = err instanceof Error ? err.message : err;
+        const stackArray = err instanceof Error ? err.stack?.split("\n") : this.stack?.split("\n");
         let index = options?.ref ? 2 : 1;
         if (platform() === "win32")
             //@ts-expect-error IK What I'm Doing
-            while (stackArray[index].includes("logger/dist") || stackArray[index].includes("logger/src") || !stackArray[index].includes(`at ${/[A-Z]/}:${sep}`)) index++;
+            while (stackArray[index].includes("logger/dist") || stackArray[index].includes("logger/src") || stackArray[index].includes(`at ${/[A-Z]/}:${sep}`)) index++;
         else
             //@ts-expect-error IK What I'm Doing
-            while (stackArray[index].includes("logger/dist") || stackArray[index].includes("logger/src") || !stackArray[index].includes(`at ${sep}`)) index++;
+            while (stackArray[index].includes("logger/dist") || stackArray[index].includes("logger/src") || stackArray[index].includes(`at ${sep}`)) index++;
         //@ts-expect-error IK What I'm Doing
         const error = stackArray[index].slice(stackArray[index].indexOf("at ") + 3, stackArray[index].length);
         const fullPath = error.includes("(") ? error.substring(error.indexOf("(") + 1, error.indexOf(")")) : error;
@@ -43,7 +45,7 @@ export class PrettyError extends Error {
         }
 
         // eslint-disable-next-line max-len,max-statements-per-line
-        this.stack = `\x08${PrettyError.colorLocation(errorFile)} - ${uniform("error", Color.RED)}${errCode} ${message ?? ""}\n${options?.lines?.length ? PrettyError.generateLines(options.lines) : PrettyError.line(errorFile)} ${line}${options?.lines?.length ? "" : `\n${(() => { let result = ""; for (let i = 0; i < Number.parseInt(col) + lineNum.length - spaceCount; i++)result += " "; return result; })()}^`}\x1B[`;
+        this.stack = `\x08${PrettyError.colorLocation(errorFile)} - ${uniform(options?.type ?? "error", Color.RED)}${errCode} ${message ?? ""}\n${options?.lines?.length ? PrettyError.generateLines(options.lines) : PrettyError.line(errorFile)} ${line}${options?.lines?.length ? "" : `\n${(() => { let result = ""; for (let i = 0; i < Number.parseInt(col) + lineNum.length - spaceCount; i++)result += " "; return result; })()}^`}\x1B[`;
     }
 
     private static colorLocation(file: string): string {

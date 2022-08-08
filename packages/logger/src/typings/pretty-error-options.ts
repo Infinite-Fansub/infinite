@@ -1,6 +1,7 @@
 import { Color } from "colours.js/dst";
 
 export type PrettyErrorOptions = {
+    type?: string,
     errCode?: string,
     ref?: boolean,
     lines?: Array<{ err: string, marker: MarkerOptions }>
