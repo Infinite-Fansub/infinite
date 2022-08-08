@@ -4,7 +4,8 @@
         "*.d.ts",
         "*.graphql",
         "dist/",
-        "*.js"
+        "*.js",
+        "docs/"
     ],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
