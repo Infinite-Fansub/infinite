@@ -32,7 +32,7 @@ declare global {
     }
 
     class PrettyError extends Error {
-        constructor(message?: string, options?: PrettyErrorOptions);
+        constructor(err?: string | Error, options?: PrettyErrorOptions);
         private static colorLocation;
         private static line;
         private static marker;
