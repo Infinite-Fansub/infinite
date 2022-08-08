@@ -26,11 +26,11 @@ export class Logger {
         this.#showDay = options?.showDay ?? false;
     }
 
-    private addMemoryToString(log: string): string {
+    public addMemoryToString(log: string): string {
         return `${uniform(getCurrentMemoryHeap(), this.#colors.errorColor)} ${log}`;
     }
 
-    private date(): string {
+    public date(): string {
         return uniform(uniform(`[${new Date()[this.#showDay ? "toLocaleString" : "toLocaleTimeString"]()}]`, Color.WHITE, true), Color.BLACK);
     }
 

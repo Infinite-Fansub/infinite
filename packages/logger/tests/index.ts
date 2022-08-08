@@ -1,14 +1,19 @@
-// import { deepStrictEqual, throws } from "node:assert";
-// import { Logger, ErrorLogger } from "../src";
+import { ErrorLogger } from "../src";
 
-// const logger = new Logger({ emojis: { emoji: "E" } });
+const eLogger = new ErrorLogger({});
+eLogger.attachBeforeExit();
+eLogger.attachExit();
+eLogger.attachRejectionHandled();
+eLogger.attachUnhandledRejection();
+eLogger.attachUncaughtException();
+eLogger.attachUncaughtExceptionMonitor();
+eLogger.attachWarning();
 
-// deepStrictEqual(logger.emojis.emoji, "E");
-
-// // throws(() => { throw new ErrorLogger("T"); });
-
-import { Logger } from "@infinite-fansub/logger";
-
-const logger = new Logger({ showDay: false });
-
-logger.defaultPrint("T");
+process.emitWarning("This is a important warning", {
+    type: "IDK",
+    code: "404",
+    detail: "IDFK"
+});
+new Promise((_, reject) => reject("Rejected bitch"));
+// @ts-expect-error this is for the test
+somefunc();

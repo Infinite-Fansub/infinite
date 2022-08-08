@@ -1,6 +1,6 @@
 {
     "name": "@infinite-fansub/logger",
-    "version": "1.8.0",
+    "version": "2.0.0",
     "description": "Infinite logger",
     "author": "Infinite",
     "license": "AGPL-3.0",
@@ -10,6 +10,7 @@
         "test": "ts-node tests/index.ts",
         "eslint": "eslint",
         "eslint:fix": "eslint --fix",
+        "docs": "rm -rf docs && typedoc && typedoc --plugin typedoc-plugin-coverage --plugin typedoc-plugin-markdown",
         "build": "rm -rf dist && tsc",
         "build:watch": "rm -rf dist && tsc --watch",
         "build:test": "tsc --noEmit",

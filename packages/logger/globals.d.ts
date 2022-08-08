@@ -4,13 +4,13 @@ import { LoggerOptions, Emojis, Colors, PrettyErrorOptions } from "./src"
 export { };
 
 declare global {
-    export const logger: Logger;
+    const logger: Logger;
 
-    export class Logger {
+    class Logger {
         #private;
         constructor(options?: LoggerOptions);
-        private addMemoryToString;
-        private date;
+        addMemoryToString(log: string): string;
+        date(): string;
         infinitePrint(log: string | TemplateStringsArray): void;
         log(log: string | TemplateStringsArray, ...values: Array<string>): void;
         error(log: string | TemplateStringsArray, ...values: Array<string>): void;
@@ -31,7 +31,7 @@ declare global {
         set colors(colors: Partial<Colors>);
     }
 
-    export class PrettyError extends Error {
+    class PrettyError extends Error {
         constructor(message?: string, options?: PrettyErrorOptions);
         private static colorLocation;
         private static line;
