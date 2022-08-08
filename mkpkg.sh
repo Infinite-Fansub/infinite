@@ -19,7 +19,7 @@ mkdir tests && echo '// Main tests here' > tests/index.ts
 
 # ignore files
 echo $'node_modules/\n.DS_Store\ndist/' > .gitignore
-echo $'tests/\nsrc/\n.gitignore\ntsconfig.json' > .npmignore
+echo $'tests/\nsrc/\ndocs/\n.gitignore\ntsconfig.json' > .npmignore
 
 # npm files
 echo "{
@@ -34,6 +34,7 @@ echo "{
         \"test\": \"ts-node tests/index.ts\",
         \"eslint\": \"eslint\",
         \"eslint:fix\": \"eslint --fix\",
+        \"docs\": \"rm -rf docs && typedoc && typedoc --plugin typedoc-plugin-coverage --plugin typedoc-plugin-markdown\",
         \"build\": \"rm -rf dist && tsc\",
         \"build:watch\": \"rm -rf dist && tsc --watch\",
         \"build:test\": \"tsc --noEmit\",
@@ -54,6 +55,17 @@ echo '{
         "rootDir": "src",
         "outDir": "dist",
         "baseUrl": "."
+    },
+    "typedocOptions": {
+        "entryPoints": [
+            "./src/index.ts"
+        ],
+        "entryPointStrategy": "expand",
+        "plugin": [
+            "typedoc-theme-hierarchy",
+            "typedoc-plugin-coverage"
+        ],
+        "theme": "hierarchy"
     },
     "include": [
         "src/**/*"

@@ -3,6 +3,9 @@ import { Event, ICommand, ISlashCommand, IClientEvents } from "../typings";
 import recursiveRead from "./recursive-read";
 import { BaseClient } from "../base-client";
 
+/**
+ * Load the text commands
+ */
 export function loadCommands(this: BaseClient): void {
     if (!this.dirs.commands) return;
     recursiveRead(this.dirs.commands)
@@ -12,6 +15,9 @@ export function loadCommands(this: BaseClient): void {
         });
 }
 
+/**
+ * Load the slash commands
+ */
 export function loadSlashCommands(this: BaseClient): void {
     if (!this.dirs.slashCommands) return;
     recursiveRead(this.dirs.slashCommands)
@@ -21,6 +27,9 @@ export function loadSlashCommands(this: BaseClient): void {
         });
 }
 
+/**
+ * Load the events
+ */
 export function loadEvents(this: BaseClient): void {
     if (!this.dirs.events) return;
     recursiveRead(this.dirs.events)

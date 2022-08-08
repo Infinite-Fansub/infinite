@@ -1,4 +1,3 @@
-import { PrettyError } from "@infinite-fansub/logger";
 import { ActionRowBuilder, APIEmbed, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, ComponentType, EmbedBuilder, InteractionReplyOptions } from "discord.js";
 import { PaginatorOptions } from "../typings";
 import { CollectorHelper } from "./collector-helper";
@@ -33,8 +32,16 @@ export class Paginator {
 
     }
 
+    /**
+     * Create a paginator
+     *
+     * @param interaction - The interaction the paginator is created for
+     *
+     * @returns The embed and buttons that can be passed to <interaction>.reply or .editReply or .followUp
+     */
     public create(interaction: ChatInputCommandInteraction): InteractionReplyOptions {
-        const collector = new CollectorHelper(ComponentType.Button, interaction, {
+        const collector = new CollectorHelper<ComponentType.Button>(interaction, {
+            // Filter inputs so only the user who sent the interaction can use the buttons
             filter: (i) => i.user.id === interaction.user.id,
             time: this.#options.time,
             kill: true
@@ -44,30 +51,47 @@ export class Paginator {
         let index = 0;
 
         collector.create((int) => {
+            // Check if the user wants to go back a page
             if (int.customId === "leftArrow") {
                 index--;
+                // If the user is on the first page, go to the last page
                 if (index < 0) index = embeds.length - 1;
+                // Check if the user wants to go forward a page
             } else if (int.customId === "rightArrow") {
                 index++;
+                // If the user is on the last page, go back to the first page
                 if (index > embeds.length - 1) index = 0;
             }
 
+            // Update the interaction with the new page
             int.update({ embeds: [embeds[index]] });
         });
 
+        // Starting point sending page 1 and the buttons
         return { embeds: [embeds[index]], components: [this.#buildButtons] };
     }
 
+    /**
+     * Generates the embeds for the paginator
+     *
+     * @returns The embeds for the paginator
+     */
     #buildEmbeds(): Array<EmbedBuilder> {
-        // this.#embeds.map((embedData) => new EmbedBuilder({ ...this.#options.embedDefaults, ...embedData }));
         const newArray: Array<EmbedBuilder> = [];
+        // Check for restricted length
         const length = !this.#options.max_len || this.#options.max_len > this.#embeds.length ? this.#embeds.length : this.#options.max_len;
+        // Recreation of the `Array.prototype.map` method
         for (let i = 0; i < length; i++) {
             newArray.push(new EmbedBuilder({ ...this.#options.embedDefaults, footer: { text: ` Page ${i + 1}/${length}` }, ...this.#embeds[i] }));
         }
         return newArray;
     }
 
+    /**
+     * Generates the buttons for the paginator
+     *
+     * @returns The buttons for the paginator
+     */
     #buildButtons: ActionRowBuilder<ButtonBuilder> = new ActionRowBuilder<ButtonBuilder>({
         components: [
             new ButtonBuilder({

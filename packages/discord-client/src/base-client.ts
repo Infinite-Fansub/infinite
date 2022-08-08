@@ -33,22 +33,40 @@ export class BaseClient extends Client {
         }
     }
 
+    /**
+     * @param dirs - The directories that contain the specific files
+     */
     public addDirs(dirs: DirectoryTypes): void {
         this.dirs.commands = dirs.commands;
         this.dirs.slashCommands = dirs.slashCommands;
         this.dirs.events = dirs.events;
     }
 
+    /**
+     * Add the text commands
+     *
+     * @param path - The path of the folder the text commands are in
+     */
     public addCommands(path: string): void {
         this.addDirs({ commands: path });
         this.loadCommands();
     }
 
+    /**
+     * Add the slash commands
+     *
+     * @param path - The path of the folder the slash commands are in
+     */
     public addSlashCommands(path: string): void {
         this.addDirs({ slashCommands: path });
         this.loadSlashCommands();
     }
 
+    /**
+     * Add the events
+     *
+     * @param path - The path of the folder the events are in
+     */
     public addEvents(path: string): void {
         this.addDirs({ events: path });
         this.loadEvents();

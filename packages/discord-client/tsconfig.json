@@ -3,7 +3,21 @@
     "compilerOptions": {
         "rootDir": "src",
         "outDir": "dist",
-        "baseUrl": "."
+        "baseUrl": ".",
+        "types": [
+            "@infinite-fansub/logger/globals"
+        ]
+    },
+    "typedocOptions": {
+        "entryPoints": [
+            "./src/index.ts"
+        ],
+        "entryPointStrategy": "expand",
+        "plugin": [
+            "typedoc-theme-hierarchy",
+            "typedoc-plugin-coverage"
+        ],
+        "theme": "hierarchy"
     },
     "include": [
         "src/**/*"

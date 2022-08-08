@@ -25,7 +25,7 @@ New-Item -Path '.\tests\index.ts' -ItemType File -Value "// Main tests here`n"
 
 # ignore files
 New-Item -Path '.\.gitignore' -ItemType File -Value "node_modules/`n.DS_Store`ndist/`n"
-New-Item -Path '.\.npmignore' -ItemType File -Value "tests/`nsrc/`n.gitignore`ntsconfig.json`n"
+New-Item -Path '.\.npmignore' -ItemType File -Value "tests/`nsrc/`ndocs/`n.gitignore`ntsconfig.json`n"
 
 # npm files
 New-Item -Path '.\package.json' -ItemType File -Value "{
@@ -40,6 +40,7 @@ New-Item -Path '.\package.json' -ItemType File -Value "{
         `"test`": `"ts-node tests/index.ts`",
         `"eslint`": `"eslint`",
         `"eslint:fix`": `"eslint --fix`",
+        `"docs`": `"rm -rf docs && typedoc && typedoc --plugin typedoc-plugin-coverage --plugin typedoc-plugin-markdown`",
         `"build`": `"rm -rf dist && tsc`",
         `"build:watch`": `"rm -rf dist && tsc --watch`",
         `"build:test`": `"tsc --noEmit`",
@@ -60,6 +61,17 @@ New-Item -Path '.\tsconfig.json' -ItemType File -Value '{
         "rootDir": "src",
         "outDir": "dist",
         "baseUrl": "."
+    },
+    "typedocOptions": {
+        "entryPoints": [
+            "./src/index.ts"
+        ],
+        "entryPointStrategy": "expand",
+        "plugin": [
+            "typedoc-theme-hierarchy",
+            "typedoc-plugin-coverage"
+        ],
+        "theme": "hierarchy"
     },
     "include": [
         "src/**/*"

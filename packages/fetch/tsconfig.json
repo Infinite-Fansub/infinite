@@ -5,6 +5,17 @@
         "outDir": "dist",
         "baseUrl": "."
     },
+    "typedocOptions": {
+        "entryPoints": [
+            "./src/index.ts"
+        ],
+        "entryPointStrategy": "expand",
+        "plugin": [
+            "typedoc-theme-hierarchy",
+            "typedoc-plugin-coverage"
+        ],
+        "theme": "hierarchy"
+    },
     "include": [
         "src/**/*"
     ]

@@ -12,6 +12,9 @@ import recursiveRead from "./recursive-read";
 import { watchFile } from "fs";
 import { BaseClient } from "../base-client";
 
+/**
+ * Load the text commands
+ */
 export function loadCommands(this: BaseClient & { cache: FileCache }): void {
     if (!this.dirs.commands) return;
     if (!this.cache) this.cache = {};
@@ -27,6 +30,9 @@ export function loadCommands(this: BaseClient & { cache: FileCache }): void {
         });
 }
 
+/**
+ * Load the slash commands
+ */
 export function loadSlashCommands(this: BaseClient & { cache: FileCache }): void {
     if (!this.dirs.slashCommands) return;
     if (!this.cache) this.cache = {};
@@ -42,6 +48,9 @@ export function loadSlashCommands(this: BaseClient & { cache: FileCache }): void
         });
 }
 
+/**
+ * Load the events
+ */
 export function loadEvents(this: BaseClient & { cache: FileCache }): void {
     if (!this.dirs.events) return;
     if (!this.cache) this.cache = {};

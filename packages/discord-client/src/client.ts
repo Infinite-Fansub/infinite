@@ -1,10 +1,23 @@
-import { Interaction, Message, ChannelType, Awaitable, SlashCommandBuilder, ComponentType, RESTPostAPIApplicationCommandsJSONBody, Routes, REST, ChatInputCommandInteraction } from "discord.js";
+import {
+    Interaction,
+    Message,
+    ChannelType,
+    Awaitable,
+    SlashCommandBuilder,
+    ComponentType,
+    RESTPostAPIApplicationCommandsJSONBody,
+    Routes,
+    REST,
+    ChatInputCommandInteraction
+} from "discord.js";
+
 import { IClientOptions, IClientEvents, CollectorOptions } from "./typings";
+import { CollectorHelper } from "./utils/collector-helper";
 import { BaseClient } from "./base-client";
 import { RedisClient } from "./utils/redis";
-import { CollectorHelper } from "./utils/collector-helper";
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+require("@infinite-fansub/logger");
 
-// Stolen from discord.js
 export interface InfiniteClient {
     on: (<K extends keyof IClientEvents>(event: K, listener: (...args: IClientEvents[K]) => Awaitable<void>) => this) & (<S extends string | symbol>(
         event: Exclude<S, keyof IClientEvents>,
@@ -25,12 +38,14 @@ export interface InfiniteClient {
 }
 
 export class InfiniteClient extends BaseClient {
-
     declare public static options: IClientOptions;
     private static djsRest: REST;
     private static _redis?: RedisClient;
     public prefix: string;
 
+    /**
+     * @param options - The options to start the client
+     */
     public constructor(options: IClientOptions) {
         super(options);
 
@@ -66,6 +81,11 @@ export class InfiniteClient extends BaseClient {
             this.on("messageCreate", async (message) => await this.onMessage(message));
     }
 
+    /**
+     * Handle slash commands
+     * @param interaction - The interaction recieved from the `interactionCreate` event
+     * @returns
+     */
     private async onInteraction(interaction: Interaction): Promise<void> {
         if (!interaction.isChatInputCommand()) return;
 
@@ -83,6 +103,11 @@ export class InfiniteClient extends BaseClient {
 
     }
 
+    /**
+     * Handle text based commands
+     * @param message - The message recieved from the `messageCreate` event
+     * @returns
+     */
     private async onMessage(message: Message): Promise<void> {
         if (message.author.bot || message.channel.type === ChannelType.DM) return;
         if (message.content.startsWith(this.prefix)) {
@@ -101,6 +126,10 @@ export class InfiniteClient extends BaseClient {
         }
     }
 
+    /**
+     * Registers the slash commands to the Discord endpoint.
+     * @returns
+     */
     private async registerSlashCommands(): Promise<void> {
         if (!this.slashCommands.size) return;
 
@@ -129,6 +158,10 @@ export class InfiniteClient extends BaseClient {
         });
     }
 
+    /**
+     * Initiates the choosen database
+     * @returns
+     */
     private async buildDb(): Promise<void> {
         if (this.options.database === undefined) {
             if (this.options.disable?.warnings) return;
@@ -153,6 +186,10 @@ export class InfiniteClient extends BaseClient {
         }
     }
 
+    /**
+     * Responsible for creating and handling the redis client
+     * @returns
+     */
     private async createRedisClient(): Promise<void> {
         if (!(typeof this.options.database === "object" && this.options.database.type === "redis")) return;
         let url = "redis://localhost:6379";
@@ -168,8 +205,14 @@ export class InfiniteClient extends BaseClient {
         await client.open(url).then(() => this.emit("databaseOpen", this, client));
     }
 
-    public collector<T extends Exclude<ComponentType, "ActionRow">>(type: T, interaction: ChatInputCommandInteraction, options: CollectorOptions = { time: 18000 }): CollectorHelper<T> {
-        return new CollectorHelper(type, interaction, options);
+    /**
+     * Helper function to create a collector instance
+     * @param interaction - The interaction recieved from a command execution
+     * @param options - The options passed to the collector constructor
+     * @returns A CollectorHelper instance
+     */
+    public collector<T extends Exclude<ComponentType, "ActionRow">>(interaction: ChatInputCommandInteraction, options: CollectorOptions = { time: 18000 }): CollectorHelper<T> {
+        return new CollectorHelper(interaction, options);
     }
 
     public get redis(): RedisClient {
