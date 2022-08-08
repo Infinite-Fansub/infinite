@@ -20,10 +20,8 @@ export class ErrorLogger {
     }) {
 
         this.#options = {
-            ...{
-                showStack: true,
-                showNotification: true
-            },
+            showStack: true,
+            showNotification: true,
             ...options
         };
 
