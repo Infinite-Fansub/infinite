@@ -1,4 +1,6 @@
-export interface ErrorLoggerOptions {
+import { AttachOptions } from "./attach-options";
+
+export interface ErrorLoggerOptions extends AttachOptions {
     exit?: {
         beforeExit?: boolean,
         exit?: boolean

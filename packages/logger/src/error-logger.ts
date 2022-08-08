@@ -1,45 +1,59 @@
 import { inspect } from "node:util";
-import { ErrorLoggerOptions } from "./typings";
+import { AttachOptions, ErrorLoggerOptions } from "./typings";
 import { Logger } from "./logger";
 import { Color, colorConsole } from "colours.js/dst";
 import { PrettyError } from "./pretty-error";
 
 export class ErrorLogger {
 
-    #logger = new Logger({ showMemory: false, emojis: { emoji: "⚠️" }, colors: { color: Color.fromHex("#FF6200") } });
+    #options: ErrorLoggerOptions;
+    #logger = new Logger({
+        showMemory: false,
+        emojis: { emoji: "⚠️" },
+        colors: { color: Color.fromHex("#FF6200") }
+    });
 
     public constructor(options: ErrorLoggerOptions = {
         exit: { exit: true },
         exceptions: { monitor: true },
         warnings: true
     }) {
-        if (options.exit === true) {
+
+        this.#options = {
+            ...{
+                showStack: true,
+                showNotification: true
+            },
+            ...options
+        };
+
+        if (this.#options.exit === true) {
             this.attachBeforeExit();
             this.attachExit();
-        } else if (typeof options.exit === "object") {
-            options.exit.beforeExit && this.attachBeforeExit();
-            options.exit.exit && this.attachExit();
+        } else if (typeof this.#options.exit === "object") {
+            this.#options.exit.beforeExit && this.attachBeforeExit();
+            this.#options.exit.exit && this.attachExit();
         }
 
-        if (options.promises === true) {
+        if (this.#options.promises === true) {
             this.attachRejectionHandled();
             this.attachUnhandledRejection();
-        } else if (typeof options.promises === "object") {
-            options.promises.handledPromise && this.attachRejectionHandled();
-            options.promises.unhandledPromise && this.attachUnhandledRejection();
+        } else if (typeof this.#options.promises === "object") {
+            this.#options.promises.handledPromise && this.attachRejectionHandled();
+            this.#options.promises.unhandledPromise && this.attachUnhandledRejection();
         }
 
-        if (options.exceptions === true) {
+        if (this.#options.exceptions === true) {
             this.attachUncaughtException();
-        } else if (typeof options.exceptions === "object") {
-            if (options.exceptions.ignore && options.exceptions.monitor) this.attachUncaughtException();
+        } else if (typeof this.#options.exceptions === "object") {
+            if (this.#options.exceptions.ignore && this.#options.exceptions.monitor) this.attachUncaughtException();
             else {
-                options.exceptions.ignore && this.attachUncaughtException();
-                options.exceptions.monitor && this.attachUncaughtExceptionMonitor();
+                this.#options.exceptions.ignore && this.attachUncaughtException();
+                this.#options.exceptions.monitor && this.attachUncaughtExceptionMonitor();
             }
         }
 
-        options.warnings && this.attachWarning();
+        this.#options.warnings && this.attachWarning();
     }
 
     /**
@@ -117,9 +131,10 @@ export class ErrorLogger {
      */
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public attachUncaughtException(callback: NodeJS.UncaughtExceptionListener = (error, _origin) => {
-        this.#logger.error("New error caught:");
-        this.#logger.print(new PrettyError(error).stack ?? "");
-    }): void {
+        this.#options.showNotification && this.#logger.error("New error caught:");
+        this.#options.showStack && this.#logger.print(new PrettyError(error).stack ?? "");
+    }, options?: AttachOptions): void {
+        this.#options = { ...this.#options, ...options };
 
         /**
          * @param error - The uncaught error
@@ -135,9 +150,10 @@ export class ErrorLogger {
      */
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public attachUncaughtExceptionMonitor(callback: NodeJS.UncaughtExceptionListener = (error, _origin) => {
-        this.#logger.error("EXCEPTION MONITOR:");
-        this.#logger.print(new PrettyError(error).stack ?? "");
-    }): void {
+        this.#options.showNotification && this.#logger.error("EXCEPTION MONITOR:");
+        this.#options.showStack && this.#logger.print(new PrettyError(error).stack ?? "");
+    }, options?: AttachOptions): void {
+        this.#options = { ...this.#options, ...options };
 
         /**
          * @param error - The uncaught error
@@ -152,9 +168,11 @@ export class ErrorLogger {
      * @see [How can it be usefull](https://nodejs.org/api/process.html#emitting-custom-warnings)
      */
     public attachWarning(callback: NodeJS.WarningListener = (warning) => {
-        this.#logger.printf(`WARNING: ${warning.message}`, Color.BLUE);
-        this.#logger.print(new PrettyError(warning, { type: "warning" }).stack ?? "");
-    }): void {
+        this.#options.showNotification && this.#logger.printf(`WARNING: ${warning.message}`, Color.BLUE);
+        this.#options.showStack && this.#logger.print(new PrettyError(warning, { type: "warning" }).stack ?? "");
+    }, options?: AttachOptions): void {
+        this.#options = { ...this.#options, ...options };
+
         process.on("warning", callback);
     }
 }
