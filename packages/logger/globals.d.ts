@@ -1,5 +1,5 @@
 import { Color, Colour, DirectGradient, JoinedGradient } from "colours.js/dst";
-import { LoggerOptions, Emojis, Colors, PrettyErrorOptions } from "./src"
+import { LoggerOptions, Emojis, Colors, PrettyErrorOptions } from "./"
 
 export { };
 
