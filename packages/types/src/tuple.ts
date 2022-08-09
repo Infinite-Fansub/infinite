@@ -1,18 +1,11 @@
-import { float } from "./float";
-import { integer } from "./integer";
-
-type TypesOfTuples = Minimal | Complex;
-type Minimal = string | number | boolean | Date | float | integer | Record<PropertyKey, unknown>;
-type Complex = Array<Minimal | Array<unknown>>;
-
-export type Tuple<T extends TypesOfTuples, K extends Minimal | undefined = undefined> = T extends Minimal
+export type Tuple<T, K = undefined> = T extends Array<unknown>
+    ? K extends undefined
+    ? T
+    : [T, K]
+    : T extends unknown
     ? K extends undefined
     ? T extends Record<PropertyKey, unknown>
     ? [T]
     : [T]
-    : [T, K]
-    : T extends Complex
-    ? K extends undefined
-    ? T
     : [T, K]
     : null;
