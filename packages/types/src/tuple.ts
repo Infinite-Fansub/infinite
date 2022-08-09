@@ -8,4 +8,4 @@ export type Tuple<T, K = undefined> = T extends Array<unknown>
     ? [T]
     : [T]
     : [T, K]
-    : null;
+    : never;
