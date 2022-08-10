@@ -25,7 +25,7 @@
     "dependencies": {
         "@infinite-fansub/logger": "*",
         "discord.js": "^14.1.2",
-        "mongoose": "^6.3.1",
+        "mongoose": "^6.5.2",
         "redis": "^4.0.6",
         "redis-om": "^0.3.3",
         "tslib": "^2.4.0"
