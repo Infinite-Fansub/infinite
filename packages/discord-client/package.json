@@ -24,7 +24,7 @@
     "homepage": "https://github.com/Infinite-Fansub/infinite/tree/main/packages/discord-client",
     "dependencies": {
         "@infinite-fansub/logger": "*",
-        "discord.js": "^14.1.2",
+        "discord.js": "^14.2.0",
         "mongoose": "^6.3.1",
         "redis": "^4.0.6",
         "redis-om": "^0.3.3",
