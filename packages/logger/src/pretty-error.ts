@@ -7,7 +7,6 @@ const { uniform } = colorConsole;
 
 export class PrettyError extends Error {
 
-    public constructor(err?: Error, options?: PrettyErrorOptions);
     public constructor(err?: string | Error, options?: PrettyErrorOptions) {
         super();
         const message = err instanceof Error ? err.message : err;
