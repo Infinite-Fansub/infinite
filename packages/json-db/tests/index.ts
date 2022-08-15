@@ -4,16 +4,16 @@ const client = new Client().setup(".");
 const schema = client.schema({
     a: { type: "number", required: true },
     b: "boolean",
-    c: { type: "tuple", elements: ["number"] } as const
+    c: { type: "object", data: { d: "string", e: { type: "number", required: true } } }
 });
 
-const model = client.model("TEST", schema);
+const model = client.model("TEST", schema, true);
 (async () => {
-    const doc = await model.get("3");
-    if (!doc) return;
+    let doc = await model.get("3") ?? model.create();
+    // doc._id = "3";
     doc.a = 3;
     doc.b = true;
-    doc.c = [1];
+    doc.c = { e: 3 };
     console.log(doc);
     await model.save(doc);
 })();
