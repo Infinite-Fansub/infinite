@@ -65,18 +65,18 @@ export class Schema<S extends SchemaDefinition, M extends MethodsDefinition> {
                     if (!value.required) value.required = false;
                     // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
                     if (!value.default) value.default = undefined;
-                }
-                if (value.type === "array") {
+                } else if (value.type === "array") {
                     // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
                     if (!value.elements) value.elements = undefined;
                     if (!value.required) value.required = false;
-                } if (value.type === "tuple") {
+                } else if (value.type === "tuple") {
                     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, @typescript-eslint/strict-boolean-expressions
                     if (!value.elements) throw new PrettyError("A Tuple type needs to have its elements defined");
                     if (!value.required) value.required = false;
-                } if (value.type === "object")
+                } else {
                     if (!value.data) value.data = undefined;
                     else value.data = this.#parse(value.data);
+                }
             }
             //@ts-expect-error More Shenanigans
             schema[key] = value;

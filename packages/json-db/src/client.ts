@@ -18,12 +18,12 @@ export class Client {
         return new Schema<T, M>(schemaData, methods, options);
     }
 
-    public model<T extends Schema<SchemaDefinition, MethodsDefinition>>(name: string, schema?: T): Model<T> & ExtractSchemaMethods<T> {
+    public model<T extends Schema<SchemaDefinition, MethodsDefinition>>(name: string, schema?: T, readable?: boolean): Model<T> & ExtractSchemaMethods<T> {
         if (this.#models.has(name)) return <any>this.#models.get(name)!;
 
         if (!schema) throw new Error("You have to pass a schema if it doesnt exist");
 
-        const model = new Model(name, schema);
+        const model = new Model(name, schema, readable);
         this.#models.set(name, model);
         return <any>model;
     }

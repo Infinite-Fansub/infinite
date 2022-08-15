@@ -1,36 +1,40 @@
-import { SchemaDefinition } from "./typings";
+import { FieldMap, SchemaDefinition } from "./typings";
 
 export class Document<S extends SchemaDefinition> {
     readonly #schema: S;
-    public constructor(schema: S, public id?: string, file?: string) {
+
+    /*
+    * Using any so everything works as intended
+    * I couldn't find any other way to do this or implement the MapSchema type directly in th class
+    */
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    [key: string]: any;
+
+    public constructor(schema: S, public _id: string, file?: string) {
 
         this.#schema = schema;
 
         if (file) {
             const parsed = <S>JSON.parse(file);
             Object.keys(parsed).forEach((key) => {
-                //@ts-expect-error IDK
                 this[key] = parsed[key];
             });
         }
 
         Object.keys(schema).forEach((key) => {
-            //@ts-expect-error IDK
             if (this[key]) return;
-            //@ts-expect-error IDK
             this[key] = undefined;
         });
     }
 
-    public toString(): string {
+    public toString(pretty?: boolean): string {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const obj: Record<string, any> = {};
+        const obj: Record<string, keyof FieldMap> = {};
 
         Object.keys(this.#schema).forEach((key) => {
-            //@ts-expect-error IDK
             obj[key] = this[key];
         });
 
-        return JSON.stringify(obj);
+        return JSON.stringify(obj, null, pretty ? 4 : undefined);
     }
 }
