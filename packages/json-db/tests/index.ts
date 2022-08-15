@@ -4,10 +4,11 @@ const client = new Client().setup(".");
 const schema = client.schema({
     a: { type: "number", required: true },
     b: "boolean",
-    c: { type: "object", data: { d: "string", e: { type: "number", required: true } } }
+    c: { type: "object", data: { d: "string", e: { type: "number", required: true } } },
+    f: { type: "tuple", elements: ["number"] } as const
 });
 
-const model = client.model("TEST", schema, true);
+const model = client.model("TEST", schema);
 (async () => {
     let doc = await model.get("3") ?? model.create();
     // doc._id = "3";

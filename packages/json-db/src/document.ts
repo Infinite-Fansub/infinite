@@ -1,4 +1,4 @@
-import { FieldMap, SchemaDefinition } from "./typings";
+import { FieldTypes, SchemaDefinition } from "./typings";
 
 export class Document<S extends SchemaDefinition> {
     readonly #schema: S;
@@ -29,7 +29,7 @@ export class Document<S extends SchemaDefinition> {
 
     public toString(pretty?: boolean): string {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const obj: Record<string, keyof FieldMap> = {};
+        const obj: Record<string, FieldTypes> = {};
 
         Object.keys(this.#schema).forEach((key) => {
             obj[key] = this[key];

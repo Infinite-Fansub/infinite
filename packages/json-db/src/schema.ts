@@ -71,7 +71,7 @@ export class Schema<S extends SchemaDefinition, M extends MethodsDefinition> {
                     if (!value.required) value.required = false;
                 } else if (value.type === "tuple") {
                     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, @typescript-eslint/strict-boolean-expressions
-                    if (!value.elements) throw new PrettyError("A Tuple type needs to have its elements defined");
+                    if (!value.elements || !value.elements.length) throw new PrettyError("A Tuple type needs to have its elements defined");
                     if (!value.required) value.required = false;
                 } else {
                     if (!value.data) value.data = undefined;
