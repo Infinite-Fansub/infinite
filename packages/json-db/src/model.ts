@@ -33,6 +33,7 @@ export class Model<S extends Schema<SchemaDefinition, MethodsDefinition>> {
     }
 
     public async save(doc: Document<ExtractSchemaDefinition<S>>): Promise<void> {
+        // eslint-disable-next-line @typescript-eslint/keyword-spacing
         validateData(doc, <Record<string, FieldTypes>>this.#schema[schemaData]);
         // saves the document to its corresponding file, if it doesnt exist we create the file and save
         await writeFile(resolve(process.env.JSON_DB_PATH ?? process.cwd(), `${this.name}-${doc._id}.json`), doc.toString(!!this.#readable));

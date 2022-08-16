@@ -6,7 +6,7 @@ import { ParseTupleField } from "./parse-tuple-field";
 import { ArrayField, FieldTypes, ObjectField, SchemaDefinition, TupleField } from "./schema-definition";
 
 export type MapSchema<T extends SchemaDefinition, F = true> = F extends true ? {
-    -readonly [K in keyof T as T[K] extends FieldTypes ? T[K]["required"] extends true ? never : K : K]?: T[K] extends ObjectField
+    -readonly [K in keyof T as T[K] extends FieldTypes ? T[K]["required"] extends true ? K : never : never]: T[K] extends ObjectField
     ? ParseObjectField<T[K]>
 
     : T[K] extends ArrayField
@@ -20,7 +20,7 @@ export type MapSchema<T extends SchemaDefinition, F = true> = F extends true ? {
 
     : FieldMap[Exclude<T[K], FieldTypes>] | undefined
 } & {
-        -readonly [K in keyof T as T[K] extends FieldTypes ? T[K]["required"] extends true ? K : never : never]: T[K] extends ObjectField
+        -readonly [K in keyof T as T[K] extends FieldTypes ? T[K]["required"] extends true ? never : K : K]?: T[K] extends ObjectField
         ? ParseObjectField<T[K]>
 
         : T[K] extends ArrayField
