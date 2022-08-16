@@ -48,7 +48,7 @@ export interface ArrayField extends BaseField {
 
 export interface TupleField extends BaseField {
     type: "tuple";
-    elements: readonly [...Array<TupleDefinition>];
+    elements: [TupleDefinition, ...Array<TupleDefinition>];
     mutable?: boolean;
 }
 

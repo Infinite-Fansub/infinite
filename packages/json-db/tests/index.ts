@@ -5,7 +5,7 @@ const schema = client.schema({
     a: { type: "number", required: true },
     b: "boolean",
     c: { type: "object", data: { d: "string", e: { type: "number", required: true } } },
-    f: { type: "tuple", elements: ["number"] } as const
+    f: { type: "tuple", elements: ["number", { type: "array" }, "boolean", "boolean"] }
 });
 
 const model = client.model("TEST", schema);
@@ -15,6 +15,7 @@ const model = client.model("TEST", schema);
     doc.a = 3;
     doc.b = true;
     doc.c = { e: 3 };
+    doc.f = [3, ["F"], true, true];
     console.log(doc);
     await model.save(doc);
 })();

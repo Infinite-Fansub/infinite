@@ -1,9 +1,8 @@
 import { FieldMap } from "./field-map";
 import { MapSchema } from "./map-schema";
-import { ParseArrayField } from "./parse-array-field";
-import { ParseBasicFields } from "./parse-basic-fields";
-import { ParseObjectField } from "./parse-object-field";
-import { ParseTupleField } from "./parse-tuple-field";
+import { ParseArray } from "./parse-array-field";
+import { ParseObject } from "./parse-object-field";
+import { ParseTuple } from "./parse-tuple-field";
 import { ArrayField, FieldTypes, ObjectField, SchemaDefinition, TupleField } from "./schema-definition";
 
 /**
@@ -11,16 +10,16 @@ import { ArrayField, FieldTypes, ObjectField, SchemaDefinition, TupleField } fro
  */
 export type DeconstructTuple<T extends TupleField["elements"]> = {
     [K in keyof T]: T[K] extends ObjectField
-    ? ParseObjectField<T[K]>
+    ? ParseObject<T[K]>
 
     : T[K] extends ArrayField
-    ? ParseArrayField<T[K]>
+    ? ParseArray<T[K]>
 
     : T[K] extends TupleField
-    ? ParseTupleField<T[K]>
+    ? ParseTuple<T[K]>
 
     : T[K] extends FieldTypes
-    ? ParseBasicFields<T[K]>
+    ? FieldMap[Exclude<T[K]["type"], FieldTypes>]
 
     : T[K] extends SchemaDefinition
     ? MapSchema<T[K]>

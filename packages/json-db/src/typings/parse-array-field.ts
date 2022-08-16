@@ -10,7 +10,7 @@ export type ParseArrayField<T extends ArrayField> = T["required"] extends true
     ? ParseArray<T>
     : ParseArray<T> | undefined;
 
-type ParseArray<T extends ArrayField> = T["elements"] extends ObjectField
+export type ParseArray<T extends ArrayField> = T["elements"] extends ObjectField
     ? FieldMap<ParseObjectField<T["elements"]>>["array"]
 
     : T["elements"] extends ArrayField

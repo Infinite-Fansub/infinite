@@ -24,7 +24,7 @@ export class Client {
         if (!schema) throw new Error("You have to pass a schema if it doesnt exist");
 
         const model = new Model(name, schema, readable);
-        this.#models.set(name, <any>model);
+        this.#models.set(name, model);
         return <any>model;
     }
 }

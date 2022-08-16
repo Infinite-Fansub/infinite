@@ -13,6 +13,6 @@ export interface FieldMap<T = string, M = false> {
     date: Date;
     point: Point;
     array: Array<T>;
-    tuple: M extends true ? { -readonly [K in keyof T]: T[K] } : T;
+    tuple: M extends true ? T : { readonly [K in keyof T]: T[K] };
     object: Record<string, SchemaDefinition>;
 }
