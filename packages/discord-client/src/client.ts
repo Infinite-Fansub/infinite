@@ -11,7 +11,7 @@ import {
     ChatInputCommandInteraction
 } from "discord.js";
 
-import { IClientOptions, IClientEvents, CollectorOptions } from "./typings";
+import { IClientOptions, IClientEvents, CollectorOptions, ISlashCommand } from "./typings";
 import { CollectorHelper } from "./utils/collector-helper";
 import { BaseClient } from "./base-client";
 import { RedisClient } from "./utils/redis";
@@ -67,7 +67,8 @@ export class InfiniteClient extends BaseClient {
         this.login(this.options.token).then(async () => {
 
             if (!this.options.disable?.interactions)
-                await this.registerSlashCommands();
+                await this.registerGlobalCommands();
+            await this.registerGuildCommands();
 
             await this.buildDb();
         });
@@ -79,6 +80,9 @@ export class InfiniteClient extends BaseClient {
 
         if (!this.options.disable?.messageCommands)
             this.on("messageCreate", async (message) => await this.onMessage(message));
+
+        if (!this.options.disable?.registerOnJoin)
+            this.on("guildCreate", async (guild) => await this.registerGuildCommands(guild.id));
     }
 
     /**
@@ -127,35 +131,52 @@ export class InfiniteClient extends BaseClient {
     }
 
     /**
-     * Registers the slash commands to the Discord endpoint.
+     * Register global commands
      * @returns
      */
-    private async registerSlashCommands(): Promise<void> {
+    private async registerGlobalCommands(): Promise<void> {
+        if (!this.slashCommands.size) return;
+
+        const json = [...this.slashCommands.values()].filter((command) => command.post === "GLOBAL")
+            .map((command) => command.data instanceof SlashCommandBuilder ? command.data.toJSON() : <RESTPostAPIApplicationCommandsJSONBody>command.data);
+
+        if (json.length) {
+            await InfiniteClient.djsRest.put(Routes.applicationCommands(this.user?.id ?? ""), { body: json })
+                .then(() => this.emit("loadedSlash", json, "Global", this));
+        }
+    }
+
+    /**
+     * Register slash commands for the specified guild
+     * @param id - The guild ID to register commands for (optional)
+     * @returns
+     */
+    private async registerGuildCommands(id?: string): Promise<void> {
         if (!this.slashCommands.size) return;
 
         const allSlashCommands = [...this.slashCommands.values()];
 
-        const globalCommands = allSlashCommands.filter((command) => command.post === "GLOBAL");
-        const globalJson = globalCommands.map((command) => command.data instanceof SlashCommandBuilder ? command.data.toJSON() : <RESTPostAPIApplicationCommandsJSONBody>command.data);
+        const guildCommands = (guildId: string): Array<ISlashCommand> => allSlashCommands.filter((command) => command.post === undefined
+            || command.post === "ALL"
+            || command.post === guildId
+            || Array.isArray(command.post) && command.post.includes(guildId));
 
-        if (globalCommands.length) {
-            await InfiniteClient.djsRest.put(Routes.applicationCommands(this.user?.id ?? ""), { body: globalJson })
-                .then(() => this.emit("loadedSlash", globalJson, "Global", this));
-        }
-
-        (await this.guilds.fetch()).forEach((_, guildId) => {
-            const guildCommands = allSlashCommands.filter((command) => command.post === undefined
-                || command.post === "ALL"
-                || command.post === guildId
-                || Array.isArray(command.post) && command.post.includes(guildId));
-
-            const guildJson = guildCommands.map((command) => command.data instanceof SlashCommandBuilder ? command.data.toJSON() : <RESTPostAPIApplicationCommandsJSONBody>command.data);
+        if (id) {
+            const guildJson = guildCommands(id).map((command) => command.data instanceof SlashCommandBuilder ? command.data.toJSON() : <RESTPostAPIApplicationCommandsJSONBody>command.data);
 
             if (guildCommands.length) {
-                InfiniteClient.djsRest.put(Routes.applicationGuildCommands(this.user?.id ?? "", guildId), { body: guildJson })
-                    .then(() => this.emit("loadedSlash", guildJson, guildId, this));
+                InfiniteClient.djsRest.put(Routes.applicationGuildCommands(this.user?.id ?? "", id), { body: guildJson })
+                    .then(() => this.emit("loadedSlash", guildJson, id, this));
             }
-        });
+        } else
+            (await this.guilds.fetch()).forEach((_, gId) => {
+                const guildJson = guildCommands(gId).map((command) => command.data instanceof SlashCommandBuilder ? command.data.toJSON() : <RESTPostAPIApplicationCommandsJSONBody>command.data);
+
+                if (guildCommands.length) {
+                    InfiniteClient.djsRest.put(Routes.applicationGuildCommands(this.user?.id ?? "", gId), { body: guildJson })
+                        .then(() => this.emit("loadedSlash", guildJson, gId, this));
+                }
+            });
     }
 
     /**

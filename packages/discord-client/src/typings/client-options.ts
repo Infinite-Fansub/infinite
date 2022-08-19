@@ -8,7 +8,8 @@ export interface IClientOptions extends ClientOptions {
     disable?: {
         warnings?: boolean,
         interactions?: boolean,
-        messageCommands?: boolean
+        messageCommands?: boolean,
+        registerOnJoin?: boolean
     };
     dirs?: DirectoryTypes;
     watch?: boolean | {
