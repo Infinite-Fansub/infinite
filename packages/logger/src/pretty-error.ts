@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { sep } from "node:path";
 import { Color, colorConsole } from "colours.js/dst";
 import { readFileSync } from "fs";
@@ -11,16 +12,18 @@ export class PrettyError extends Error {
         super();
         const message = err instanceof Error ? err.message : err;
         const stackArray = err instanceof Error ? err.stack?.split("\n") : this.stack?.split("\n");
-        let index = options?.ref ? 2 : 1;
+        let index = 1;
+
         if (platform() === "win32")
             //@ts-expect-error IK What I'm Doing
-            while (stackArray[index].includes("logger/dist") || stackArray[index].includes("logger/src") || stackArray[index].includes(`at ${/[A-Z]/}:${sep}`)) index++;
+            while (stackArray[index].includes("logger/dist") || stackArray[index].includes("logger/src") || stackArray[index].includes(`at ${/[A-Z]/}:${sep}`) || stackArray[index].includes("(<anonymous>)") || stackArray[index].includes(options?.ref)) index++;
         else
             //@ts-expect-error IK What I'm Doing
-            while (stackArray[index].includes("logger/dist") || stackArray[index].includes("logger/src") || stackArray[index].includes(`at ${sep}`)) index++;
+            while (stackArray[index].includes("logger/dist") || stackArray[index].includes("logger/src") || stackArray[index].includes(`at ${sep}`) || stackArray[index].includes("(<anonymous>)") || stackArray[index].includes(options?.ref)) index++;
         //@ts-expect-error IK What I'm Doing
         const error = stackArray[index].slice(stackArray[index].indexOf("at ") + 3, stackArray[index].length);
         const fullPath = error.includes("(") ? error.substring(error.indexOf("(") + 1, error.indexOf(")")) : error;
+
         let errorFile = fullPath.split(sep).pop() ?? "";
         let errCode = options?.errCode ? ` ${uniform(options.errCode, Color.fromHex("#767676"))}:` : ":";
 
@@ -35,7 +38,7 @@ export class PrettyError extends Error {
             [filename, lineNum, col] = splittedPath;
         }
 
-        if (!filename || !lineNum || !col) throw new Error();
+        if (!filename || !lineNum || !col) throw new Error(`FileName: ${filename}, LineNum: ${lineNum}, Col: ${col}`);
         let line = options?.lines?.length ? "" : PrettyError.getLine(filename, Number.parseInt(lineNum));
         let spaceCount = 0;
         while (line.startsWith(" ")) {
@@ -43,7 +46,7 @@ export class PrettyError extends Error {
             spaceCount++;
         }
 
-        // eslint-disable-next-line max-len,max-statements-per-line
+        // eslint-disable-next-line max-statements-per-line
         this.stack = `\x08${PrettyError.colorLocation(errorFile)} - ${uniform(options?.type ?? "error", Color.RED)}${errCode} ${message ?? ""}\n${options?.lines?.length ? PrettyError.generateLines(options.lines) : PrettyError.line(errorFile)} ${line}${options?.lines?.length ? "" : `\n${(() => { let result = ""; for (let i = 0; i < Number.parseInt(col) + lineNum.length - spaceCount; i++)result += " "; return result; })()}^`}\x1B[`;
     }
 
