@@ -4,6 +4,7 @@ import { SchemaDefinition, SchemaOptions, MethodsDefinition, TupleField, ParsedS
 import { methods, schemaData } from "./utils/symbols";
 import { ParsingError } from "./utils";
 import { PrettyError } from "@infinite-fansub/logger";
+import { sep } from "node:path";
 
 export class Schema<S extends SchemaDefinition, M extends MethodsDefinition> {
 
@@ -37,7 +38,7 @@ export class Schema<S extends SchemaDefinition, M extends MethodsDefinition> {
                 if (value === "object" || value === "tuple")
                     throw new PrettyError(`Type '${value}' needs to use its object definition`, {
                         errCode: "R403",
-                        ref: true,
+                        ref: `packages${sep}json-db${sep}src`,
                         lines: [
                             {
                                 err: inspect({ [key]: schema[key] }, { colors: true }),

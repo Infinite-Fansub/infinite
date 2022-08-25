@@ -1,8 +1,8 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { inspect } from "node:util";
 
-// eslint-disable-next-line @typescript-eslint/no-namespace
-export namespace ParsingError {
-    export function Object(key: string): string {
+export const ParsingError = {
+    Object: (key: string): string => {
         return inspect({
             // eslint-disable-next-line object-curly-newline
             [key]: {
@@ -10,21 +10,17 @@ export namespace ParsingError {
                 // eslint-disable-next-line object-curly-newline
             }
         }, { colors: true, compact: false });
-    }
-
-    export function Tuple(key: string): string {
+    },
+    Tuple: (key: string): string => {
         return inspect({
             [key]: {
                 type: "tuple",
                 elements: ["string"]
             }
         }, { colors: true, compact: false });
-    }
-
-    // eslint-disable-next-line @typescript-eslint/no-namespace
-    export namespace Info {
-        // eslint-disable-next-line @typescript-eslint/naming-convention, @typescript-eslint/no-shadow
-        export const Object = inspect({
+    },
+    Info: {
+        Object: inspect({
             artist: {
                 type: "object",
                 data: {
@@ -33,14 +29,12 @@ export namespace ParsingError {
                     hobbies: "array"
                 }
             }
-        }, { colors: true });
-
-        // eslint-disable-next-line @typescript-eslint/naming-convention, @typescript-eslint/no-shadow
-        export const Tuple = inspect({
+        }, { colors: true }),
+        Tuple: inspect({
             information: {
                 type: "tuple",
                 elements: ["string", "number", { createdAt: "date", joinedAt: "date" }, "array"]
             }
-        }, { colors: true, depth: null });
+        }, { colors: true, depth: null })
     }
-}
+};
