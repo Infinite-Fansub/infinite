@@ -37,7 +37,7 @@ export function validateData(data: Document<SchemaDefinition> | SchemaDefinition
         } else if (value.type === "point") {
             if (typeof dataVal !== "object") throw new Error();
             if (!dataVal.longitude || !dataVal.latitude) throw new Error();
-            if (Object.keys(dataVal).length < 2) throw new Error();
+            if (Object.keys(dataVal).length > 2) throw new Error();
         } else if (value.type === "boolean") {
             if (typeof dataVal !== "boolean") throw new Error();
         } else if (value.type === "number") {
