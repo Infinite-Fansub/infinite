@@ -1,6 +1,6 @@
 import { inspect } from "node:util";
 import { Color } from "colours.js/dst";
-import { SchemaDefinition, SchemaOptions, MethodsDefinition } from "./typings";
+import { SchemaDefinition, SchemaOptions, MethodsDefinition, TupleField, ParsedSchemaDefinition } from "./typings";
 import { methods, schemaData } from "./utils/symbols";
 import { ParsingError } from "./utils";
 import { PrettyError } from "@infinite-fansub/logger";
@@ -10,7 +10,7 @@ export class Schema<S extends SchemaDefinition, M extends MethodsDefinition> {
     // eslint-disable-next-line @typescript-eslint/explicit-member-accessibility
     [methods]: M;
     // eslint-disable-next-line @typescript-eslint/explicit-member-accessibility
-    [schemaData]: S;
+    [schemaData]: ParsedSchemaDefinition;
 
     public constructor(public data: S, methodsData?: M, public readonly options: SchemaOptions = {}) {
         this[schemaData] = this.#parse(data);
@@ -29,7 +29,7 @@ export class Schema<S extends SchemaDefinition, M extends MethodsDefinition> {
         return this;
     }
 
-    #parse<T extends SchemaDefinition>(schema: T): T {
+    #parse<T extends SchemaDefinition>(schema: T): ParsedSchemaDefinition {
         Object.keys(schema).forEach((key) => {
             let value = schema[key];
             if (typeof value === "string") {
@@ -55,26 +55,34 @@ export class Schema<S extends SchemaDefinition, M extends MethodsDefinition> {
                     });
 
                 if (value === "array")
-                    value = { type: value, elements: undefined, required: false };
+                    value = { type: value, elements: "string", default: undefined, required: false };
                 else
                     value = { type: value, default: undefined, required: false };
             } else {
                 // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
                 if (!value.type) throw new PrettyError("Type not defined");
                 if (value.type !== "array" && value.type !== "object" && value.type !== "tuple") {
-                    if (!value.required) value.required = false;
                     // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
                     if (!value.default) value.default = undefined;
-                } else if (value.type === "array") {
-                    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-                    if (!value.elements) value.elements = undefined;
                     if (!value.required) value.required = false;
+                } else if (value.type === "array") {
+                    if (!value.default) value.default = undefined;
+                    if (!value.required) value.required = false;
+                    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+                    if (!value.elements) value.elements = "string";
+                    if (typeof value.elements === "object" && !Array.isArray(value.elements)) value.elements = this.#parse(value.elements);
                 } else if (value.type === "tuple") {
-                    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, @typescript-eslint/strict-boolean-expressions
-                    if (!value.elements || !value.elements.length) throw new PrettyError("A Tuple type needs to have its elements defined");
+                    if (!value.default) value.default = undefined;
                     if (!value.required) value.required = false;
                     if (!value.mutable) value.mutable = false;
+                    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, @typescript-eslint/strict-boolean-expressions
+                    if (!value.elements || !Array.isArray(value.elements) || !value.elements.length) throw new PrettyError("A Tuple type needs to have its elements defined");
+
+                    // eslint-disable-next-line @typescript-eslint/keyword-spacing
+                    else value.elements = <TupleField["elements"]><unknown>this.#parse(<SchemaDefinition><unknown>value.elements);
                 } else {
+                    if (!value.default) value.default = undefined;
+                    if (!value.required) value.required = false;
                     if (!value.data) value.data = undefined;
                     else value.data = this.#parse(value.data);
                 }
@@ -83,6 +91,6 @@ export class Schema<S extends SchemaDefinition, M extends MethodsDefinition> {
             schema[key] = value;
         });
         // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-        return schema;
+        return <ParsedSchemaDefinition>schema;
     }
 }

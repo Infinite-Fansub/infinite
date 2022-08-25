@@ -1,4 +1,4 @@
-import { FieldTypes, SchemaDefinition } from "./typings";
+import { FieldTypes, ParsedSchemaDefinition, SchemaDefinition } from "./typings";
 
 export class Document<S extends SchemaDefinition> {
     readonly #schema: S;
@@ -23,7 +23,8 @@ export class Document<S extends SchemaDefinition> {
 
         Object.keys(schema).forEach((key) => {
             if (this[key]) return;
-            this[key] = undefined;
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+            this[key] = (<ParsedSchemaDefinition><unknown>schema[key]).default;
         });
     }
 
