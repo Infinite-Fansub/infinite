@@ -12,5 +12,6 @@
         "**/.project": true,
         "**/.settings": true,
         "**/node_modules": true
-    }
+    },
+    "typescript.tsdk": "node_modules\\typescript\\lib"
 }

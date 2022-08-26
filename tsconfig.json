@@ -29,6 +29,8 @@
         "allowSyntheticDefaultImports": true,
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
-        "incremental": false
+        "incremental": false,
+        // temporary (thnx djs)
+        "skipLibCheck": true
     }
 }
