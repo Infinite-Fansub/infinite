@@ -1,9 +1,8 @@
 /* eslint-disable */
-
 import { resolve } from "path";
 import { Model } from "./model";
 import { Schema } from "./schema";
-import { ExtractSchemaMethods, MethodsDefinition, SchemaDefinition, SchemaOptions } from "./typings";
+import { ExtractSchemaMethods, MethodsDefinition, SchemaDefinition, SchemaOptions, Module, WithModules } from "./typings";
 
 export class Client {
     #models: Map<string, Model<any>> = new Map();
@@ -16,6 +15,15 @@ export class Client {
 
     public schema<T extends SchemaDefinition, M extends MethodsDefinition>(schemaData: T, methods?: M, options?: SchemaOptions): Schema<T, M> {
         return new Schema<T, M>(schemaData, methods, options);
+    }
+
+    public withModules<T extends ReadonlyArray<Module>>(modules: T): this & WithModules<T> {
+        modules.forEach((module) => {
+            //@ts-expect-error shenanigans
+            this[module.name] = new module.ctor();
+        });
+
+        return <any>this;
     }
 
     public model<T extends Schema<SchemaDefinition, MethodsDefinition>>(name: string, schema?: T, readable?: boolean): Model<T> & ExtractSchemaMethods<T> {

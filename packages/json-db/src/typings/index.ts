@@ -10,3 +10,4 @@ export * from "./parse-array-field";
 export * from "./parse-basic-fields";
 export * from "./parse-object-field";
 export * from "./parse-tuple-field";
+export * from "./modules";
