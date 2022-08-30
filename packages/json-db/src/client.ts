@@ -2,7 +2,7 @@
 import { resolve } from "path";
 import { Model } from "./model";
 import { Schema } from "./schema";
-import { ExtractSchemaMethods, MethodsDefinition, SchemaDefinition, SchemaOptions, Module, WithModules } from "./typings";
+import { ExtractSchemaMethods, MethodsDefinition, SchemaDefinition, SchemaOptions, Module, WithModules, ExctractName } from "./typings";
 
 export class Client {
     #models: Map<string, Model<any>> = new Map();
@@ -17,7 +17,7 @@ export class Client {
         return new Schema<T, M>(schemaData, methods, options);
     }
 
-    public withModules<T extends ReadonlyArray<Module>>(modules: T): this & WithModules<T> {
+    public withModules<T extends Array<Module>>(modules: ExctractName<T>): this & WithModules<T> {
         modules.forEach((module) => {
             //@ts-expect-error shenanigans
             this[module.name] = new module.ctor();
