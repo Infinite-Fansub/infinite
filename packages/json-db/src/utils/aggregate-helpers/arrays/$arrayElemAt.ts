@@ -1,3 +1,3 @@
-export default function $arrayElemAt<T>(arr: T[], index: number) {
-  return arr[index]
+export default function $arrayElemAt<T>(arr: Array<T>, index: number): T {
+    return arr[index];
 }

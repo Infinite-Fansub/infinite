@@ -1,3 +1,3 @@
-export function $size(arr: unknown[]) {
-  return arr.length;
+export function $size(arr: Array<unknown>): number {
+    return arr.length;
 }

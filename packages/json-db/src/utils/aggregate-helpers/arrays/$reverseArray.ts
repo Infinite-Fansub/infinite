@@ -1,3 +1,3 @@
-export function $reverseArray<T>(arr: T[]) {
-  return arr.reverse()
+export function $reverseArray<T>(arr: Array<T>): Array<T> {
+    return arr.reverse();
 }

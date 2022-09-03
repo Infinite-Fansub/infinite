@@ -1,12 +1,19 @@
-export function $range(start: number, end: number, step?: number) {
-  let totalCount = []
+export function $range(
+    start: number,
+    end: number,
+    step?: number
+): Array<number> {
+    let totalCount = [];
 
-  if (start < end && typeof step === "number" && step <= 0) return []
+    if (start < end && typeof step === "number" && step <= 0) return [];
 
-  while ((typeof step === "number" && step < 0 && start > end) || start < end) {
-    totalCount.push(start)
-    start += step ?? 1
-  }
+    while (
+        typeof step === "number" && step < 0 && start > end
+        || start < end
+    ) {
+        totalCount.push(start);
+        start += step ?? 1;
+    }
 
-  return totalCount
+    return totalCount;
 }

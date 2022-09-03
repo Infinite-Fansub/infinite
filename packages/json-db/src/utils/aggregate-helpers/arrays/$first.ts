@@ -1,3 +1,3 @@
-export function $first<T>(arr: T[]) {
-  return arr[0]
+export function $first<T>(arr: Array<T>): T {
+    return arr[0];
 }

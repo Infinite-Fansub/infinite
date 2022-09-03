@@ -1,3 +1,3 @@
-export function $isArray(arr: unknown[]) {
-  return Array.isArray(arr)
+export function $isArray(arr: Array<unknown>): boolean {
+    return Array.isArray(arr);
 }
