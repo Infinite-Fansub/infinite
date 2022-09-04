@@ -1,21 +1,22 @@
 /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/unbound-method */
 import { Client } from "discord.js";
-import { DirectoryTypes, Event, ICommand, ISlashCommand, IClientOptions } from "./typings/index";
+import { Event, ICommand, ISlashCommand, IClientOptions } from "./typings/index";
 import * as normalHandler from "./utils/normal-handler";
 import * as watchHandler from "./utils/watch-handler";
 
-export class BaseClient extends Client {
+export class BaseClient<O extends IClientOptions = IClientOptions> extends Client {
 
-    public commands: Map<string, ICommand> = new Map();
-    public slashCommands: Map<string, ISlashCommand> = new Map();
-    public events: Map<string, Event<any>> = new Map();
-    public dirs: DirectoryTypes;
+    public commands = new Map<string, ICommand>();
+    public slashCommands = new Map<string, ISlashCommand>();
+    public events = new Map<string, Event<any>>();
+    public dirs: Exclude<O["dirs"], undefined>;
     protected loadCommands: () => void;
     protected loadSlashCommands: () => void;
     protected loadEvents: () => void;
 
-    protected constructor(public override options: IClientOptions) {
+    protected constructor(public override options: O) {
         super(options);
+        //@ts-expect-error nice1 typescript
         this.dirs = options.dirs ?? {};
 
         if (typeof options.watch === "object") {
@@ -36,10 +37,10 @@ export class BaseClient extends Client {
     /**
      * @param dirs - The directories that contain the specific files
      */
-    public addDirs(dirs: DirectoryTypes): void {
-        this.dirs.commands = dirs.commands;
-        this.dirs.slashCommands = dirs.slashCommands;
-        this.dirs.events = dirs.events;
+    public addDirs(dirs: O["dirs"]): void {
+        this.dirs.commands = dirs?.commands;
+        this.dirs.slashCommands = dirs?.slashCommands;
+        this.dirs.events = dirs?.events;
     }
 
     /**

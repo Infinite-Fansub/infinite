@@ -7,3 +7,4 @@ export * from "./client-options";
 export * from "./file-cache";
 export * from "./collector-helper";
 export * from "./paginator-options";
+export * from "./module";

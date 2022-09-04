@@ -8,7 +8,7 @@
 */
 
 import { Event, ICommand, ISlashCommand, IClientEvents, FileCache } from "../typings";
-import recursiveRead from "./recursive-read";
+import { recursiveRead } from "./recursive-read";
 import { watchFile } from "fs";
 import { BaseClient } from "../base-client";
 
@@ -19,7 +19,7 @@ export function loadCommands(this: BaseClient & { cache: FileCache }): void {
     if (!this.dirs.commands) return;
     if (!this.cache) this.cache = {};
     recursiveRead(this.dirs.commands)
-        .forEach((path) => {
+        .every((path) => {
             watchFile(path, { interval: 500 }, () => {
                 if (Date.now() - this.cache[path]?.date < 3000) return;
                 this.cache[path] = { path: path, date: Date.now() };
@@ -37,7 +37,7 @@ export function loadSlashCommands(this: BaseClient & { cache: FileCache }): void
     if (!this.dirs.slashCommands) return;
     if (!this.cache) this.cache = {};
     recursiveRead(this.dirs.slashCommands)
-        .forEach((path) => {
+        .every((path) => {
             watchFile(path, { interval: 500 }, () => {
                 if (Date.now() - this.cache[path]?.date < 3000) return;
                 this.cache[path] = { path: path, date: Date.now() };
@@ -55,7 +55,7 @@ export function loadEvents(this: BaseClient & { cache: FileCache }): void {
     if (!this.dirs.events) return;
     if (!this.cache) this.cache = {};
     recursiveRead(this.dirs.events)
-        .forEach((path) => {
+        .every((path) => {
             watchFile(path, { interval: 500 }, () => {
                 if (Date.now() - this.cache[path]?.date < 3000) return;
                 this.cache[path] = { path: path, date: Date.now() };

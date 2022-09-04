@@ -2,16 +2,16 @@ import {
     Interaction,
     Message,
     ChannelType,
-    Awaitable,
     SlashCommandBuilder,
     ComponentType,
     RESTPostAPIApplicationCommandsJSONBody,
     Routes,
     REST,
-    ChatInputCommandInteraction
+    ChatInputCommandInteraction,
+    Awaitable
 } from "discord.js";
 
-import { IClientOptions, IClientEvents, CollectorOptions, ISlashCommand } from "./typings";
+import { IClientOptions, IClientEvents, CollectorOptions, ISlashCommand, Module, ExctractName, WithModules } from "./typings";
 import { CollectorHelper } from "./utils/collector-helper";
 import { BaseClient } from "./base-client";
 import { RedisClient } from "./utils/redis";
@@ -37,7 +37,7 @@ export interface InfiniteClient {
     ) => this);
 }
 
-export class InfiniteClient extends BaseClient {
+export class InfiniteClient<O extends IClientOptions = IClientOptions> extends BaseClient<O> {
     declare public static options: IClientOptions;
     private static djsRest: REST;
     private static _redis?: RedisClient;
@@ -46,7 +46,7 @@ export class InfiniteClient extends BaseClient {
     /**
      * @param options - The options to start the client
      */
-    public constructor(options: IClientOptions) {
+    public constructor(options: O) {
         super(options);
 
         if (!this.options.token) throw new Error("No token was specified");
@@ -83,6 +83,16 @@ export class InfiniteClient extends BaseClient {
 
         if (!this.options.disable?.registerOnJoin)
             this.on("guildCreate", async (guild) => await this.registerGuildCommands(guild.id));
+    }
+
+    public withModules<T extends Array<Module>>(modules: ExctractName<T>): this & WithModules<T> {
+        modules.forEach((module) => {
+            //@ts-expect-error shenanigans
+            this[module.name] = new module.ctor(this);
+        });
+
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/keyword-spacing, @typescript-eslint/no-explicit-any
+        return <any>this;
     }
 
     /**

@@ -5,19 +5,23 @@ export interface IClientOptions extends ClientOptions {
     token: string;
     prefix?: string;
     database?: DatabaseTypes;
-    disable?: {
-        warnings?: boolean,
-        interactions?: boolean,
-        messageCommands?: boolean,
-        registerOnJoin?: boolean
-    };
+    disable?: DisableOptions;
     dirs?: DirectoryTypes;
-    watch?: boolean | {
-        commands?: boolean,
-        slashCommands?: boolean,
-        events?: boolean
-    };
+    watch?: WatchOptions | boolean;
 }
+
+export type WatchOptions = {
+    commands?: boolean,
+    slashCommands?: boolean,
+    events?: boolean
+};
+
+export type DisableOptions = {
+    warnings?: boolean,
+    interactions?: boolean,
+    messageCommands?: boolean,
+    registerOnJoin?: boolean
+};
 
 export type DatabaseTypes = MongoType | RedisType | "json";
 
