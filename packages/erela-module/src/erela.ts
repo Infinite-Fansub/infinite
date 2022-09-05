@@ -26,6 +26,7 @@ export class ErelaModule {
     #loadErelaEvents(): void {
         if (!this.#client.dirs.erela) return;
         recursiveRead(this.#client.dirs.erela)
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             .every(async (path) => {
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 const event: Event<any> = (await import(path)).default;

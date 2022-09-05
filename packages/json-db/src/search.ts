@@ -38,7 +38,7 @@ export class Search<S extends SchemaDefinition> {
     }
 
     //@ts-expect-error TODO
-    #createWhere(field: string) {
+    #createWhere(field: string): void {
         const value = this.#schema[field];
 
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, @typescript-eslint/strict-boolean-expressions
