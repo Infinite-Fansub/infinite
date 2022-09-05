@@ -7,41 +7,26 @@ import {
     RESTPostAPIApplicationCommandsJSONBody,
     Routes,
     REST,
-    ChatInputCommandInteraction,
-    Awaitable
+    ChatInputCommandInteraction
 } from "discord.js";
 
-import { IClientOptions, IClientEvents, CollectorOptions, ISlashCommand, Module, ExctractName, WithModules } from "./typings";
+import { IClientOptions, IClientEvents, CollectorOptions, ISlashCommand, ModifyEvents } from "./typings";
 import { CollectorHelper } from "./utils/collector-helper";
 import { BaseClient } from "./base-client";
 import { RedisClient } from "./utils/redis";
+import { EventConstraint } from "./typings/event-constraint";
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 require("@infinite-fansub/logger");
 
-export interface InfiniteClient {
-    on: (<K extends keyof IClientEvents>(event: K, listener: (...args: IClientEvents[K]) => Awaitable<void>) => this) & (<S extends string | symbol>(
-        event: Exclude<S, keyof IClientEvents>,
-        listener: (...args: Array<unknown>) => Awaitable<void>,
-    ) => this);
-
-    once: (<K extends keyof IClientEvents>(event: K, listener: (...args: IClientEvents[K]) => Awaitable<void>) => this) & (<S extends string | symbol>(
-        event: Exclude<S, keyof IClientEvents>,
-        listener: (...args: Array<unknown>) => Awaitable<void>,
-    ) => this);
-
-    emit: (<K extends keyof IClientEvents>(event: K, ...args: IClientEvents[K]) => boolean) & (<S extends string | symbol>(event: Exclude<S, keyof IClientEvents>, ...args: Array<unknown>) => boolean);
-
-    off: (<K extends keyof IClientEvents>(event: K, listener: (...args: IClientEvents[K]) => Awaitable<void>) => this) & (<S extends string | symbol>(
-        event: Exclude<S, keyof IClientEvents>,
-        listener: (...args: Array<unknown>) => Awaitable<void>,
-    ) => this);
-}
-
-export class InfiniteClient<O extends IClientOptions = IClientOptions> extends BaseClient<O> {
+export class InfiniteClient<O extends IClientOptions = IClientOptions, E extends EventConstraint<E> = IClientEvents> extends BaseClient<O> {
     declare public static options: IClientOptions;
     private static djsRest: REST;
     private static _redis?: RedisClient;
     public prefix: string;
+    declare public on: ModifyEvents<E>["on"];
+    declare public once: ModifyEvents<E>["once"];
+    declare public emit: ModifyEvents<E>["emit"];
+    declare public off: ModifyEvents<E>["off"];
 
     /**
      * @param options - The options to start the client
@@ -83,16 +68,6 @@ export class InfiniteClient<O extends IClientOptions = IClientOptions> extends B
 
         if (!this.options.disable?.registerOnJoin)
             this.on("guildCreate", async (guild) => await this.registerGuildCommands(guild.id));
-    }
-
-    public withModules<T extends Array<Module>>(modules: ExctractName<T>): this & WithModules<T> {
-        modules.forEach((module) => {
-            //@ts-expect-error shenanigans
-            this[module.name] = new module.ctor(this);
-        });
-
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/keyword-spacing, @typescript-eslint/no-explicit-any
-        return <any>this;
     }
 
     /**
@@ -152,6 +127,7 @@ export class InfiniteClient<O extends IClientOptions = IClientOptions> extends B
 
         if (json.length) {
             await InfiniteClient.djsRest.put(Routes.applicationCommands(this.user?.id ?? ""), { body: json })
+                //@ts-expect-error The type exists but because its dynamic ts is having problems
                 .then(() => this.emit("loadedSlash", json, "Global", this));
         }
     }
@@ -176,6 +152,7 @@ export class InfiniteClient<O extends IClientOptions = IClientOptions> extends B
 
             if (guildCommands.length) {
                 InfiniteClient.djsRest.put(Routes.applicationGuildCommands(this.user?.id ?? "", id), { body: guildJson })
+                    //@ts-expect-error The type exists but because its dynamic ts is having problems
                     .then(() => this.emit("loadedSlash", guildJson, id, this));
             }
         } else
@@ -184,6 +161,7 @@ export class InfiniteClient<O extends IClientOptions = IClientOptions> extends B
 
                 if (guildCommands.length) {
                     InfiniteClient.djsRest.put(Routes.applicationGuildCommands(this.user?.id ?? "", gId), { body: guildJson })
+                        //@ts-expect-error The type exists but because its dynamic ts is having problems
                         .then(() => this.emit("loadedSlash", guildJson, gId, this));
                 }
             });
@@ -233,6 +211,7 @@ export class InfiniteClient<O extends IClientOptions = IClientOptions> extends B
         }
         const client = new RedisClient();
         InfiniteClient._redis = client;
+        //@ts-expect-error The type exists but because its dynamic ts is having problems
         await client.open(url).then(() => this.emit("databaseOpen", this, client));
     }
 

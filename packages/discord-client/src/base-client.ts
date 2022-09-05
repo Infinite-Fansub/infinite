@@ -13,6 +13,10 @@ export class BaseClient<O extends IClientOptions = IClientOptions> extends Clien
     protected loadCommands: () => void;
     protected loadSlashCommands: () => void;
     protected loadEvents: () => void;
+    public override on!: any;
+    public override once!: any;
+    public override emit!: any;
+    public override off!: any;
 
     protected constructor(public override options: O) {
         super(options);
