@@ -33,6 +33,7 @@ export class ErelaModule {
                 this.erelaEvents.set(event.event, event);
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
                 this.#manager[event.type](event.event, (...args) => {
+                    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
                     if (event.enabled ?? true) event.run(...args);
                 });
             });
