@@ -18,7 +18,7 @@ jobs:
           npm i
           npm i -ws
       - name: Build the Packages
-        run: npm run build -w @infinite-fansub/discord-client
+        run: npm run build -ws
       - name: Publish Packages
         run: npm publish -w @infinite-fansub/discord-client --access public
         env:

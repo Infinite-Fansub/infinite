@@ -18,7 +18,7 @@ jobs:
           npm i
           npm i -ws
       - name: Build the Packages
-        run: npm run build -w @infinite-fansub/erela-module
+        run: npm run build -ws
       - name: Publish Packages
         run: npm publish -w @infinite-fansub/erela-module --access public
         env:
