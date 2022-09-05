@@ -1,4 +1,4 @@
-import { PrettyError } from "@infinite-fansub/logger/dist";
+import { PrettyError } from "@infinite-fansub/logger";
 import { ActionRowBuilder, APIEmbed, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, ComponentType, EmbedBuilder, InteractionReplyOptions } from "discord.js";
 import { PaginatorOptions } from "../typings";
 import { CollectorHelper } from "./collector-helper";

@@ -1,5 +1,5 @@
 // Work here i will do the changes to the client
-import { InfiniteClient, recursiveRead, Event } from "@infinite-fansub/discord-client/dist";
+import { InfiniteClient, recursiveRead, Event } from "@infinite-fansub/discord-client";
 import { Manager, Payload } from "erela.js";
 import { ErelaOptions } from "./typings";
 

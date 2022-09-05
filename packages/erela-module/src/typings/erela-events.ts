@@ -1,4 +1,4 @@
-import { IClientEvents } from "@infinite-fansub/discord-client/dist";
+import { IClientEvents } from "@infinite-fansub/discord-client";
 import { Player, Track, TrackEndEvent, TrackExceptionEvent, TrackStartEvent, TrackStuckEvent, UnresolvedTrack, WebSocketClosedEvent } from "erela.js";
 
 export interface ErelaEvents extends IClientEvents {

@@ -1,4 +1,4 @@
-import { DirectoryTypes, IClientOptions } from "@infinite-fansub/discord-client/dist";
+import { DirectoryTypes, IClientOptions } from "@infinite-fansub/discord-client";
 import { NodeOptions } from "erela.js";
 
 export interface ErelaOptions extends IClientOptions {
