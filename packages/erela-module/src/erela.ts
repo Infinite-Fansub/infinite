@@ -6,13 +6,13 @@ import { ErelaOptions } from "./typings";
 export class ErelaModule {
 
     readonly #client: InfiniteClient<ErelaOptions>;
-    readonly #manager: Manager;
+    public readonly manager: Manager;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     public erelaEvents = new Map<string, Event<any>>();
 
     public constructor(client: InfiniteClient<ErelaOptions>) {
         this.#client = client;
-        this.#manager = new Manager({
+        this.manager = new Manager({
             nodes: client.options.nodes,
             send(id: string, payload: Payload) {
                 const guild = client.guilds.cache.get(id);
@@ -26,14 +26,13 @@ export class ErelaModule {
     #loadErelaEvents(): void {
         if (!this.#client.dirs.erela) return;
         recursiveRead(this.#client.dirs.erela)
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-            .every(async (path) => {
+            .forEach(async (path) => {
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 const event: Event<any> = (await import(path)).default;
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
                 this.erelaEvents.set(event.event, event);
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-                this.#manager[event.type](event.event, (...args) => {
+                this.manager[event.type](event.event, (...args) => {
                     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
                     if (event.enabled ?? true) event.run(...args);
                 });

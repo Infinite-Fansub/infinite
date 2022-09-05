@@ -1,6 +1,6 @@
 {
     "name": "@infinite-fansub/erela-module",
-    "version": "1.0.0",
+    "version": "0.6.0",
     "description": "Erela module for the discord client",
     "author": "Infinite",
     "license": "AGPL-3.0",
