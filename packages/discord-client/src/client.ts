@@ -10,7 +10,7 @@ import {
     ChatInputCommandInteraction
 } from "discord.js";
 
-import { IClientOptions, IClientEvents, CollectorOptions, ISlashCommand, ModifyEvents } from "./typings";
+import { IClientOptions, IClientEvents, CollectorOptions, ISlashCommand, ModifyEvents, Module, ExctractName, WithModules } from "./typings";
 import { CollectorHelper } from "./utils/collector-helper";
 import { BaseClient } from "./base-client";
 import { RedisClient } from "./utils/redis";
@@ -68,6 +68,16 @@ export class InfiniteClient<O extends IClientOptions = IClientOptions, E extends
 
         if (!this.options.disable?.registerOnJoin)
             this.on("guildCreate", async (guild) => await this.registerGuildCommands(guild.id));
+    }
+
+    public withModules<T extends Array<Module>>(modules: ExctractName<T>): this & WithModules<T> {
+        modules.forEach((module) => {
+            //@ts-expect-error shenanigans
+            this[module.name] = new module.ctor(this);
+        });
+
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/keyword-spacing, @typescript-eslint/no-explicit-any
+        return <any>this;
     }
 
     /**
