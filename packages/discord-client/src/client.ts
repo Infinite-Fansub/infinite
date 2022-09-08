@@ -19,7 +19,7 @@ import { EventConstraint } from "./typings/event-constraint";
 require("@infinite-fansub/logger");
 
 export class InfiniteClient<O extends IClientOptions = IClientOptions, E extends EventConstraint<E> = IClientEvents> extends BaseClient<O> {
-    declare public static options: IClientOptions;
+
     private static djsRest: REST;
     private static _redis?: RedisClient;
     public prefix: string;
