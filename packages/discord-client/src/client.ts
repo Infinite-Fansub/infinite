@@ -18,15 +18,19 @@ import { EventConstraint } from "./typings/event-constraint";
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 require("@infinite-fansub/logger");
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export interface InfiniteClient<O extends IClientOptions = IClientOptions, E extends EventConstraint<E> = IClientEvents> {
+    on: ModifyEvents<E>["on"];
+    once: ModifyEvents<E>["once"];
+    emit: ModifyEvents<E>["emit"];
+    off: ModifyEvents<E>["off"];
+}
+
 export class InfiniteClient<O extends IClientOptions = IClientOptions, E extends EventConstraint<E> = IClientEvents> extends BaseClient<O> {
 
     private static djsRest: REST;
     private static _redis?: RedisClient;
     public prefix: string;
-    declare public on: ModifyEvents<E>["on"];
-    declare public once: ModifyEvents<E>["once"];
-    declare public emit: ModifyEvents<E>["emit"];
-    declare public off: ModifyEvents<E>["off"];
 
     /**
      * @param options - The options to start the client
