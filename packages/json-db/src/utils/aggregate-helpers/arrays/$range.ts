@@ -1,8 +1,4 @@
-export function $range(
-    start: number,
-    end: number,
-    step?: number
-): Array<number> {
+export function $range(start: number, end: number, step?: number): Array<number> {
     let totalCount = [];
 
     if (start < end && typeof step === "number" && step <= 0) return [];

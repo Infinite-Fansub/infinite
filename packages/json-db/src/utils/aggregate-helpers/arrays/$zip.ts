@@ -1,7 +1,4 @@
-export function $zip(
-    arr1: Array<unknown>,
-    arr2: Array<unknown>
-): Array<unknown> {
+export function $zip(arr1: Array<unknown>, arr2: Array<unknown>): Array<unknown> {
     const arr3 = [];
 
     for (let i = 0; i < arr1.length; i++) {

@@ -1,7 +1,4 @@
-export function $sortArray<T>(
-    arr: Array<T>,
-    sortBy: number | Record<keyof T, -1 | 0 | 1>
-): Array<T> {
+export function $sortArray<T>(arr: Array<T>, sortBy: number | Record<keyof T, -1 | 0 | 1>): Array<T> {
     if (typeof sortBy === "object") {
         Object.entries<-1 | 0 | 1>(sortBy).forEach(([k, v]) => {
             arr = arr.sort((a, b) => {

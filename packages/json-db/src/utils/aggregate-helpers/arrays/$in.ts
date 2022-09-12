@@ -1,3 +1,3 @@
-export default function $in(arr: Array<unknown>, value: any): boolean {
+export function $in<T>(arr: Array<T>, value: T): boolean {
     return arr.includes(value);
 }
