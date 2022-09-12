@@ -2,7 +2,7 @@
 import { SlashCommandBuilder, ChatInputCommandInteraction, Awaitable, RESTPostAPIApplicationCommandsJSONBody } from "discord.js";
 import { InfiniteClient } from "../client";
 
-export type SlashCommandExecute = (interaction: ChatInputCommandInteraction, client: InfiniteClient) => Awaitable<void>;
+export type SlashCommandExecute = (interaction: ChatInputCommandInteraction, client: InfiniteClient) => Awaitable<unknown>;
 
 export interface ISlashCommand {
     data: Omit<SlashCommandBuilder, "addSubcommand" | "addSubcommandGroup"> | RESTPostAPIApplicationCommandsJSONBody;
