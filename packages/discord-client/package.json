@@ -1,6 +1,6 @@
 {
     "name": "@infinite-fansub/discord-client",
-    "version": "0.16.1",
+    "version": "0.17.0",
     "description": "An open and easy to use discord client",
     "author": "Infinite",
     "license": "AGPL-3.0",
@@ -26,8 +26,7 @@
         "@infinite-fansub/logger": "*",
         "discord.js": "^14.3.0",
         "mongoose": "^6.3.1",
-        "redis": "^4.0.6",
-        "redis-om": "^0.3.3",
+        "redis-om": "github:Didas-git/proposal-redis-om-v2",
         "tslib": "^2.4.0"
     }
 }

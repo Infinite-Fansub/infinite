@@ -1,6 +1,6 @@
 import { ClientEvents, RESTPostAPIApplicationCommandsJSONBody } from "discord.js";
 import { InfiniteClient } from "../client";
-import { RedisClient } from "../utils/redis";
+import { Client as RedisClient } from "redis-om";
 
 export interface IClientEvents extends Omit<ClientEvents, "ready"> {
     ready: [client: InfiniteClient];

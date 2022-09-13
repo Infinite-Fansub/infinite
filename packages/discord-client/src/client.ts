@@ -10,10 +10,10 @@ import {
     ChatInputCommandInteraction
 } from "discord.js";
 
+import { Client as RedisClient } from "redis-om";
 import { IClientOptions, IClientEvents, CollectorOptions, ISlashCommand, ModifyEvents, Module, ExctractName, WithModules } from "./typings";
 import { CollectorHelper } from "./utils/collector-helper";
 import { BaseClient } from "./base-client";
-import { RedisClient } from "./utils/redis";
 import { EventConstraint } from "./typings/event-constraint";
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 require("@infinite-fansub/logger");
@@ -28,8 +28,8 @@ export interface InfiniteClient<O extends IClientOptions = IClientOptions, E ext
 
 export class InfiniteClient<O extends IClientOptions = IClientOptions, E extends EventConstraint<E> = IClientEvents> extends BaseClient<O> {
 
-    private static djsRest: REST;
-    private static _redis?: RedisClient;
+    static #djsRest: REST;
+    public redis?: RedisClient;
     public prefix: string;
 
     /**
@@ -62,7 +62,7 @@ export class InfiniteClient<O extends IClientOptions = IClientOptions, E extends
             await this.buildDb();
         });
 
-        InfiniteClient.djsRest = new REST().setToken(this.options.token);
+        InfiniteClient.#djsRest = new REST().setToken(this.options.token);
 
         if (!this.options.disable?.interactions)
             this.on("interactionCreate", async (interaction) => await this.onInteraction(interaction));
@@ -140,7 +140,7 @@ export class InfiniteClient<O extends IClientOptions = IClientOptions, E extends
             .map((command) => command.data instanceof SlashCommandBuilder ? command.data.toJSON() : <RESTPostAPIApplicationCommandsJSONBody>command.data);
 
         if (json.length) {
-            await InfiniteClient.djsRest.put(Routes.applicationCommands(this.user?.id ?? ""), { body: json })
+            await InfiniteClient.#djsRest.put(Routes.applicationCommands(this.user?.id ?? ""), { body: json })
                 //@ts-expect-error The type exists but because its dynamic ts is having problems
                 .then(() => this.emit("loadedSlash", json, "Global", this));
         }
@@ -165,7 +165,7 @@ export class InfiniteClient<O extends IClientOptions = IClientOptions, E extends
             const guildJson = guildCommands(id).map((command) => command.data instanceof SlashCommandBuilder ? command.data.toJSON() : <RESTPostAPIApplicationCommandsJSONBody>command.data);
 
             if (guildCommands.length) {
-                InfiniteClient.djsRest.put(Routes.applicationGuildCommands(this.user?.id ?? "", id), { body: guildJson })
+                InfiniteClient.#djsRest.put(Routes.applicationGuildCommands(this.user?.id ?? "", id), { body: guildJson })
                     //@ts-expect-error The type exists but because its dynamic ts is having problems
                     .then(() => this.emit("loadedSlash", guildJson, id, this));
             }
@@ -174,7 +174,7 @@ export class InfiniteClient<O extends IClientOptions = IClientOptions, E extends
                 const guildJson = guildCommands(gId).map((command) => command.data instanceof SlashCommandBuilder ? command.data.toJSON() : <RESTPostAPIApplicationCommandsJSONBody>command.data);
 
                 if (guildCommands.length) {
-                    InfiniteClient.djsRest.put(Routes.applicationGuildCommands(this.user?.id ?? "", gId), { body: guildJson })
+                    InfiniteClient.#djsRest.put(Routes.applicationGuildCommands(this.user?.id ?? "", gId), { body: guildJson })
                         //@ts-expect-error The type exists but because its dynamic ts is having problems
                         .then(() => this.emit("loadedSlash", guildJson, gId, this));
                 }
@@ -224,9 +224,9 @@ export class InfiniteClient<O extends IClientOptions = IClientOptions, E extends
             url = this.options.database.path ?? "redis://localhost:6379";
         }
         const client = new RedisClient();
-        InfiniteClient._redis = client;
+        this.redis = client;
         //@ts-expect-error The type exists but because its dynamic ts is having problems
-        await client.open(url).then(() => this.emit("databaseOpen", this, client));
+        await client.connect(url).then(() => this.emit("databaseOpen", this, client));
     }
 
     /**
@@ -237,10 +237,5 @@ export class InfiniteClient<O extends IClientOptions = IClientOptions, E extends
      */
     public collector<T extends Exclude<ComponentType, "ActionRow">>(interaction: ChatInputCommandInteraction, options: CollectorOptions = { time: 18000 }): CollectorHelper<T> {
         return new CollectorHelper(interaction, options);
-    }
-
-    public get redis(): RedisClient {
-        if (!InfiniteClient._redis) throw new Error("You are not using redis as your database or something went wrong");
-        return InfiniteClient._redis;
     }
 }
