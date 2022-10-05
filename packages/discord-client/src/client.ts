@@ -53,13 +53,14 @@ export class InfiniteClient<O extends IClientOptions = IClientOptions, E extends
         if (!this.options.disable?.interactions)
             this.options.dirs?.slashCommands && this.loadSlashCommands();
 
+        this.buildDb();
+
         this.login(this.options.token).then(async () => {
 
             if (!this.options.disable?.interactions)
                 await this.registerGlobalCommands();
             await this.registerGuildCommands();
 
-            await this.buildDb();
         });
 
         InfiniteClient.#djsRest = new REST().setToken(this.options.token);
