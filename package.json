@@ -21,7 +21,7 @@
     "eslint:fix": "eslint \"packages/**\" --fix"
   },
   "devDependencies": {
-    "@types/node": "^18.7.15",
+    "@types/node": "^18.11.4",
     "@typescript-eslint/eslint-plugin": "^5.33.1",
     "@typescript-eslint/parser": "^5.33.1",
     "eslint": "^8.21.0",
