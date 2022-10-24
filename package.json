@@ -27,7 +27,7 @@
     "eslint": "^8.21.0",
     "eslint-plugin-tsdoc": "^0.2.14",
     "ts-node": "^10.7.0",
-    "typedoc": "^0.23.10",
+    "typedoc": "^0.23.18",
     "typedoc-plugin-coverage": "^2.0.0",
     "typedoc-plugin-markdown": "^3.13.4",
     "typedoc-theme-hierarchy": "^3.0.0",
