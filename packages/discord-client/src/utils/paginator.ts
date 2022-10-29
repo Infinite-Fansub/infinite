@@ -51,7 +51,8 @@ export class Paginator {
     public create(interaction: ChatInputCommandInteraction): InteractionReplyOptions {
         const collector = new CollectorHelper<ComponentType.Button>(interaction, {
             // Filter inputs so only the user who sent the interaction can use the buttons
-            filter: (i) => i.user.id === interaction.user.id,
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            filter: (i: any) => i.user.id === interaction.user.id,
             time: this.#options.time,
             kill: true
         });
