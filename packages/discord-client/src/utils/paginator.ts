@@ -57,7 +57,7 @@ export class Paginator {
      * @returns The embed and buttons that can be passed to <interaction>.reply or .editReply or .followUp
      */
     public create(interaction: ChatInputCommandInteraction): InteractionReplyOptions {
-        const embeds = this.#buildEmbeds();
+        const embeds = this.buildEmbeds();
         let index = 0;
 
         this.collector(interaction).create((int) => {
@@ -78,7 +78,7 @@ export class Paginator {
         });
 
         // Starting point sending page 1 and the buttons
-        return { embeds: [embeds[index]], components: [this.#buildButtons] };
+        return { embeds: [embeds[index]], components: [this.buildButtons] };
     }
 
     /**
@@ -86,7 +86,7 @@ export class Paginator {
      *
      * @returns The embeds for the paginator
      */
-    #buildEmbeds(): Array<EmbedBuilder> {
+    protected buildEmbeds(): Array<EmbedBuilder> {
         const newArray: Array<EmbedBuilder> = [];
         // Check for restricted length
         const length = !this.#options.max_len || this.#options.max_len > this.#embeds.length ? this.#embeds.length : this.#options.max_len;
@@ -107,7 +107,7 @@ export class Paginator {
      *
      * @returns The buttons for the paginator
      */
-    #buildButtons: ActionRowBuilder<ButtonBuilder> = new ActionRowBuilder<ButtonBuilder>({
+    protected buildButtons: ActionRowBuilder<ButtonBuilder> = new ActionRowBuilder<ButtonBuilder>({
         components: [
             new ButtonBuilder(this.#options.arrows.leftArrow),
             new ButtonBuilder(this.#options.arrows.rightArrow)
