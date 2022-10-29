@@ -86,16 +86,17 @@ export class Paginator {
      *
      * @returns The embeds for the paginator
      */
-    protected buildEmbeds(): Array<EmbedBuilder> {
+    protected buildEmbeds(embeds?: Array<APIEmbed>): Array<EmbedBuilder> {
         const newArray: Array<EmbedBuilder> = [];
+        const embed = embeds ?? this.#embeds;
         // Check for restricted length
-        const length = !this.#options.max_len || this.#options.max_len > this.#embeds.length ? this.#embeds.length : this.#options.max_len;
+        const length = !this.#options.max_len || this.#options.max_len > embed.length ? embed.length : this.#options.max_len;
         // Recreation of the `Array.prototype.map` method
         for (let i = 0; i < length; i++) {
             newArray.push(new EmbedBuilder({
                 ...this.#options.embedDefaults,
                 footer: { text: ` Page ${i + 1}/${length}` },
-                ...this.#embeds[i]
+                ...embed[i]
             }));
         }
 
