@@ -30,6 +30,14 @@ export class Paginator {
         }
     };
 
+    protected collector = (interaction: ChatInputCommandInteraction): CollectorHelper<ComponentType.Button> => new CollectorHelper<ComponentType.Button>(interaction, {
+        // Filter inputs so only the user who sent the interaction can use the buttons
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        filter: (i: any) => i.user.id === interaction.user.id,
+        time: this.#options.time,
+        kill: true
+    });
+
     public constructor(embeds: Array<APIEmbed>, options: PaginatorOptions = { max_len: Infinity }) {
         if (!embeds.length) throw new PrettyError("No embeds passed in to the paginator");
         this.#embeds = embeds;
@@ -49,18 +57,10 @@ export class Paginator {
      * @returns The embed and buttons that can be passed to <interaction>.reply or .editReply or .followUp
      */
     public create(interaction: ChatInputCommandInteraction): InteractionReplyOptions {
-        const collector = new CollectorHelper<ComponentType.Button>(interaction, {
-            // Filter inputs so only the user who sent the interaction can use the buttons
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            filter: (i: any) => i.user.id === interaction.user.id,
-            time: this.#options.time,
-            kill: true
-        });
-
         const embeds = this.#buildEmbeds();
         let index = 0;
 
-        collector.create((int) => {
+        this.collector(interaction).create((int) => {
             // Check if the user wants to go back a page
             if (int.customId === "leftArrow") {
                 index--;
