@@ -35,7 +35,7 @@ export class InfiniteClient<O extends IClientOptions = IClientOptions, E extends
     /**
      * @param options - The options to start the client
      */
-    public constructor(options: O) {
+    public constructor(public override options: O) {
         super(options);
 
         if (!this.options.token) throw new Error("No token was specified");
@@ -141,7 +141,7 @@ export class InfiniteClient<O extends IClientOptions = IClientOptions, E extends
             .map((command) => command.data instanceof SlashCommandBuilder ? command.data.toJSON() : <RESTPostAPIApplicationCommandsJSONBody>command.data);
 
         if (json.length) {
-            await InfiniteClient.#djsRest.put(Routes.applicationCommands(this.user?.id ?? ""), { body: json })
+            await InfiniteClient.#djsRest.put(Routes.applicationCommands(this.user.id), { body: json })
                 //@ts-expect-error The type exists but because its dynamic ts is having problems
                 .then(() => this.emit("loadedSlash", json, "Global", this));
         }
@@ -166,7 +166,7 @@ export class InfiniteClient<O extends IClientOptions = IClientOptions, E extends
             const guildJson = guildCommands(id).map((command) => command.data instanceof SlashCommandBuilder ? command.data.toJSON() : <RESTPostAPIApplicationCommandsJSONBody>command.data);
 
             if (guildCommands.length) {
-                InfiniteClient.#djsRest.put(Routes.applicationGuildCommands(this.user?.id ?? "", id), { body: guildJson })
+                InfiniteClient.#djsRest.put(Routes.applicationGuildCommands(this.user.id, id), { body: guildJson })
                     //@ts-expect-error The type exists but because its dynamic ts is having problems
                     .then(() => this.emit("loadedSlash", guildJson, id, this));
             }
@@ -175,7 +175,7 @@ export class InfiniteClient<O extends IClientOptions = IClientOptions, E extends
                 const guildJson = guildCommands(gId).map((command) => command.data instanceof SlashCommandBuilder ? command.data.toJSON() : <RESTPostAPIApplicationCommandsJSONBody>command.data);
 
                 if (guildCommands.length) {
-                    InfiniteClient.#djsRest.put(Routes.applicationGuildCommands(this.user?.id ?? "", gId), { body: guildJson })
+                    InfiniteClient.#djsRest.put(Routes.applicationGuildCommands(this.user.id, gId), { body: guildJson })
                         //@ts-expect-error The type exists but because its dynamic ts is having problems
                         .then(() => this.emit("loadedSlash", guildJson, gId, this));
                 }

@@ -5,13 +5,14 @@ import * as normalHandler from "./utils/normal-handler";
 import * as watchHandler from "./utils/watch-handler";
 
 export interface BaseClient {
+    options: any;
     on: any;
     once: any;
     emit: any;
     off: any;
 }
 
-export class BaseClient<O extends IClientOptions = IClientOptions> extends Client {
+export class BaseClient<O extends IClientOptions = IClientOptions> extends Client<true> {
 
     public commands = new Map<string, ICommand>();
     public slashCommands = new Map<string, ISlashCommand>();
@@ -21,7 +22,7 @@ export class BaseClient<O extends IClientOptions = IClientOptions> extends Clien
     protected loadSlashCommands: () => void;
     protected loadEvents: () => void;
 
-    protected constructor(public override options: O) {
+    protected constructor(options: O) {
         super(options);
         //@ts-expect-error nice1 typescript
         this.dirs = options.dirs ?? {};

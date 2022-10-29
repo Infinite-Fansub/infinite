@@ -1,8 +1,7 @@
-import { ClientOptions, IntentsBitField } from "discord.js";
+import { ClientOptions } from "discord.js";
 import { DirectoryTypes } from "./directory-types";
 
-export interface IClientOptions extends Omit<ClientOptions, "intents"> {
-    intents: IntentsBitField;
+export interface IClientOptions extends ClientOptions {
     token: string;
     prefix?: string;
     database?: DatabaseTypes;
