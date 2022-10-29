@@ -17,8 +17,16 @@ export class Paginator {
             author: { name: "InfiniteClient" }
         },
         arrows: {
-            leftArrow: "LEFT",
-            rightArrow: "RIGHT"
+            leftArrow: {
+                label: "LEFT",
+                customId: "leftArrow",
+                style: ButtonStyle.Primary
+            },
+            rightArrow: {
+                label: "RIGHT",
+                customId: "rightArrow",
+                style: ButtonStyle.Primary
+            }
         }
     };
 
@@ -83,8 +91,13 @@ export class Paginator {
         const length = !this.#options.max_len || this.#options.max_len > this.#embeds.length ? this.#embeds.length : this.#options.max_len;
         // Recreation of the `Array.prototype.map` method
         for (let i = 0; i < length; i++) {
-            newArray.push(new EmbedBuilder({ ...this.#options.embedDefaults, footer: { text: ` Page ${i + 1}/${length}` }, ...this.#embeds[i] }));
+            newArray.push(new EmbedBuilder({
+                ...this.#options.embedDefaults,
+                footer: { text: ` Page ${i + 1}/${length}` },
+                ...this.#embeds[i]
+            }));
         }
+
         return newArray;
     }
 
@@ -95,16 +108,8 @@ export class Paginator {
      */
     #buildButtons: ActionRowBuilder<ButtonBuilder> = new ActionRowBuilder<ButtonBuilder>({
         components: [
-            new ButtonBuilder({
-                label: this.#options.arrows.leftArrow,
-                custom_id: "leftArrow",
-                style: ButtonStyle.Primary
-            }),
-            new ButtonBuilder({
-                label: this.#options.arrows.rightArrow,
-                custom_id: "rightArrow",
-                style: ButtonStyle.Primary
-            })
+            new ButtonBuilder(this.#options.arrows.leftArrow),
+            new ButtonBuilder(this.#options.arrows.rightArrow)
         ]
     });
 }
