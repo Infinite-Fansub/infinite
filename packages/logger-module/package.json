@@ -1,7 +1,7 @@
 {
-    "name": "@infinite-fansub/prompt",
-    "version": "1.0.3",
-    "description": "Console prompt inspired on the Window.prompt for browsers",
+    "name": "@infinite-fansub/logger-module",
+    "version": "1.0.0",
+    "description": "A standardized logger to use with infinite's discord client",
     "author": "Infinite",
     "license": "AGPL-3.0",
     "main": "dist/index.js",
@@ -21,10 +21,10 @@
         "type": "git",
         "url": "https://github.com/Infinite-Fansub/infinite.git"
     },
-    "homepage": "https://github.com/Infinite-Fansub/infinite/tree/main/packages/prompt",
+    "homepage": "https://github.com/Infinite-Fansub/infinite/tree/main/packages/logger-module",
     "dependencies": {
-        "@infinite-fansub/types": "^1.0.2",
-        "colours.js": "^3.1.2",
+        "@infinite-fansub/discord-client": "*",
+        "@infinite-fansub/logger": "*",
         "tslib": "^2.4.1"
     }
 }

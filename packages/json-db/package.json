@@ -23,6 +23,7 @@
     },
     "homepage": "https://github.com/Infinite-Fansub/infinite/tree/main/packages/json-db",
     "dependencies": {
-        "@infinite-fansub/logger": "*"
+        "@infinite-fansub/logger": "*",
+        "tslib": "^2.4.1"
     }
 }

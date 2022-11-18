@@ -24,6 +24,7 @@
     "homepage": "https://github.com/Infinite-Fansub/infinite/tree/main/packages/erela-module",
     "dependencies": {
         "@infinite-fansub/discord-client": "*",
-        "erela.js": "github:MenuDocs/erela.js#build"
+        "erela.js": "github:MenuDocs/erela.js#build",
+        "tslib": "^2.4.1"
     }
 }

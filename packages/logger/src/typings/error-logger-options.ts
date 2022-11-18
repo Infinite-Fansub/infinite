@@ -12,6 +12,6 @@ export interface ErrorLoggerOptions extends AttachOptions {
     exceptions?: {
         monitor?: boolean,
         ignore?: boolean
-    };
+    } | boolean;
     warnings?: boolean;
 }

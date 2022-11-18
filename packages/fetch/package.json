@@ -24,7 +24,7 @@
     "homepage": "https://github.com/Infinite-Fansub/infinite/tree/main/packages/fetch",
     "dependencies": {
         "node-expat": "^2.4.0",
-        "tslib": "^2.4.0"
+        "tslib": "^2.4.1"
     },
     "devDependencies": {
         "@types/node-expat": "^2.3.2"
