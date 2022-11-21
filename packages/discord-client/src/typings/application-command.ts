@@ -5,7 +5,7 @@ import { InfiniteClient } from "../client";
 export type SlashCommandExecute = (interaction: ChatInputCommandInteraction, client: InfiniteClient) => Awaitable<unknown>;
 
 export interface ISlashCommand {
-    data: SlashCommandBuilder | SlashCommandSubcommandsOnlyBuilder | RESTPostAPIApplicationCommandsJSONBody;
+    data: Omit<SlashCommandBuilder, "addSubcommand" | "addSubcommandGroup"> | SlashCommandSubcommandsOnlyBuilder | RESTPostAPIApplicationCommandsJSONBody;
     description?: string;
     post?: Post;
     enabled?: boolean;
