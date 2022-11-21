@@ -3,23 +3,23 @@ name: Tests & Build
 on: [push, pull_request, workflow_dispatch]
 
 jobs:
-  # lint:
-  #   name: Code lint
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #     - uses: actions/setup-node@v3
-  #       with:
-  #         node-version: 18
-  #     - uses: c-hive/gha-npm-cache@v1
-  #     - name: Install Dependencies
-  #       run: |
-  #         npm i
-  #         npm i -ws
-  #     - name: Lint
-  #       run: npm run eslint
+  lint:
+    name: Code lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - uses: c-hive/gha-npm-cache@v1
+      - name: Install Dependencies
+        run: |
+          npm i
+          npm i -ws
+      - name: Lint
+        run: npm run eslint
   build:
-    # needs: lint
+    needs: lint
     name: Build application on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
