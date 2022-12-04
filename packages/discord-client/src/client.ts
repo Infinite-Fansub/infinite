@@ -11,7 +11,7 @@ import {
 } from "discord.js";
 
 import { Client as RedisClient } from "redis-om";
-import { IClientOptions, IClientEvents, CollectorOptions, ISlashCommand, ModifyEvents, Module, ExctractName, WithModules } from "./typings";
+import { IClientOptions, IClientEvents, CollectorOptions, ISlashCommand, ModifyEvents, Module, ExtractName, WithModules } from "./typings";
 import { CollectorHelper } from "./utils/collector-helper";
 import { BaseClient } from "./base-client";
 import { EventConstraint } from "./typings/event-constraint";
@@ -75,7 +75,7 @@ export class InfiniteClient<O extends IClientOptions = IClientOptions, E extends
             this.on("guildCreate", async (guild) => await this.registerGuildCommands(guild.id));
     }
 
-    public withModules<T extends Array<Module>>(modules: ExctractName<T>): this & WithModules<T> {
+    public withModules<T extends Array<Module>>(modules: ExtractName<T>): this & WithModules<T> {
         modules.forEach((module) => {
             //@ts-expect-error shenanigans
             this[module.name] = new module.ctor(this);
@@ -87,29 +87,43 @@ export class InfiniteClient<O extends IClientOptions = IClientOptions, E extends
 
     /**
      * Handle slash commands
-     * @param interaction - The interaction recieved from the `interactionCreate` event
+     * @param interaction - The interaction received from the `interactionCreate` event
      * @returns
      */
     private async onInteraction(interaction: Interaction): Promise<void> {
-        if (!interaction.isChatInputCommand()) return;
-
+        //@ts-expect-error I don't want to be bothered with massive if chain;
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         const command = this.slashCommands.get(interaction.commandName);
-
         if (!command) return;
-        try {
-            if (command.enabled ?? true) {
-                if (command.execute && command.run) throw new Error("`<command>.run` and <command>.execute can not be used together in the same command");
-                await (command.execute?.(interaction, this) ?? command.run?.(interaction, this));
-            } else interaction.reply("Command Disabled");
-        } catch (err) {
-            console.error(err);
+
+        if (interaction.isAutocomplete()) {
+            try {
+                await command.autocomplete?.(interaction, this);
+            } catch (err) {
+                console.log(err);
+            }
         }
 
+        if (interaction.isChatInputCommand()) {
+            try {
+                if (command.enabled ?? true) {
+                    //@ts-expect-error ANTI JS
+                    if (command.execute && command.run) throw new Error("`<command>.run` and <command>.execute can not be used together in the same command");
+                    if ("execute" in command) {
+                        await command.execute(interaction, this);
+                    } else if ("run" in command) {
+                        await command.run(interaction, this);
+                    }
+                } else interaction.reply("Command Disabled");
+            } catch (err) {
+                console.error(err);
+            }
+        }
     }
 
     /**
      * Handle text based commands
-     * @param message - The message recieved from the `messageCreate` event
+     * @param message - The message received from the `messageCreate` event
      * @returns
      */
     private async onMessage(message: Message): Promise<void> {
@@ -183,7 +197,7 @@ export class InfiniteClient<O extends IClientOptions = IClientOptions, E extends
     }
 
     /**
-     * Initiates the choosen database
+     * Initiates the chosen database
      * @returns
      */
     private async buildDb(): Promise<void> {
@@ -232,7 +246,7 @@ export class InfiniteClient<O extends IClientOptions = IClientOptions, E extends
 
     /**
      * Helper function to create a collector instance
-     * @param interaction - The interaction recieved from a command execution
+     * @param interaction - The interaction received from a command execution
      * @param options - The options passed to the collector constructor
      * @returns A CollectorHelper instance
      */
