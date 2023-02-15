@@ -73,7 +73,7 @@
         "@typescript-eslint/require-await": "error",
         "@typescript-eslint/switch-exhaustiveness-check": "error",
         "@typescript-eslint/triple-slash-reference": "error",
-        "@typescript-eslint/unified-signatures": "error",
+        // "@typescript-eslint/unified-signatures": "error",
         "@typescript-eslint/no-non-null-asserted-optional-chain": "error",
         "@typescript-eslint/no-non-null-assertion": "error",
         "@typescript-eslint/no-base-to-string": "error",
@@ -106,7 +106,14 @@
         "@typescript-eslint/no-confusing-non-null-assertion": "warn",
         "@typescript-eslint/explicit-member-accessibility": "warn",
         "@typescript-eslint/method-signature-style": "warn",
-        "@typescript-eslint/ban-types": "warn",
+        "@typescript-eslint/ban-types": [
+            "warn",
+            {
+                "types": {
+                    "{}": false
+                }
+            }
+        ],
         "@typescript-eslint/consistent-indexed-object-style": "warn",
         "@typescript-eslint/func-call-spacing": "warn",
         "@typescript-eslint/comma-dangle": "warn",
@@ -221,16 +228,6 @@
             4,
             {
                 "SwitchCase": 1
-            }
-        ],
-        "@typescript-eslint/keyword-spacing": [
-            "warn",
-            {
-                "overrides": {
-                    "await": {
-                        "before": true
-                    }
-                }
             }
         ],
         "@typescript-eslint/lines-between-class-members": [
@@ -420,7 +417,8 @@
                 "selector": "typeProperty",
                 "format": [
                     "camelCase",
-                    "snake_case"
+                    "snake_case",
+                    "PascalCase"
                 ]
             },
             {

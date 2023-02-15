@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/unbound-method */
 import { Client } from "discord.js";
-import { Event, ICommand, ISlashCommand, IClientOptions } from "./typings/index";
-import * as normalHandler from "./utils/normal-handler";
-import * as watchHandler from "./utils/watch-handler";
+import { Event, ICommand, ISlashCommand, IClientOptions, DirectoryTypes, IClientEvents } from "./typings";
+import { recursiveRead } from "./utils/recursive-read";
 
 export interface BaseClient {
     options: any;
@@ -17,38 +16,60 @@ export class BaseClient<O extends IClientOptions = IClientOptions> extends Clien
     public commands = new Map<string, ICommand>();
     public slashCommands = new Map<string, ISlashCommand>();
     public events = new Map<string, Event<any>>();
-    public dirs: Exclude<O["dirs"], undefined>;
-    protected loadCommands: () => void;
-    protected loadSlashCommands: () => void;
-    protected loadEvents: () => void;
+    public dirs: DirectoryTypes;
 
     protected constructor(options: O) {
         super(options);
-        //@ts-expect-error nice1 typescript
-        this.dirs = options.dirs ?? {};
 
-        if (typeof options.watch === "object") {
-            this.loadCommands = options.watch.commands ? watchHandler.loadCommands : normalHandler.loadCommands;
-            this.loadSlashCommands = options.watch.slashCommands ? watchHandler.loadSlashCommands : normalHandler.loadSlashCommands;
-            this.loadEvents = options.watch.events ? watchHandler.loadEvents : normalHandler.loadEvents;
-        } else if (options.watch) {
-            this.loadCommands = watchHandler.loadCommands;
-            this.loadSlashCommands = watchHandler.loadSlashCommands;
-            this.loadEvents = watchHandler.loadEvents;
-        } else {
-            this.loadCommands = normalHandler.loadCommands;
-            this.loadSlashCommands = normalHandler.loadSlashCommands;
-            this.loadEvents = normalHandler.loadEvents;
+        this.dirs = options.dirs ?? {};
+    }
+
+    public async loadCommands(this: BaseClient): Promise<void> {
+        if (!this.dirs.commands) return;
+        const paths = recursiveRead(this.dirs.commands);
+
+        for (let i = 0; i < paths.length; i++) {
+            const command: ICommand = (await import(paths[i])).default;
+            this.commands.set(command.name, command);
+        }
+    }
+
+    /**
+     * Load the slash commands
+     */
+    public async loadSlashCommands(this: BaseClient): Promise<void> {
+        if (!this.dirs.slashCommands) return;
+        const paths = recursiveRead(this.dirs.slashCommands);
+
+        for (let i = 0; i < paths.length; i++) {
+            const command: ISlashCommand = (await import(paths[i])).default;
+            this.slashCommands.set(command.data.name, command);
+        }
+    }
+
+    /**
+     * Load the events
+     */
+    public async loadEvents(this: BaseClient): Promise<void> {
+        if (!this.dirs.events) return;
+        const paths = recursiveRead(this.dirs.events);
+
+        for (let i = 0; i < paths.length; i++) {
+            const event: Event<any> = (await import(paths[i])).default;
+            this.events.set(<string>event.event, event);
+            this[event.type](event.event, (...args: Array<IClientEvents>) => {
+                if (event.enabled ?? true) event.run(...args);
+            });
         }
     }
 
     /**
      * @param dirs - The directories that contain the specific files
      */
-    public addDirs(dirs: O["dirs"]): void {
-        this.dirs.commands = dirs?.commands;
-        this.dirs.slashCommands = dirs?.slashCommands;
-        this.dirs.events = dirs?.events;
+    public addDirs(dirs: DirectoryTypes): void {
+        this.dirs.commands = dirs.commands;
+        this.dirs.slashCommands = dirs.slashCommands;
+        this.dirs.events = dirs.events;
     }
 
     /**

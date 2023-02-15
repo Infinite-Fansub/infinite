@@ -7,10 +7,10 @@ import {
     RESTPostAPIApplicationCommandsJSONBody,
     Routes,
     REST,
-    ChatInputCommandInteraction
+    ChatInputCommandInteraction,
+    CommandInteraction
 } from "discord.js";
 
-import { Client as RedisClient } from "redis-om";
 import { IClientOptions, IClientEvents, CollectorOptions, ISlashCommand, ModifyEvents, Module, ExtractName, WithModules } from "./typings";
 import { CollectorHelper } from "./utils/collector-helper";
 import { BaseClient } from "./base-client";
@@ -29,7 +29,6 @@ export interface InfiniteClient<O extends IClientOptions = IClientOptions, E ext
 export class InfiniteClient<O extends IClientOptions = IClientOptions, E extends EventConstraint<E> = IClientEvents> extends BaseClient<O> {
 
     static #djsRest: REST;
-    public redis?: RedisClient;
     public prefix: string;
 
     /**
@@ -53,13 +52,12 @@ export class InfiniteClient<O extends IClientOptions = IClientOptions, E extends
         if (!this.options.disable?.interactions)
             this.options.dirs?.slashCommands && this.loadSlashCommands();
 
-        this.buildDb();
-
         this.login(this.options.token).then(async () => {
 
-            if (!this.options.disable?.interactions)
+            if (!this.options.disable?.interactions) {
                 await this.registerGlobalCommands();
-            await this.registerGuildCommands();
+                await this.registerGuildCommands();
+            }
 
         });
 
@@ -81,8 +79,7 @@ export class InfiniteClient<O extends IClientOptions = IClientOptions, E extends
             this[module.name] = new module.ctor(this);
         });
 
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/keyword-spacing, @typescript-eslint/no-explicit-any
-        return <any>this;
+        return <never>this;
     }
 
     /**
@@ -91,24 +88,20 @@ export class InfiniteClient<O extends IClientOptions = IClientOptions, E extends
      * @returns
      */
     private async onInteraction(interaction: Interaction): Promise<void> {
-        //@ts-expect-error I don't want to be bothered with massive if chain;
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-        const command = this.slashCommands.get(interaction.commandName);
+        const command = this.slashCommands.get((<CommandInteraction>interaction).commandName);
         if (!command) return;
 
         if (interaction.isAutocomplete()) {
             try {
                 await command.autocomplete?.(interaction, this);
             } catch (err) {
-                console.log(err);
+                console.error(err);
             }
         }
 
         if (interaction.isChatInputCommand()) {
             try {
                 if (command.enabled ?? true) {
-                    //@ts-expect-error ANTI JS
-                    if (command.execute && command.run) throw new Error("`<command>.run` and <command>.execute can not be used together in the same command");
                     if ("execute" in command) {
                         await command.execute(interaction, this);
                     } else if ("run" in command) {
@@ -133,7 +126,6 @@ export class InfiniteClient<O extends IClientOptions = IClientOptions, E extends
             const cmd = args.shift()?.toLowerCase();
             if (!cmd) return console.log(`CMD is not a string\nCMD:\n${cmd}`);
 
-            if (!this.commands.has(cmd)) return;
             const command = this.commands.get(cmd);
             if (!command) return;
             try {
@@ -194,54 +186,6 @@ export class InfiniteClient<O extends IClientOptions = IClientOptions, E extends
                         .then(() => this.emit("loadedSlash", guildJson, gId, this));
                 }
             });
-    }
-
-    /**
-     * Initiates the chosen database
-     * @returns
-     */
-    private async buildDb(): Promise<void> {
-        if (this.options.database === undefined) {
-            if (this.options.disable?.warnings) return;
-            return console.error("Some options might not work without a database");
-        }
-
-        const type = typeof this.options.database === "object" ? this.options.database.type : this.options.database;
-
-        switch (type) {
-            case "mongo":
-                // await this.mongoHandler()
-                break;
-            case "redis":
-                await this.createRedisClient();
-                break;
-            case "json":
-                // this.jsonHandler()
-                break;
-            default:
-                break;
-            // this.jsonHandler()
-        }
-    }
-
-    /**
-     * Responsible for creating and handling the redis client
-     * @returns
-     */
-    private async createRedisClient(): Promise<void> {
-        if (!(typeof this.options.database === "object" && this.options.database.type === "redis")) return;
-        let url = "redis://localhost:6379";
-        if (typeof this.options.database.path === "object") {
-            const { username, password, entrypoint, port } = this.options.database.path;
-            if (!entrypoint || typeof entrypoint !== "string") throw new Error("No entrypoint defined");
-            url = `redis://${username && password ? `${username}:${password}@` : ""}${(/:\d$/).exec(entrypoint) ? entrypoint : `${entrypoint}:${port ?? 6379}`}`;
-        } else {
-            url = this.options.database.path ?? "redis://localhost:6379";
-        }
-        const client = new RedisClient();
-        this.redis = client;
-        //@ts-expect-error The type exists but because its dynamic ts is having problems
-        await client.connect(url).then(() => this.emit("databaseOpen", this, client));
     }
 
     /**
