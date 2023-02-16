@@ -43,7 +43,6 @@ export class Paginator {
     public constructor(embeds: Array<APIEmbed>, options: PaginatorOptions = { max_len: Infinity }) {
         if (!embeds.length) throw new PrettyError("No embeds passed in to the paginator");
         this.#embeds = embeds;
-        // casting because typescript is dumb
         if (!options.max_len) this.#options.max_len = <number>options.max_len;
         if (options.arrows?.leftArrow) this.#options.arrows.leftArrow = options.arrows.leftArrow;
         if (options.arrows?.rightArrow) this.#options.arrows.rightArrow = options.arrows.rightArrow;

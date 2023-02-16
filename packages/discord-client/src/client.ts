@@ -15,21 +15,20 @@ import { IClientOptions, IClientEvents, CollectorOptions, ISlashCommand, ModifyE
 import { CollectorHelper } from "./utils/collector-helper";
 import { BaseClient } from "./base-client";
 import { EventConstraint } from "./typings/event-constraint";
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-require("@infinite-fansub/logger");
+import "@infinite-fansub/logger";
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export interface InfiniteClient<O extends IClientOptions = IClientOptions, E extends EventConstraint<E> = IClientEvents> {
+export interface InfiniteClient<O extends IClientOptions = IClientOptions, E extends EventConstraint<E> = IClientEvents<O>> extends BaseClient<O> {
     on: ModifyEvents<E>["on"];
     once: ModifyEvents<E>["once"];
     emit: ModifyEvents<E>["emit"];
     off: ModifyEvents<E>["off"];
 }
 
-export class InfiniteClient<O extends IClientOptions = IClientOptions, E extends EventConstraint<E> = IClientEvents> extends BaseClient<O> {
+export class InfiniteClient<O extends IClientOptions = IClientOptions, E extends EventConstraint<E> = IClientEvents<O>> extends BaseClient<O> {
 
     static #djsRest: REST;
     public prefix: string;
+    public injected: O["inject"];
 
     /**
      * @param options - The options to start the client
@@ -40,6 +39,8 @@ export class InfiniteClient<O extends IClientOptions = IClientOptions, E extends
         if (!this.options.token) throw new Error("No token was specified");
 
         this.prefix = options.prefix ?? "!";
+        this.injected = options.inject ?? {};
+
         this.addDirs({
             commands: this.options.dirs?.commands,
             slashCommands: this.options.dirs?.slashCommands,

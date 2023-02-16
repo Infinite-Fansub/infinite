@@ -24,6 +24,10 @@ export class BaseClient<O extends IClientOptions = IClientOptions> extends Clien
         this.dirs = options.dirs ?? {};
     }
 
+    /**
+     * Load message commands
+     * @returns
+     */
     public async loadCommands(this: BaseClient): Promise<void> {
         if (!this.dirs.commands) return;
         const paths = recursiveRead(this.dirs.commands);
@@ -35,7 +39,8 @@ export class BaseClient<O extends IClientOptions = IClientOptions> extends Clien
     }
 
     /**
-     * Load the slash commands
+     * Load slash commands
+     * @returns
      */
     public async loadSlashCommands(this: BaseClient): Promise<void> {
         if (!this.dirs.slashCommands) return;
@@ -48,7 +53,8 @@ export class BaseClient<O extends IClientOptions = IClientOptions> extends Clien
     }
 
     /**
-     * Load the events
+     * Load events
+     * @returns
      */
     public async loadEvents(this: BaseClient): Promise<void> {
         if (!this.dirs.events) return;

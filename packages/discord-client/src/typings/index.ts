@@ -4,7 +4,6 @@ export * from "./event";
 export * from "./message-command";
 export * from "./application-command";
 export * from "./client-options";
-export * from "./file-cache";
 export * from "./collector-helper";
 export * from "./paginator-options";
 export * from "./module";
