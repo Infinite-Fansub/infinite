@@ -28,7 +28,7 @@ export class InfiniteClient<O extends IClientOptions = IClientOptions, E extends
 
     static #djsRest: REST;
     public prefix: string;
-    public injected: O["inject"];
+    public injected: NonNullable<O["inject"]>;
 
     /**
      * @param options - The options to start the client
