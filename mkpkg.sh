@@ -32,8 +32,8 @@ echo "{
     \"types\": \"dist\",
     \"scripts\": {
         \"test\": \"ts-node tests/index.ts\",
-        \"eslint\": \"eslint\",
-        \"eslint:fix\": \"eslint --fix\",
+        \"lint\": \"eslint src/**/*.ts\",
+        \"lint:fix\": \"eslint src/**/*.ts --fix\",
         \"docs\": \"rm -rf docs && typedoc && typedoc --plugin typedoc-plugin-coverage --plugin typedoc-plugin-markdown\",
         \"build\": \"rm -rf dist && tsc\",
         \"build:watch\": \"rm -rf dist && tsc --watch\",

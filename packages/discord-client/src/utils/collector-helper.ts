@@ -18,7 +18,6 @@ export class CollectorHelper<T extends Exclude<ComponentType, "ActionRow">> {
     public async create(callback: (interaction: ParseComponentType<T>) => Awaitable<void>, options?: CollectorOptions): Promise<void> {
         if (options && options.time === undefined) options.time = 18000;
 
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const chn = this.interaction.channel ?? await this.interaction.client.channels.fetch(this.interaction.channelId) as TextChannel;
 
         const collector = chn.createMessageComponentCollector(options ?? this.options);

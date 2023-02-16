@@ -30,18 +30,19 @@ export class Paginator {
         }
     };
 
-    protected collector = (interaction: ChatInputCommandInteraction): CollectorHelper<ComponentType.Button> => new CollectorHelper<ComponentType.Button>(interaction, {
-        // Filter inputs so only the user who sent the interaction can use the buttons
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        filter: (i: any) => i.user.id === interaction.user.id,
-        time: this.#options.time,
-        kill: true
-    });
+    protected collector(interaction: ChatInputCommandInteraction): CollectorHelper<ComponentType.Button> {
+        return new CollectorHelper<ComponentType.Button>(interaction, {
+            // Filter inputs so only the user who sent the interaction can use the buttons
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            filter: (i: any) => i.user.id === interaction.user.id,
+            time: this.#options.time,
+            kill: true
+        });
+    }
 
     public constructor(embeds: Array<APIEmbed>, options: PaginatorOptions = { max_len: Infinity }) {
         if (!embeds.length) throw new PrettyError("No embeds passed in to the paginator");
         this.#embeds = embeds;
-        // casting because typescript is dumb
         if (!options.max_len) this.#options.max_len = <number>options.max_len;
         if (options.arrows?.leftArrow) this.#options.arrows.leftArrow = options.arrows.leftArrow;
         if (options.arrows?.rightArrow) this.#options.arrows.rightArrow = options.arrows.rightArrow;

@@ -1,10 +1,10 @@
-/* eslint-disable @typescript-eslint/no-redundant-type-constituents */
+/* eslint-disable @typescript-eslint/no-redundant-type-constituents, @typescript-eslint/no-explicit-any*/
 import { SlashCommandBuilder, ChatInputCommandInteraction, Awaitable, RESTPostAPIApplicationCommandsJSONBody, SlashCommandSubcommandsOnlyBuilder, AutocompleteInteraction } from "discord.js";
 import { InfiniteClient } from "../client";
 
-export type SlashCommandExecute = (interaction: ChatInputCommandInteraction, client: InfiniteClient) => Awaitable<unknown>;
+export type SlashCommandExecute = (interaction: ChatInputCommandInteraction, client: InfiniteClient) => Awaitable<any>;
 
-export type SlashCommandAutocomplete = (interaction: AutocompleteInteraction, client: InfiniteClient) => Awaitable<unknown>;
+export type SlashCommandAutocomplete = (interaction: AutocompleteInteraction, client: InfiniteClient) => Awaitable<any>;
 
 export interface BaseSlashCommand {
     data: Omit<SlashCommandBuilder, "addSubcommand" | "addSubcommandGroup"> | SlashCommandSubcommandsOnlyBuilder | RESTPostAPIApplicationCommandsJSONBody;
