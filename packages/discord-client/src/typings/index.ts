@@ -8,3 +8,4 @@ export * from "./collector-helper";
 export * from "./paginator-options";
 export * from "./module";
 export * from "./modify-events";
+export * from "./extract-options";
