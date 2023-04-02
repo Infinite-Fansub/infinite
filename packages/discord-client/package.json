@@ -1,6 +1,6 @@
 {
     "name": "@infinite-fansub/discord-client",
-    "version": "0.19.2",
+    "version": "0.19.3",
     "description": "An open and easy to use discord client",
     "author": "Infinite",
     "license": "AGPL-3.0",
@@ -24,7 +24,7 @@
     "homepage": "https://github.com/Infinite-Fansub/infinite/tree/main/packages/discord-client",
     "dependencies": {
         "@infinite-fansub/logger": "*",
-        "discord.js": "^14.7.1",
+        "discord.js": "^14.9.0",
         "tslib": "^2.4.1"
     }
 }
