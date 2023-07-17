@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/unbound-method */
-import { Client } from "discord.js";
+import { Client, ClientOptions } from "discord.js";
 import { Event, ICommand, ISlashCommand, IClientOptions, DirectoryTypes, IClientEvents } from "./typings";
 import { recursiveRead } from "./utils/recursive-read";
 
@@ -11,15 +11,15 @@ export interface BaseClient {
     off: any;
 }
 
-export class BaseClient<O extends IClientOptions = IClientOptions> extends Client<true> {
+export class BaseClient<DO extends ClientOptions = ClientOptions, O extends IClientOptions = IClientOptions> extends Client<true> {
 
     public commands = new Map<string, ICommand>();
     public slashCommands = new Map<string, ISlashCommand>();
     public events = new Map<string, Event<any>>();
     public dirs: DirectoryTypes;
 
-    protected constructor(options: O) {
-        super(options);
+    protected constructor(djsOptions: DO, options: O) {
+        super(djsOptions);
 
         this.dirs = options.dirs ?? {};
     }

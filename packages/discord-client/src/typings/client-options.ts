@@ -1,7 +1,6 @@
-import { ClientOptions } from "discord.js";
 import { DirectoryTypes } from "./directory-types";
 
-export interface IClientOptions extends ClientOptions {
+export interface IClientOptions {
     token: string;
     prefix?: string;
     disable?: DisableOptions;

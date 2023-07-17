@@ -8,7 +8,8 @@ import {
     Routes,
     REST,
     ChatInputCommandInteraction,
-    CommandInteraction
+    CommandInteraction,
+    ClientOptions
 } from "discord.js";
 
 import { IClientOptions, IClientEvents, CollectorOptions, ISlashCommand, ModifyEvents, Module, ExtractName, WithModules } from "./typings";
@@ -17,60 +18,63 @@ import { BaseClient } from "./base-client";
 import { EventConstraint } from "./typings/event-constraint";
 import "@infinite-fansub/logger";
 
-export interface InfiniteClient<O extends IClientOptions = IClientOptions, E extends EventConstraint<E> = IClientEvents<O>> extends BaseClient<O> {
+export interface InfiniteClient<O extends IClientOptions = IClientOptions, DO extends ClientOptions = ClientOptions, E extends EventConstraint<E> = IClientEvents<DO, O>> extends BaseClient<DO, O> {
     on: ModifyEvents<E>["on"];
     once: ModifyEvents<E>["once"];
     emit: ModifyEvents<E>["emit"];
     off: ModifyEvents<E>["off"];
 }
 
-export class InfiniteClient<O extends IClientOptions = IClientOptions, E extends EventConstraint<E> = IClientEvents<O>> extends BaseClient<O> {
+export class InfiniteClient<O extends IClientOptions = IClientOptions, DO extends ClientOptions = ClientOptions, E extends EventConstraint<E> = IClientEvents<DO, O>> extends BaseClient<DO, O> {
 
     static #djsRest: REST;
     public prefix: string;
     public injected: NonNullable<O["inject"]>;
 
+    #options: O;
+
     /**
      * @param options - The options to start the client
      */
-    public constructor(public override options: O) {
-        super(options);
+    public constructor(djsOptions: DO, options: O) {
+        super(djsOptions, options);
+        this.#options = options;
 
-        if (!this.options.token) throw new Error("No token was specified");
+        if (!this.#options.token) throw new Error("No token was specified");
 
         this.prefix = options.prefix ?? "!";
         this.injected = options.inject ?? {};
 
         this.addDirs({
-            commands: this.options.dirs?.commands,
-            slashCommands: this.options.dirs?.slashCommands,
-            events: this.options.dirs?.events
+            commands: this.#options.dirs?.commands,
+            slashCommands: this.#options.dirs?.slashCommands,
+            events: this.#options.dirs?.events
         });
 
-        this.options.dirs?.events && this.loadEvents();
-        if (!this.options.disable?.messageCommands)
-            this.options.dirs?.commands && this.loadCommands();
-        if (!this.options.disable?.interactions)
-            this.options.dirs?.slashCommands && this.loadSlashCommands();
+        this.#options.dirs?.events && this.loadEvents();
+        if (!this.#options.disable?.messageCommands)
+            this.#options.dirs?.commands && this.loadCommands();
+        if (!this.#options.disable?.interactions)
+            this.#options.dirs?.slashCommands && this.loadSlashCommands();
 
-        this.login(this.options.token).then(async () => {
+        this.login(this.#options.token).then(async () => {
 
-            if (!this.options.disable?.interactions) {
+            if (!this.#options.disable?.interactions) {
                 await this.registerGlobalCommands();
                 await this.registerGuildCommands();
             }
 
         });
 
-        InfiniteClient.#djsRest = new REST().setToken(this.options.token);
+        InfiniteClient.#djsRest = new REST().setToken(this.#options.token);
 
-        if (!this.options.disable?.interactions)
+        if (!this.#options.disable?.interactions)
             this.on("interactionCreate", async (interaction) => await this.onInteraction(interaction));
 
-        if (!this.options.disable?.messageCommands)
+        if (!this.#options.disable?.messageCommands)
             this.on("messageCreate", async (message) => await this.onMessage(message));
 
-        if (!this.options.disable?.registerOnJoin)
+        if (!this.#options.disable?.registerOnJoin)
             this.on("guildCreate", async (guild) => await this.registerGuildCommands(guild.id));
     }
 
