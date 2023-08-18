@@ -89,16 +89,16 @@ export class ErrorLogger {
      * `rejectionHandled` is emitted when a promise is rejected but has a handler like `.catch` attached
      * Is broken, during tests we couldn't get the event to fire
      *
-     * @param callback - The callback for the rejectionhandler
+     * @param callback - The callback for the rejection handler
      *
      * @alpha
      */
     public attachRejectionHandled(callback: NodeJS.RejectionHandledListener = (promise) => {
-        console.log(`A promise was sucessefully catched:\n${inspect(promise, false, null, true)}`);
+        console.log(`A promise was successfully captured:\n${inspect(promise, false, null, true)}`);
     }): void {
 
         /**
-         * @param promise - The promise that was sucessefully catched
+         * @param promise - The promise that was successfully captured
          */
         process.on("rejectionHandled", callback);
     }
@@ -143,7 +143,7 @@ export class ErrorLogger {
     }
 
     /**
-     * Recomended over {@link ErrorLogger.attachUncaughtException}
+     * Recommended over {@link ErrorLogger.attachUncaughtException}
      *
      * @param callback - The callback for the uncaught exception listener
      */
@@ -164,7 +164,7 @@ export class ErrorLogger {
     /**
      * @param callback - The callback for the warning listener
      *
-     * @see [How can it be usefull](https://nodejs.org/api/process.html#emitting-custom-warnings)
+     * @see [How can it be useful](https://nodejs.org/api/process.html#emitting-custom-warnings)
      */
     public attachWarning(callback: NodeJS.WarningListener = (warning) => {
         this.#options.showNotification && this.#logger.printf(`WARNING: ${warning.message}`, Color.BLUE);

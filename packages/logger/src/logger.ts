@@ -52,7 +52,7 @@ export class Logger {
             return;
         }
 
-        throw new Error("Template Literall call not implemented yet");
+        throw new Error("Template Literal call not implemented yet");
     }
 
     public log(log: string | TemplateStringsArray, ...values: Array<string>): void {
