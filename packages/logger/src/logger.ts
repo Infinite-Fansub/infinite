@@ -1,6 +1,14 @@
-import { Color, colorConsole, Colour, DirectGradient, JoinedGradient } from "colours.js";
-import { Colors, Emojis, LoggerOptions } from "./typings";
 import { InfiniteGradient, getCurrentMemoryHeap } from "./utils";
+import { Colors, Emojis, LoggerOptions } from "./typings";
+
+import {
+    Color,
+    colorConsole,
+    Colour,
+    DirectGradient,
+    JoinedGradient
+} from "colours.js";
+
 const { uniform, gradient } = colorConsole;
 
 export class Logger {
@@ -149,9 +157,3 @@ export class Logger {
     }
 
 }
-
-//@ts-expect-error Global
-global.Logger = Logger;
-
-//@ts-expect-error Global
-global.logger = new Logger();

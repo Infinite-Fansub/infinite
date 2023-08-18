@@ -1,9 +1,11 @@
 /* eslint-disable max-len */
-import { sep } from "node:path";
 import { Color, colorConsole } from "colours.js/dst";
-import { readFileSync } from "fs";
 import { platform } from "node:os";
+import { readFileSync } from "fs";
+import { sep } from "node:path";
+
 import { PrettyErrorOptions, MarkerOptions } from "./typings";
+
 const { uniform } = colorConsole;
 
 export class PrettyError extends Error {
@@ -79,6 +81,3 @@ export class PrettyError extends Error {
         return lines[lineNum - 1] ?? "";
     }
 }
-
-//@ts-expect-error Global
-global.PrettyError = PrettyError;

@@ -1,8 +1,9 @@
-import { inspect } from "node:util";
-import { AttachOptions, ErrorLoggerOptions } from "./typings";
-import { Logger } from "./logger";
 import { Color, colorConsole } from "colours.js/dst";
+import { inspect } from "node:util";
+
+import { AttachOptions, ErrorLoggerOptions } from "./typings";
 import { PrettyError } from "./pretty-error";
+import { Logger } from "./logger";
 
 export class ErrorLogger {
 
