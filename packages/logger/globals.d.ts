@@ -9,7 +9,6 @@ declare global {
     class Logger {
         #private;
         constructor(options?: LoggerOptions);
-        constructor(options?: LoggerOptions);
         addMemoryToString(log: string): string;
         date(): string;
         infinitePrint(log: string | TemplateStringsArray): void;
