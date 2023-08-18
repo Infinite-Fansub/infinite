@@ -9,6 +9,7 @@ declare global {
     class Logger {
         #private;
         constructor(options?: LoggerOptions);
+        constructor(options?: LoggerOptions);
         addMemoryToString(log: string): string;
         date(): string;
         infinitePrint(log: string | TemplateStringsArray): void;
@@ -32,11 +33,6 @@ declare global {
     }
 
     class PrettyError extends Error {
-        constructor(err?: string | Error, options?: PrettyErrorOptions);
-        private static colorLocation;
-        private static line;
-        private static marker;
-        private static generateLines;
-        private static getLine;
+        constructor(err: string | Error, options?: PrettyErrorOptions);
     }
 }

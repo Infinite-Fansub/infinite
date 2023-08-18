@@ -108,10 +108,9 @@ export class ErrorLogger {
     *
     * @param callback - The callback for the unhandled rejection
     */
-    public attachUnhandledRejection(callback: NodeJS.UnhandledRejectionListener = (reason, promise) => {
+    public attachUnhandledRejection(callback: NodeJS.UnhandledRejectionListener = (reason) => {
         this.#logger.error("A rejection was not handled.");
         this.#logger.print(`${this.#logger.date()} ▶️ ${colorConsole.uniform("Reason:", Color.RED)} ${inspect(reason, false, null, true)}`);
-        this.#logger.print(`${this.#logger.date()} ▶️ ${colorConsole.uniform("Promise:", Color.RED)} ${inspect(promise, false, null, true)}`);
     }): void {
 
         /**

@@ -1,15 +1,33 @@
 import { Color } from "colours.js/dst";
 
 export type PrettyErrorOptions = {
+
+    /**
+     * Is it an error or debug or something else
+     * @defaultValue "error"
+     */
     type?: string,
-    errCode?: string,
-    ref?: string,
-    lines?: Array<{ err: string, marker: MarkerOptions }>
+    code?: string,
+
+    /**
+     * The project name
+     * This helps errors to point to the proper file
+     */
+    reference?: string,
+    lines?: Array<{ error: string, marker: MarkerOptions }>
 };
 
 export type MarkerOptions = {
     text: string,
     color?: Color,
-    spaced?: boolean,
-    nl?: boolean
+
+    /**
+     * Adds a new line before the marker
+     */
+    spacedBefore?: boolean,
+
+    /**
+     * Adds a new line after the marker so the error is under it
+     */
+    newLine?: boolean
 };
