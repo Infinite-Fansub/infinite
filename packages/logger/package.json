@@ -1,11 +1,24 @@
 {
     "name": "@infinite-fansub/logger",
-    "version": "2.2.1",
+    "version": "2.2.2",
     "description": "Infinite logger",
     "author": "Infinite",
     "license": "AGPL-3.0",
     "main": "dist/index.js",
-    "types": "dist",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "require": "./dist/index.js",
+            "default": "./dist/index.js"
+        },
+        "./config": {
+            "types": "./dist/config.d.ts",
+            "require": "./dist/config.js",
+            "default": "./dist/config.js"
+        },
+        "./package.json": "./package.json",
+        "./dist/utils/symbols.js": null
+    },
     "scripts": {
         "test": "ts-node tests/index.ts",
         "lint": "eslint src/**/*.ts",
